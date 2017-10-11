@@ -6,4 +6,7 @@
     <camera x="100" y="0"/>
   </renderer>
 
+  <player>
+    <lastPosTile x="" y=""/>
+  </player>
 </game_state>
