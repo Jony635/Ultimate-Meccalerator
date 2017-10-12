@@ -28,7 +28,7 @@
   </map>
 
   <player>
-   
+   <speed tiles_sec="2"/>
   </player>
 
 </config>

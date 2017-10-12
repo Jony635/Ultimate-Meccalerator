@@ -43,10 +43,8 @@ public:
 
 private:
 
-	iPoint StartingPosition;
-	iPoint pos;
-
-	int speed;
+	fPoint pos;
+	float speed;
 
 	SDL_Texture* playerText = nullptr;
 

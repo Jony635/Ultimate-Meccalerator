@@ -1,8 +1,8 @@
 #include "j1Player.h"
 #include "j1Textures.h"
 #include "j1Render.h"
-
-
+#include "j1Map.h"
+#include "j1Input.h"
 
 
 j1Player::j1Player() : j1Module()
@@ -17,20 +17,28 @@ j1Player::~j1Player()
 
 bool j1Player::Awake(pugi::xml_node& playernode)
 {
-	pos = { 51,377 };
+	speed = (playernode.child("speed").attribute("tiles_sec").as_int());
 	
 	return true;
 }
 
 bool j1Player::Start()
 {
+	speed = (speed * App->map->data.tile_width) / 60;
 	playerText = App->tex->Load("textures/TestingPlayer.png");
 	return true;
 }
 
 bool j1Player::PreUpdate()
 {
-
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	{
+		pos.x += speed;
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	{
+		pos.x -= speed;
+	}
 	return true;
 }
 
