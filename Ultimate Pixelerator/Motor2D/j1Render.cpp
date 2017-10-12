@@ -56,6 +56,7 @@ bool j1Render::Start()
 {
 	LOG("render start");
 	// back background
+	SDL_RenderSetLogicalSize(renderer, App->win->screen_surface->w, App->win->screen_surface->h);
 	SDL_RenderGetViewport(renderer, &viewport);
 	return true;
 }

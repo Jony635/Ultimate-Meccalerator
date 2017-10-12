@@ -3,6 +3,7 @@
 
 #include "j1App.h"
 #include "j1Module.h"
+#include "p2Point.h"
 
 class j1Player : public j1Module
 {
@@ -41,7 +42,7 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 private:
-	p2Point<int>StartingPosition;
+	iPoint StartingPosition;
 	int speed;
 };
 
