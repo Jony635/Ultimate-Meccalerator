@@ -15,6 +15,7 @@ struct MapLayer
 	uint height = 0;
 	uint* data = nullptr;
 	uint size_data = 0;
+	bool visible = true;
 	~MapLayer()
 	{
 		RELEASE(data);

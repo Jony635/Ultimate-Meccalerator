@@ -5,10 +5,6 @@
  </tileset>
  <tileset firstgid="2561" name="tileset-01" tilewidth="30" tileheight="30" tilecount="32" columns="8">
   <image source="Level_1_tileset.png" width="241" height="120"/>
-  <terraintypes>
-   <terrain name="grownd" tile="-1"/>
-   <terrain name="grrownd2" tile="-1"/>
-  </terraintypes>
   <tile id="0" terrain=",,,0"/>
   <tile id="1" terrain=",,0,0"/>
   <tile id="2" terrain=",,0,"/>

@@ -38,8 +38,10 @@ void j1Map::Draw()
 	{
 		for (p2List_item<MapLayer*>* layer_to_draw = data.LayerList.start; layer_to_draw != nullptr; layer_to_draw = layer_to_draw->next)
 		{
+			if (layer_to_draw->data->visible == false)
+				continue;
+
 			int x = 0, y = 0;
-			
 			for (int num_tile = 0; num_tile < layer_to_draw->data->size_data; ++num_tile)
 			{
 				App->render->Blit(TileSet->data->texture, x, y, &TileSet->data->GetTileRect(*(layer_to_draw->data->data+num_tile)));
@@ -338,6 +340,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->name.create(node.attribute("name").value());
 	layer->width = node.attribute("width").as_uint();
 	layer->height = node.attribute("height").as_uint();
+	layer->visible = node.attribute("visible").as_bool(true);
 	for (pugi::xml_node TileToCopy = node.child("data").child("tile"); TileToCopy != nullptr; TileToCopy = TileToCopy.next_sibling())
 	{
 		layer->size_data++;
