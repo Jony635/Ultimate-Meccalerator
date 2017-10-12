@@ -4,25 +4,25 @@
 #include "j1App.h"
 #include "j1Module.h"
 #include "p2Point.h"
+#include "Animation.h"
+
+struct SDL_Texture;
+
+
 
 class j1Player : public j1Module
 {
 
 public:
-
 	j1Player();
-
 	// Destructor
 	virtual ~j1Player();
-
-
 
 	//Before render avaiable
 	bool Awake(pugi::xml_node&);
 
 	//Before first frame
 	bool Start();
-
 
 	//Before each frame
 	bool PreUpdate();
@@ -42,8 +42,16 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 private:
+
 	iPoint StartingPosition;
+	iPoint pos;
+
 	int speed;
+
+	SDL_Texture* playerText = nullptr;
+
+	Animation standard_anim;
+
 };
 
 
