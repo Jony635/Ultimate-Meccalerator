@@ -45,7 +45,7 @@ private:
 	fPoint pos;
 	fPoint Startingpos;
 
-	uint jumps = 2;
+	uint jumps = 1;
 	bool grounded = true;
 
 	float speed_x;

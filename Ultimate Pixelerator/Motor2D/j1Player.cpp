@@ -75,9 +75,11 @@ bool j1Player::PreUpdate()
 
 	if (jumps>0 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		jumps--;
+		if(grounded==false)
+			jumps--;
 		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
 		grounded = false;
+		
 	}
 	
 
@@ -98,7 +100,7 @@ bool j1Player::Update(float dt)
 	{
 		
 		grounded = true;
-		jumps = 2;
+		jumps = 1;
 		speed_y = 0;
 	}
 	App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
