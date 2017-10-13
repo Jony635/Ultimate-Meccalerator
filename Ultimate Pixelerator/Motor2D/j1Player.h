@@ -42,14 +42,17 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 private:
-
 	fPoint pos;
 	float speed;
 
 	SDL_Texture* playerText = nullptr;
 
+	Animation* current_anim = nullptr;
 	Animation standard_anim;
+	Animation GoRight;
+	Animation GoLeft;
 
+	void SetStartingPos();
 };
 
 

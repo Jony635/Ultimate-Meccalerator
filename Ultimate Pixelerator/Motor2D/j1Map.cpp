@@ -6,6 +6,7 @@
 #include "j1Map.h"
 #include <math.h>
 #include "j1Input.h"
+#include "j1Player.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -44,6 +45,7 @@ void j1Map::Draw()
 			int x = 0, y = 0;
 			for (int num_tile = 0; num_tile < layer_to_draw->data->size_data; ++num_tile)
 			{
+				
 				App->render->Blit(TileSet->data->texture, x, y, &TileSet->data->GetTileRect(*(layer_to_draw->data->data+num_tile)));
 				x += TileSet->data->tile_width;
 
@@ -98,12 +100,7 @@ bool j1Map::CleanUp()
 	data.tilesets.clear();
 
 	// TODO 2: clean up all layer data
-	// Remove all layers
-	/*for (p2List_item <MapLayer*>* layer_to_delete = data.LayerList.start; layer_to_delete != nullptr && data.LayerList.count()!=0; layer_to_delete = layer_to_delete->next)
-	{
-		layer_to_delete->data->~MapLayer();
-	}
-	data.LayerList.clear();*/
+	
 	if (data.LayerList.count() != 0)
 	{
 		p2List_item<MapLayer*>* item_layer;
