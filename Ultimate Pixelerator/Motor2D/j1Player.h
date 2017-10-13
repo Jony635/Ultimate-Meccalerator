@@ -43,8 +43,16 @@ public:
 
 private:
 	fPoint pos;
-	float speed;
+	fPoint Startingpos;
 
+	uint jumps = 1;
+	bool grounded = true;
+
+	float speed_x;
+	float speed_y=0;
+
+
+	float tiles_sec_jump;
 	SDL_Texture* playerText = nullptr;
 
 	Animation* current_anim = nullptr;
@@ -52,6 +60,7 @@ private:
 	Animation GoRight;
 	Animation GoLeft;
 
+	bool CheckDownPos(iPoint pos)const;
 	void SetStartingPos();
 };
 

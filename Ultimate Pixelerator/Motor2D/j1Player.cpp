@@ -3,6 +3,7 @@
 #include "j1Render.h"
 #include "j1Map.h"
 #include "j1Input.h"
+#include "j1Scene.h"
 
 
 j1Player::j1Player() : j1Module()
@@ -36,7 +37,8 @@ j1Player::~j1Player()
 
 bool j1Player::Awake(pugi::xml_node& playernode)
 {
-	speed = (playernode.child("speed").attribute("tiles_sec").as_int());
+	speed_x = (playernode.child("speed").attribute("tiles_sec").as_float());
+	tiles_sec_jump = playernode.child("speed_jump").attribute("tiles_sec").as_float();
 	current_anim = &standard_anim;
 	return true;
 }
@@ -44,7 +46,8 @@ bool j1Player::Awake(pugi::xml_node& playernode)
 bool j1Player::Start()
 {
 	SetStartingPos();
-	speed = (speed * App->map->data.tile_width) / 60;
+	pos = Startingpos;
+	speed_x = (speed_x * App->map->data.tile_width) / 60;
 	playerText = App->tex->Load("textures/Player_SpriteSheet.png");
 	
 
@@ -58,7 +61,7 @@ bool j1Player::PreUpdate()
 	{
 		if(current_anim!=&GoRight)
 		current_anim = &GoRight;
-		pos.x += speed;
+		pos.x += speed_x;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
 	{
@@ -67,15 +70,39 @@ bool j1Player::PreUpdate()
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
 	{
-		pos.x -= speed;
+		pos.x -= speed_x;
 	}
+
+	if (jumps>0 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		if(grounded==false)
+			jumps--;
+		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
+		grounded = false;
+		
+	}
+	
+
 	return true;
 }
 
 
 bool j1Player::Update(float dt)
 {
-
+	if(grounded==false)
+	{
+		pos.y -= speed_y;
+		speed_y -= App->scene->Gravity;
+	}
+	if (CheckDownPos({ (int)pos.x, (int)pos.y + App->map->data.tile_height / 2 }) == false)
+		grounded = false;
+	if (grounded == false && speed_y<0 && CheckDownPos({ (int)pos.x, (int)pos.y+App->map->data.tile_height/2 }))
+	{
+		
+		grounded = true;
+		jumps = 1;
+		speed_y = 0;
+	}
 	App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
 	return true;
 }
@@ -118,7 +145,7 @@ void j1Player::SetStartingPos()
 			{
 				if (*(layer->data->data + num_tile) == 2603)
 				{
-					pos = fPoint(x, y+15);
+					Startingpos = fPoint(x, y+App->map->data.tile_height/2);
 				}
 				x += TileSet->data->tile_width;
 
@@ -132,5 +159,38 @@ void j1Player::SetStartingPos()
 	}
 }
 
+bool j1Player::CheckDownPos(iPoint pos) const
+{
+	iPoint pos_tile=App->map->World_to_Map(pos);
+	
+	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	{
+		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
+				int x = 0, y = 0;
+			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
+			{
+				
+				if(x== pos_tile.x * TileSet->data->tile_width && (y==(pos_tile.y+1)*TileSet->data->tile_height))
+					if (*(layer->data->data + num_tile) == 2601+8)
+					{
+						return true;
+					}
+				x += TileSet->data->tile_width;
+
+				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
+				{
+					x = 0;
+					y += TileSet->data->tile_height;
+				}
+			}
+		}
+	}
+	return false;
+
+
+}
 
 
