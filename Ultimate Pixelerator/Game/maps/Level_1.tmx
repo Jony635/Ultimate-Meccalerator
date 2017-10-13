@@ -5274,7 +5274,7 @@
    <tile gid="2570"/>
   </data>
  </layer>
- <layer name="logical debug" width="50" height="26" visible="0" opacity="0.43">
+ <layer name="logical debug" width="50" height="26" opacity="0.43">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
