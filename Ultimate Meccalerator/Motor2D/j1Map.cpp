@@ -221,6 +221,7 @@ bool j1Map::LoadMap()
 		data.height = map.attribute("height").as_int();
 		data.tile_width = map.attribute("tilewidth").as_int();
 		data.tile_height = map.attribute("tileheight").as_int();
+		data.camera_starting_y = map.child("properties").find_child_by_attribute("name", "Camera Starting Tile Y").attribute("value").as_int();
 		p2SString bg_color(map.attribute("backgroundcolor").as_string());
 
 		data.background_color.r = 0;

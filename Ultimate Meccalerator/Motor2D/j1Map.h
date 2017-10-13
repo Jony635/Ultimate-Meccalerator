@@ -64,6 +64,7 @@ struct MapData
 	p2List<TileSet*>	tilesets;
 	// TODO 2: Add a list/array of layers to the map!
 	p2List <MapLayer*> LayerList;
+	int camera_starting_y = 0;
 };
 
 void memset(uint* ptr, int value, size_t num);

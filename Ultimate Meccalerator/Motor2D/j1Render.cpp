@@ -57,7 +57,7 @@ bool j1Render::Start()
 {
 	LOG("render start");
 	// back background
-	camera.y = -14 * App->map->data.tile_height;
+	camera.y = App->map->data.camera_starting_y * App->map->data.tile_height;
 	SDL_RenderSetLogicalSize(renderer, App->win->screen_surface->w, App->win->screen_surface->h);
 	SDL_RenderGetViewport(renderer, &viewport);
 	return true;
