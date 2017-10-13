@@ -140,12 +140,15 @@ void j1Player::SetStartingPos()
 	{
 		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
 		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
 			int x = 0, y = 0;
 			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
 			{
-				if (*(layer->data->data + num_tile) == 2603)
+				if (*(layer->data->data + num_tile) == 5195)
 				{
 					Startingpos = fPoint(x, y+App->map->data.tile_height/2);
+					break;
 				}
 				x += TileSet->data->tile_width;
 
@@ -174,7 +177,7 @@ bool j1Player::CheckDownPos(iPoint pos) const
 			{
 				
 				if(x== pos_tile.x * TileSet->data->tile_width && (y==(pos_tile.y+1)*TileSet->data->tile_height))
-					if (*(layer->data->data + num_tile) == 2601+8)
+					if (*(layer->data->data + num_tile) == 5193+8)
 					{
 						return true;
 					}
