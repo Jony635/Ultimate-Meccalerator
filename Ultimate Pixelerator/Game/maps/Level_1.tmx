@@ -33,9 +33,24 @@
     <property name="respawn" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="3">
+   <properties>
+    <property name="accel_left" type="float" value="-7"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="accel_right" type="float" value="7"/>
+   </properties>
+  </tile>
   <tile id="6">
    <properties>
     <property name="win" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="accel_down" type="float" value="7"/>
    </properties>
   </tile>
   <tile id="8">
@@ -5263,7 +5278,7 @@
    <tile gid="2570"/>
   </data>
  </layer>
- <layer name="logical_tileset" width="50" height="26" visible="0" opacity="0.43">
+ <layer name="logical debug" width="50" height="26" opacity="0.43">
   <data>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6067,7 +6082,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="2595"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -6164,7 +6179,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="2599"/>
+   <tile gid="0"/>
    <tile gid="2601"/>
    <tile gid="2601"/>
    <tile gid="2601"/>
