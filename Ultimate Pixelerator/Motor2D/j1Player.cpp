@@ -118,7 +118,7 @@ void j1Player::SetStartingPos()
 			{
 				if (*(layer->data->data + num_tile) == 2603)
 				{
-					pos = fPoint(x, y);
+					pos = fPoint(x, y+15);
 				}
 				x += TileSet->data->tile_width;
 
