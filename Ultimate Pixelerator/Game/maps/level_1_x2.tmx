@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="52" tilewidth="30" tileheight="30" nextobjectid="1">
+ <properties>
+  <property name="Camera Starting Tile Y" type="float" value="-14"/>
+ </properties>
  <tileset firstgid="1" name="background" tilewidth="30" tileheight="30" tilecount="2560" columns="64">
   <image source="background.jpg" width="1920" height="1200"/>
  </tileset>
