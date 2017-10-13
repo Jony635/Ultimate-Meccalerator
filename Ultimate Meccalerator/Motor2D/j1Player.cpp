@@ -57,7 +57,7 @@ bool j1Player::Start()
 
 bool j1Player::PreUpdate()
 {
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) && pos.x+30 <= App->map->data.width*App->map->data.tile_width)
 	{
 		if(current_anim!=&GoRight)
 		current_anim = &GoRight;
@@ -68,7 +68,7 @@ bool j1Player::PreUpdate()
 		if (current_anim != &standard_anim)
 		current_anim = &standard_anim;
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	else if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0)
 	{
 		pos.x -= speed_x;
 	}

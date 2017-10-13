@@ -41,14 +41,17 @@ public:
 		
 	bool Save(pugi::xml_node&) const;
 
-private:
+public:
 	fPoint pos;
+	float speed_x;
+private:
+	
 	fPoint Startingpos;
 
 	uint jumps = 1;
 	bool grounded = true;
 
-	float speed_x;
+	
 	float speed_y=0;
 
 

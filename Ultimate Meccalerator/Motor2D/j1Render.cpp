@@ -4,6 +4,8 @@
 #include "j1Window.h"
 #include "j1Render.h"
 #include "j1Map.h"
+#include "j1Player.h"
+#include "j1Input.h"
 
 #define VSYNC true
 
@@ -72,6 +74,7 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
+	CheckCameraPos();
 	return true;
 }
 
@@ -247,4 +250,18 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 	}
 
 	return ret;
+}
+
+void j1Render::CheckCameraPos()
+{
+	if (App->player->pos.x <= (-1 * (camera.x - (camera.w / 2))) - 30 && camera.x < 0 &&
+		(App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT))
+	{
+		camera.x += App->player->speed_x;
+	}
+	else if (App->player->pos.x >= -1 * (camera.x - (camera.w / 2)) + 30 && -1 * (camera.x - camera.w) <= App->map->data.width*App->map->data.tile_width &&
+		(App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT))
+	{
+		camera.x -= App->player->speed_x;
+	}
 }
