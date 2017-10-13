@@ -57,7 +57,7 @@ bool j1Player::Start()
 
 bool j1Player::PreUpdate()
 {
-	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) && pos.x+30 <= App->map->data.width*App->map->data.tile_width)
+	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) && pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width)
 	{
 		if(current_anim!=&GoRight)
 		current_anim = &GoRight;
