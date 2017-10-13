@@ -364,7 +364,5 @@ void memset(uint* ptr, int value, size_t num)
 
 p2Point<int> j1Map::World_to_Map (p2Point<int> world_coordinates)
 {
-	int mouse_x, mouse_y;
-	App->input->GetMousePosition(mouse_x, mouse_y);
-	return p2Point<int>(mouse_x / data.tile_width,  mouse_y / data.tile_height);
+	return p2Point<int>(world_coordinates.x / data.tile_width,  world_coordinates.y / data.tile_height);
 }

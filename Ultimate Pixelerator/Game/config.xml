@@ -29,6 +29,7 @@
 
   <player>
    <speed tiles_sec="2"/>
+   <speed_jump tiles_sec="10"/>
   </player>
 
 </config>

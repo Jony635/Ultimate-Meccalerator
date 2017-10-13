@@ -32,7 +32,8 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-private:
+public:
+	float Gravity = 9.8 / 60;
 };
 
 #endif // __j1SCENE_H__
