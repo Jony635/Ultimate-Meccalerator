@@ -9,26 +9,103 @@
 j1Player::j1Player() : j1Module()
 {
 	name.create("player");
-	standard_anim.PushBack({ 16, 34, 23, 46 });
-	standard_anim.PushBack({81, 35, 18, 45});
-	standard_anim.PushBack({137, 37, 23, 44});
-	standard_anim.PushBack({201, 35, 19, 45});
-	//standard_anim.PushBack({256, 34, 23, 46});
-	standard_anim.speed = 0.05f;
 
-	GoRight.PushBack({16, 216, 29, 40});
-	GoRight.PushBack({76, 216, 29, 44});
-	GoRight.PushBack({133, 216, 31, 45});
-	GoRight.PushBack({190, 216, 33, 44});
-	GoRight.PushBack({248, 216, 33, 45});
-	GoRight.PushBack({307, 216, 36, 44});
-	GoRight.PushBack({14, 276, 32, 40});
-	GoRight.PushBack({72, 276, 32, 43});
-	GoRight.PushBack({132, 276, 29, 44});
-	GoRight.PushBack({188, 276, 35, 44});
-	GoRight.PushBack({248, 276, 36, 45});
-	GoRight.PushBack({311, 276, 34, 44});
-	GoRight.speed = 0.15f;
+	IdleRight.PushBack({ 73, 14, 32, 50 });
+	IdleRight.PushBack({ 133, 14, 32, 50 });
+	IdleRight.PushBack({ 193, 14, 32, 50 });
+	IdleRight.PushBack({ 253, 14, 32, 50 });
+	IdleRight.speed = 0.2f;
+
+	IdleLeft.PushBack({ 494, 14, 32, 50 });
+	IdleLeft.PushBack({ 554, 14, 32, 50 });
+	IdleLeft.PushBack({ 614, 14, 32, 50 });
+	IdleLeft.PushBack({ 674, 14, 32, 50 });
+	IdleLeft.speed = 0.2f;
+
+
+	GoRight.PushBack({ 12, 196, 36, 44});
+	GoRight.PushBack({ 72, 196, 36, 44 });
+	GoRight.PushBack({ 132, 196, 36, 44 });
+	GoRight.PushBack({ 192, 196, 36, 44 });
+	GoRight.PushBack({ 252, 196, 36, 44 });
+	GoRight.PushBack({ 312, 196, 36, 44 });
+	GoRight.PushBack({ 12, 256, 36, 44 });
+	GoRight.PushBack({ 72, 256, 36, 44 });
+	GoRight.PushBack({ 132, 256, 36, 44 });
+	GoRight.PushBack({ 192, 256, 36, 44 });
+	GoRight.PushBack({ 252, 256, 36, 44 });
+	GoRight.PushBack({ 312, 256, 36, 44 });
+	GoRight.speed = 0.4f;
+
+	GoLeft.PushBack({ 672, 196, 36, 44 });
+	GoLeft.PushBack({ 612, 196, 36, 44 });
+	GoLeft.PushBack({ 552, 196, 36, 44 });
+	GoLeft.PushBack({ 492, 196, 36, 44 });
+	GoLeft.PushBack({ 432, 196, 36, 44 });
+	GoLeft.PushBack({ 372, 196, 36, 44 });
+	GoLeft.PushBack({ 672, 256, 36, 44 });
+	GoLeft.PushBack({ 612, 256, 36, 44 });
+	GoLeft.PushBack({ 552, 256, 36, 44 });
+	GoLeft.PushBack({ 492, 256, 36, 44 });
+	GoLeft.PushBack({ 432, 256, 36, 44 });
+	GoLeft.PushBack({ 372, 256, 36, 44 });
+	GoLeft.speed = 0.4f;
+
+	DieGoingRight.PushBack({ 7, 73, 46, 48 });
+	DieGoingRight.PushBack({ 67, 73, 46, 48 });
+	DieGoingRight.PushBack({ 127, 73, 46, 48 });
+	DieGoingRight.PushBack({ 187, 73, 46, 48 });
+	DieGoingRight.PushBack({ 247, 73, 46, 48 });
+	DieGoingRight.PushBack({ 307, 73, 46, 48 });
+	DieGoingRight.PushBack({ 7, 133, 46, 48 });
+	DieGoingRight.PushBack({ 67, 133, 46, 48 });
+	DieGoingRight.PushBack({ 127, 133, 46, 48 });
+	DieGoingRight.PushBack({ 187, 133, 46, 48 });
+	DieGoingRight.PushBack({ 247, 133, 46, 48 });
+	DieGoingRight.PushBack({ 307, 133, 46, 48 });
+	DieGoingRight.speed = 0.4f;
+
+	DieGoingLeft.PushBack({ 666, 73, 46, 48 });
+	DieGoingLeft.PushBack({ 606, 73, 46, 48 });
+	DieGoingLeft.PushBack({ 546, 73, 46, 48 });
+	DieGoingLeft.PushBack({ 486, 73, 46, 48 });
+	DieGoingLeft.PushBack({ 426, 73, 46, 48 });
+	DieGoingLeft.PushBack({ 366, 73, 46, 48 });
+	DieGoingLeft.PushBack({ 666, 133, 46, 48 });
+	DieGoingLeft.PushBack({ 606, 133, 46, 48 });
+	DieGoingLeft.PushBack({ 546, 133, 46, 48 });
+	DieGoingLeft.PushBack({ 486, 133, 46, 48 });
+	DieGoingLeft.PushBack({ 426, 133, 46, 48 });
+	DieGoingLeft.PushBack({ 366, 133, 46, 48 });
+	DieGoingLeft.speed = 0.4f;
+
+	DoubleJump_GoingRight.PushBack({ 7, 344, 46, 48 });
+	DoubleJump_GoingRight.PushBack({ 67, 344, 46, 48 });
+	DoubleJump_GoingRight.PushBack({ 127, 344, 46, 48 });
+	DoubleJump_GoingRight.PushBack({ 187, 344, 46, 48 });
+	DoubleJump_GoingRight.PushBack({ 247, 344, 46, 48 });
+	DoubleJump_GoingRight.PushBack({ 307, 344, 46, 48 });
+	DoubleJump_GoingRight.PushBack({ 7, 413, 46, 68 });
+	DoubleJump_GoingRight.PushBack({ 67, 398, 47, 81 });
+	DoubleJump_GoingRight.PushBack({ 127, 397, 46, 81 });
+	DoubleJump_GoingRight.PushBack({ 187, 414, 46, 68 });
+	DoubleJump_GoingRight.PushBack({ 247, 427, 46, 48 });
+	DoubleJump_GoingRight.PushBack({ 307, 435, 46, 46 });
+	DoubleJump_GoingRight.speed = 0.4f;
+
+	DoubleJump_GoingLeft.PushBack({ 666, 344, 46, 48 });
+	DoubleJump_GoingLeft.PushBack({ 606, 344, 46, 48 });
+	DoubleJump_GoingLeft.PushBack({ 546, 344, 46, 48 });
+	DoubleJump_GoingLeft.PushBack({ 486, 344, 46, 48 });
+	DoubleJump_GoingLeft.PushBack({ 426, 344, 46, 48 });
+	DoubleJump_GoingLeft.PushBack({ 366, 344, 46, 48 });
+	DoubleJump_GoingLeft.PushBack({ 666, 413, 46, 68 });
+	DoubleJump_GoingLeft.PushBack({ 606, 398, 47, 81 });
+	DoubleJump_GoingLeft.PushBack({ 546, 397, 46, 81 });
+	DoubleJump_GoingLeft.PushBack({ 486, 414, 46, 68 });
+	DoubleJump_GoingLeft.PushBack({ 426, 427, 46, 48 });
+	DoubleJump_GoingLeft.PushBack({ 366, 435, 46, 46 });
+	DoubleJump_GoingLeft.speed = 0.4f;
 }
 
 // Destructor
@@ -39,7 +116,7 @@ bool j1Player::Awake(pugi::xml_node& playernode)
 {
 	speed_x = (playernode.child("speed").attribute("tiles_sec").as_float());
 	tiles_sec_jump = playernode.child("speed_jump").attribute("tiles_sec").as_float();
-	current_anim = &standard_anim;
+	current_anim = &IdleRight;
 	return true;
 }
 
@@ -67,8 +144,8 @@ bool j1Player::PreUpdate()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
 	{
-		if (current_anim != &standard_anim)
-		current_anim = &standard_anim;
+		if (current_anim != &IdleRight)
+		current_anim = &IdleRight;
 	}
 	else if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
 		!CheckLeftPos({ (int)pos.x-1, (int)pos.y + 30 }))

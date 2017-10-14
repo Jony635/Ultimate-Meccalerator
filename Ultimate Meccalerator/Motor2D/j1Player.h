@@ -59,9 +59,15 @@ private:
 	SDL_Texture* playerText = nullptr;
 
 	Animation* current_anim = nullptr;
-	Animation standard_anim;
+	Animation IdleRight;
+	Animation IdleLeft;
 	Animation GoRight;
 	Animation GoLeft;
+	Animation DieGoingRight;
+	Animation DieGoingLeft;
+	Animation DoubleJump_GoingRight;
+	Animation DoubleJump_GoingLeft;
+
 
 	bool CheckDownPos(iPoint pos)const;
 	bool CheckRightPos(iPoint pos)const;
