@@ -64,6 +64,7 @@ private:
 	Animation GoLeft;
 
 	bool CheckDownPos(iPoint pos)const;
+	bool CheckRightPos(iPoint pos)const;
 	void SetStartingPos();
 };
 
