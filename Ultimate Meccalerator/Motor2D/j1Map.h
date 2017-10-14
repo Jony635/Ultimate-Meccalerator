@@ -16,6 +16,8 @@ struct MapLayer
 	uint* data = nullptr;
 	uint size_data = 0;
 	bool visible = true;
+	fPoint pos = { 0,0 };
+	float speed = 0.0f;
 	~MapLayer()
 	{
 		RELEASE(data);
@@ -94,7 +96,7 @@ public:
 	// TODO 8: Create a method that translates x,y coordinates from map positions to world positions
 	iPoint MapToWorld(int x, int y) const;
 	p2Point<int> World_to_Map(p2Point<int> world_coordinates);
-
+	void UpdateLayers(char*);
 private:
 
 	bool LoadMap();

@@ -42,16 +42,16 @@ void j1Map::Draw()
 			if (layer_to_draw->data->visible == false)
 				continue;
 
-			int x = 0, y = 0;
+			int x = layer_to_draw->data->pos.x, y = 0;
 			for (int num_tile = 0; num_tile < layer_to_draw->data->size_data; ++num_tile)
 			{
 				
 				App->render->Blit(TileSet->data->texture, x, y, &TileSet->data->GetTileRect(*(layer_to_draw->data->data+num_tile)));
 				x += TileSet->data->tile_width;
 
-				if (x % (layer_to_draw->data->width * TileSet->data->tile_width) == 0)
+				if (x % ((layer_to_draw->data->width * TileSet->data->tile_width) + (int)layer_to_draw->data->pos.x) == 0)
 				{
-					x = 0;
+					x = layer_to_draw->data->pos.x;
 					y += TileSet->data->tile_height;
 				}
 			}
@@ -339,6 +339,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->width = node.attribute("width").as_uint();
 	layer->height = node.attribute("height").as_uint();
 	layer->visible = node.attribute("visible").as_bool(true);
+	layer->speed = node.child("properties").find_child_by_attribute("name", "speed").attribute("value").as_float()*App->map->data.tile_width / 60;
 	for (pugi::xml_node TileToCopy = node.child("data").child("tile"); TileToCopy != nullptr; TileToCopy = TileToCopy.next_sibling())
 	{
 		layer->size_data++;
@@ -366,4 +367,25 @@ void memset(uint* ptr, int value, size_t num)
 p2Point<int> j1Map::World_to_Map (p2Point<int> world_coordinates)
 {
 	return p2Point<int>(world_coordinates.x / data.tile_width,  world_coordinates.y / data.tile_height);
+}
+
+void j1Map::UpdateLayers(char* direction)
+{
+	if (direction == "right")
+	{
+		for (p2List_item<MapLayer*>* layertoupdate = data.LayerList.start; layertoupdate != nullptr; layertoupdate = layertoupdate->next)
+		{
+
+			layertoupdate->data->pos.x += layertoupdate->data->speed;
+		}
+	}
+	else
+	{
+		for (p2List_item<MapLayer*>* layertoupdate = data.LayerList.start; layertoupdate != nullptr; layertoupdate = layertoupdate->next)
+		{
+
+			layertoupdate->data->pos.x -= layertoupdate->data->speed;
+		}
+	}
+	
 }
