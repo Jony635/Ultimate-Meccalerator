@@ -38,6 +38,15 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
+		for (p2List_item<MapLayer*>* layertoset = App->map->data.LayerList.start; layertoset != nullptr; layertoset = layertoset->next)
+		{
+			if (strcmp(layertoset->data->name.GetString(), "logical debug") != 0)
+				continue;
+			layertoset->data->visible = !layertoset->data->visible;
+		}
+	}
 	return true;
 }
 

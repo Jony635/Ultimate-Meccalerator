@@ -45,7 +45,10 @@ void j1Map::Draw()
 			int x = layer_to_draw->data->pos.x, y = 0;
 			for (int num_tile = 0; num_tile < layer_to_draw->data->size_data; ++num_tile)
 			{
-				
+				if (strcmp(TileSet->data->name.GetString(), "Logical_tileset") == 0)
+				{
+					SDL_SetTextureAlphaMod(TileSet->data->texture, layer_to_draw->data->alpha*255);
+				}
 				App->render->Blit(TileSet->data->texture, x, y, &TileSet->data->GetTileRect(*(layer_to_draw->data->data+num_tile)));
 				x += TileSet->data->tile_width;
 
@@ -339,6 +342,7 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->width = node.attribute("width").as_uint();
 	layer->height = node.attribute("height").as_uint();
 	layer->visible = node.attribute("visible").as_bool(true);
+	layer->alpha = node.attribute("opacity").as_float(1);
 	layer->speed = node.child("properties").find_child_by_attribute("name", "speed").attribute("value").as_float()*App->map->data.tile_width / 60;
 	for (pugi::xml_node TileToCopy = node.child("data").child("tile"); TileToCopy != nullptr; TileToCopy = TileToCopy.next_sibling())
 	{

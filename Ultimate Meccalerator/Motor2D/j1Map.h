@@ -18,6 +18,7 @@ struct MapLayer
 	bool visible = true;
 	fPoint pos = { 0,0 };
 	float speed = 0.0f;
+	float alpha = 0;
 	~MapLayer()
 	{
 		RELEASE(data);
