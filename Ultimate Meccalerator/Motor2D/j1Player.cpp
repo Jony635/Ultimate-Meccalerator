@@ -70,7 +70,8 @@ bool j1Player::PreUpdate()
 		if (current_anim != &standard_anim)
 		current_anim = &standard_anim;
 	}
-	else if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0)
+	else if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
+		!CheckLeftPos({ (int)pos.x-1, (int)pos.y + 30 }))
 	{
 		pos.x -= speed_x;
 	}
@@ -209,6 +210,36 @@ bool j1Player::CheckRightPos(iPoint pos) const
 			{
 
 				if (x == pos_tile.x * TileSet->data->tile_width + TileSet->data->tile_width && y==pos_tile.y*TileSet->data->tile_height)
+					if (*(layer->data->data + num_tile) == 5193 + 8)
+					{
+						return true;
+					}
+				x += TileSet->data->tile_width;
+
+				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
+				{
+					x = 0;
+					y += TileSet->data->tile_height;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool j1Player::CheckLeftPos(iPoint pos) const
+{
+	iPoint pos_tile = App->map->World_to_Map(pos);
+	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	{
+		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
+			int x = 0, y = 0;
+			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
+			{
+				if (x==pos_tile.x*TileSet->data->tile_width && y == pos_tile.y*TileSet->data->tile_height)
 					if (*(layer->data->data + num_tile) == 5193 + 8)
 					{
 						return true;

@@ -65,6 +65,7 @@ private:
 
 	bool CheckDownPos(iPoint pos)const;
 	bool CheckRightPos(iPoint pos)const;
+	bool CheckLeftPos(iPoint pos)const;
 	void SetStartingPos();
 };
 
