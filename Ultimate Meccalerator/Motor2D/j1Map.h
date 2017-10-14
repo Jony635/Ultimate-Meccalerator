@@ -105,7 +105,10 @@ private:
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 	// TODO 3: Create a method that loads a single laye
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-	
+
+	bool Load(pugi::xml_node&);
+
+	bool Save(pugi::xml_node&) const;
 
 public:
 	

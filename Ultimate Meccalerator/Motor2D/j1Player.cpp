@@ -127,14 +127,18 @@ bool j1Player::CleanUp()
 	return true;
 }
 
-bool j1Player::Load(pugi::xml_node&)
+bool j1Player::Load(pugi::xml_node& playernode)
 {
+	pos.x = playernode.child("lastPos").attribute("x").as_int();
+	pos.y = playernode.child("lastPos").attribute("y").as_int();
 	return true;
 }
 
-bool j1Player::Save(pugi::xml_node&) const
+bool j1Player::Save(pugi::xml_node& playernode) const
 {
-
+	pugi::xml_node lastPos = playernode.append_child("lastPos");
+	lastPos.append_attribute("x") = pos.x;
+	lastPos.append_attribute("y") = pos.y;
 	return true;
 }
 void j1Player::SetStartingPos()

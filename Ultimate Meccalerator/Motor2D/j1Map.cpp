@@ -393,3 +393,25 @@ void j1Map::UpdateLayers(char* direction)
 	}
 	
 }
+
+bool j1Map::Load(pugi::xml_node& mapnode)
+{
+	pugi::xml_node layernode = mapnode.child("layers").child("layer");
+	for (p2List_item<MapLayer*>* layer = data.LayerList.start; layer!=nullptr; layernode=layernode.next_sibling(), layer=layer->next)
+	{
+		layer->data->pos.x = layernode.attribute("x").as_float();
+	}
+	return true;
+}
+
+bool j1Map::Save(pugi::xml_node& mapnode) const
+{
+	pugi::xml_node layers = mapnode.append_child("layers");
+	
+	for (p2List_item<MapLayer*>* layer = data.LayerList.start; layer!=nullptr; layer=layer->next)
+	{
+		layers.append_child("layer").append_attribute("x") = layer->data->pos.x;
+	}
+
+	return true;
+}

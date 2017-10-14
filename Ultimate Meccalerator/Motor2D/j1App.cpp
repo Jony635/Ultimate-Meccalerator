@@ -93,7 +93,8 @@ bool j1App::Awake()
 			item = item->next;
 		}
 	}
-
+	save_game.create("save_game.xml");
+	load_game.create("save_game.xml");
 	return ret;
 }
 

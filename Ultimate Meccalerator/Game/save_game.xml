@@ -1,12 +1,22 @@
-<!-- Save game for the game -->
-
+<?xml version="1.0"?>
 <game_state>
-
-  <renderer>
-    <camera x="100" y="0"/>
-  </renderer>
-
-  <player>
-    <lastPosTile x="" y=""/>
-  </player>
+	<input />
+	<window />
+	<textures />
+	<audio />
+	<map>
+		<layers>
+			<layer x="25.25" />
+			<layer x="191.899628" />
+			<layer x="0" />
+			<layer x="0" />
+		</layers>
+	</map>
+	<scene />
+	<player>
+		<lastPos x="944" y="931.363098" />
+	</player>
+	<renderer>
+		<camera x="-404" y="-420" />
+	</renderer>
 </game_state>
