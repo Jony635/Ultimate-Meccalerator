@@ -6,17 +6,17 @@
 	<audio />
 	<map>
 		<layers>
-			<layer x="25.25" />
-			<layer x="191.899628" />
+			<layer x="0" />
+			<layer x="-1.1920929e-07" />
 			<layer x="0" />
 			<layer x="0" />
 		</layers>
 	</map>
 	<scene />
 	<player>
-		<lastPos x="944" y="931.363098" />
+		<lastPos x="192" y="1036.98669" />
 	</player>
 	<renderer>
-		<camera x="-404" y="-420" />
+		<camera x="0" y="-420" />
 	</renderer>
 </game_state>
