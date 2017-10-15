@@ -43,7 +43,7 @@
   <image source="Logical_tileset.png" width="91" height="90"/>
   <tile id="1">
    <properties>
-    <property name="accel_y" type="float" value="-7"/>
+    <property name="accel_y" type="float" value="-10"/>
    </properties>
   </tile>
   <tile id="2">

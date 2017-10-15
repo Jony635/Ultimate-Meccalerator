@@ -46,7 +46,7 @@ public:
 	fPoint pos;
 	float speed_x;
 	bool win = false;
-
+	float speed_y = 0;
 
 private:
 	
@@ -55,7 +55,7 @@ private:
 	uint jumps = 1;
 	bool grounded = true;
 	
-	float speed_y=0;
+	
 	float standard_speed_x = 0;
 
 	float tiles_sec_jump;

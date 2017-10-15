@@ -124,12 +124,11 @@ bool j1Player::Start()
 {
 	SetStartingPos();
 	pos = Startingpos;
+	if(App->actual_lvl==FIRST_LEVEL)
 	speed_x = (speed_x * App->map->data.tile_width) / 60;
 	standard_speed_x = speed_x;
+	if(playerText==nullptr)
 	playerText = App->tex->Load("textures/Player_SpriteSheet.png");
-	
-
-
 	return true;
 }
 
