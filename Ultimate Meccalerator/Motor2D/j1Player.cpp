@@ -170,10 +170,10 @@ bool j1Player::PreUpdate()
 
 bool j1Player::Update(float dt)
 {
-
-
+	CheckWin();
 	CheckAccels();
 	CheckFalls();
+	
 	App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
 	return true;
 }
@@ -457,14 +457,13 @@ float j1Player::getAccelX(iPoint pos) const
 	return 0;
 }
 
-
 void j1Player::CheckAccels()
 {
 	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
 	if (accel_y != 0)
 		speed_y -= accel_y / 60;
 
-	float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
+	/*float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
 	if (accel_x != 0)
 	{
 		speed_x += accel_x / 60;
@@ -476,7 +475,37 @@ void j1Player::CheckAccels()
 			speed_x -= 9.8 / 60;
 		else
 			if (speed_x < standard_speed_x)
-				speed_x = standard_speed_x;
+				speed_x = standard_speed_x;*/
+}
+
+void j1Player::CheckWin()
+{
+	iPoint pos_tile = App->map->World_to_Map({ (int)pos.x, (int)pos.y });
+	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	{
+		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
+			int x = 0, y = 0;
+			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
+			{
+
+				if (x == pos_tile.x * TileSet->data->tile_width && y == pos_tile.y*TileSet->data->tile_height + TileSet->data->tile_height)
+					if (*(layer->data->data + num_tile) == 5193 + 6)
+					{
+						win = true;
+					}
+				x += TileSet->data->tile_width;
+
+				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
+				{
+					x = 0;
+					y += TileSet->data->tile_height;
+				}
+			}
+		}
+	}
 }
 
 

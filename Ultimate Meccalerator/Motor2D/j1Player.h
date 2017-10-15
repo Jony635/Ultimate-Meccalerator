@@ -42,15 +42,18 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 public:
+
 	fPoint pos;
 	float speed_x;
+	bool win = false;
+
+
 private:
 	
 	fPoint Startingpos;
 
 	uint jumps = 1;
 	bool grounded = true;
-
 	
 	float speed_y=0;
 	float standard_speed_x = 0;
@@ -70,7 +73,7 @@ private:
 
 	void CheckFalls();
 	void CheckAccels();
-
+	void CheckWin();
 
 
 	bool CheckDownPos(iPoint pos)const;
