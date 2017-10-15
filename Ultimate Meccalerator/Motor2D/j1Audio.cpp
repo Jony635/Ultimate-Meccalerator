@@ -53,7 +53,8 @@ bool j1Audio::Awake(pugi::xml_node& config)
 	}
 
 	App->audio->PlayMusic("audio/music/BSO.wav");
-
+	doublejumpsound=LoadFx("audio/fx/double_jump_sound_effect.ogg");
+	dieSound = LoadFx("audio/fx/die_sound_effect.ogg");
 	return ret;
 }
 

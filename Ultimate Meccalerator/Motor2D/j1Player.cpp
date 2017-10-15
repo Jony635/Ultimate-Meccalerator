@@ -4,6 +4,7 @@
 #include "j1Map.h"
 #include "j1Input.h"
 #include "j1Scene.h"
+#include "j1Audio.h"
 
 
 j1Player::j1Player() : j1Module()
@@ -588,6 +589,7 @@ void j1Player::CheckMovements()
 	{
 		if (grounded == false)
 		{
+			App->audio->PlayFx(App->audio->doublejumpsound);
 			jumps--;
 			if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 			{
@@ -629,6 +631,7 @@ bool j1Player::CheckDieCol(iPoint pos) const
 				if (x == pos_tile.x * TileSet->data->tile_width && y == pos_tile.y * TileSet->data->tile_height)
 					if (*(layer->data->data + num_tile) == 5193 + 0)
 					{
+						App->audio->PlayFx(App->audio->dieSound);
 						return true;
 					}
 				x += TileSet->data->tile_width;

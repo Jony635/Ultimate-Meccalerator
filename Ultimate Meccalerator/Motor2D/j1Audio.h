@@ -34,8 +34,12 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
-private:
 
+public:
+	uint doublejumpsound = 0;
+	uint dieSound = 0;
+private:
+	
 	_Mix_Music*			music;
 	p2List<Mix_Chunk*>	fx;
 };
