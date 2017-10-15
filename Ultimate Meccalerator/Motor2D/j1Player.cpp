@@ -59,7 +59,7 @@ bool j1Player::PreUpdate()
 {
 	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) && 
 		pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
-		!CheckRightPos({ (int)pos.x, (int)pos.y+30 }))
+		!CheckRightPos({ (int)pos.x+3, (int)pos.y+40 }))
 	{
 		if(current_anim!=&GoRight)
 		current_anim = &GoRight;
@@ -71,7 +71,7 @@ bool j1Player::PreUpdate()
 		current_anim = &standard_anim;
 	}
 	else if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
-		!CheckLeftPos({ (int)pos.x-1, (int)pos.y + 30 }))
+		!CheckLeftPos({ (int)pos.x-4, (int)pos.y + 40 }))
 	{
 		pos.x -= speed_x;
 	}
@@ -92,14 +92,22 @@ bool j1Player::PreUpdate()
 
 bool j1Player::Update(float dt)
 {
-	if(grounded==false)
+	if(grounded==false )
 	{
-		pos.y -= speed_y;
-		speed_y -= App->scene->Gravity;
+		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y - speed_y) + App->map->data.tile_height / 2 }) == false)
+		{
+			pos.y -= speed_y;
+			speed_y -= App->scene->Gravity;
+		}
+		else
+		{
+			pos.y = Startingpos.y;
+		}
 	}
-	if (CheckDownPos({ (int)pos.x+15, (int)pos.y + App->map->data.tile_height / 2 }) == false)
+	
+	if (CheckDownPos({ (int)pos.x+20, (int)(pos.y) + App->map->data.tile_height / 2 + 1 }) == false)
 		grounded = false;
-	if (grounded == false && speed_y<0 && CheckDownPos({ (int)pos.x, (int)pos.y+App->map->data.tile_height/2 }))
+	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.y), (int)pos.y+App->map->data.tile_height/2 +1}))
 	{
 		
 		grounded = true;
