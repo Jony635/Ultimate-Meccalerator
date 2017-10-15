@@ -38,6 +38,7 @@ public:
 public:
 	uint doublejumpsound = 0;
 	uint dieSound = 0;
+	uint accelsound = 0;
 private:
 	
 	_Mix_Music*			music;

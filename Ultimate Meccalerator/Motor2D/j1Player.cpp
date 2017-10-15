@@ -490,11 +490,16 @@ void j1Player::CheckAccels()
 {
 	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
 	if (accel_y != 0)
+	{
 		speed_y -= accel_y / 60;
+		App->audio->PlayFx(App->audio->accelsound);
+	}
+		
 
 	float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
 	if (accel_x != 0)
 	{
+		App->audio->PlayFx(App->audio->accelsound);
 		speed_x += accel_x / 60;
 		if (!CheckRightPos({(int)(pos.x+speed_x), (int)pos.x+30}))
 		pos.x += speed_x;
@@ -571,6 +576,7 @@ void j1Player::CheckMovements()
 		if (current_anim != &IdleRight)
 			current_anim = &IdleRight;
 	}
+	
 	 if ( (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
 		!CheckLeftPos({ (int)pos.x - 4, (int)pos.y + 40 }))
 	{
