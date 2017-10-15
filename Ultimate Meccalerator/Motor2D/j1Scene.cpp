@@ -31,6 +31,8 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
+	
+	App->audio->PlayMusic("audio/music/BSO.wav");
 	if(App->actual_lvl==FIRST_LEVEL)
 	{
 		pugi::xml_document doc;
