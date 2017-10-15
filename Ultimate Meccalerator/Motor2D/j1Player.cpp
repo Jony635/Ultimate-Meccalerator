@@ -218,6 +218,7 @@ bool j1Player::Save(pugi::xml_node& playernode) const
 	lastPos.append_attribute("y") = pos.y;
 	return true;
 }
+
 void j1Player::SetStartingPos()
 {
 	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)

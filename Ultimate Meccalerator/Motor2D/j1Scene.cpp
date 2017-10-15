@@ -52,7 +52,7 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 	{
 		for (p2List_item<MapLayer*>* layertoset = App->map->data.LayerList.start; layertoset != nullptr; layertoset = layertoset->next)
 		{
@@ -67,6 +67,22 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		App->actual_lvl = Levels::FIRST_LEVEL;
+		App->RestartScene();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+	{
+		App->RestartScene();
+	}
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+	{
+		App->actual_lvl = Levels::SECOND_LEVEL;
+		App->RestartScene();
+	}
+
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN )
 		App->LoadGame();
 
