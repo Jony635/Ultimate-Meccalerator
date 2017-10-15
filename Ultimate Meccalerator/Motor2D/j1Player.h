@@ -73,6 +73,7 @@ private:
 	bool CheckRightPos(iPoint pos)const;
 	bool CheckLeftPos(iPoint pos)const;
 	void SetStartingPos();
+	uint getDownYCol(iPoint pos) const;
 };
 
 
