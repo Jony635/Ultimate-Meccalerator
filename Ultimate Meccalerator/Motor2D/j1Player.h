@@ -46,6 +46,7 @@ public:
 	fPoint pos;
 	float speed_x;
 	bool win = false;
+	mutable bool diesoundplayed = false;
 	float speed_y = 0;
 	SDL_Texture* playerText = nullptr;
 

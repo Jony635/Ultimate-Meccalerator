@@ -152,6 +152,7 @@ bool j1Player::PreUpdate()
 	}
 	if (!dead)
 	{
+		diesoundplayed = false;
 		CheckMovements();
 	}
 	else
@@ -638,7 +639,11 @@ bool j1Player::CheckDieCol(iPoint pos) const
 				if (x == pos_tile.x * TileSet->data->tile_width && y == pos_tile.y * TileSet->data->tile_height)
 					if (*(layer->data->data + num_tile) == 5193 + 0)
 					{
-						App->audio->PlayFx(App->audio->dieSound);
+						if (!diesoundplayed) 
+						{
+							App->audio->PlayFx(App->audio->dieSound);
+							diesoundplayed = true;
+						}
 						return true;
 					}
 				x += TileSet->data->tile_width;
