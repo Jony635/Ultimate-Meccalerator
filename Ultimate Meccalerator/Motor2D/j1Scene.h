@@ -33,6 +33,8 @@ public:
 	bool CleanUp();
 
 public:
+
+	
 	float Gravity = 9.8 / 60;
 };
 

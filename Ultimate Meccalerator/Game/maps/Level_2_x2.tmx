@@ -43,7 +43,7 @@
   <image source="Logical_tileset.png" width="91" height="90"/>
   <tile id="1">
    <properties>
-    <property name="accel_up" type="float" value="-7"/>
+    <property name="accel_y" type="float" value="-7"/>
    </properties>
   </tile>
   <tile id="2">
@@ -15695,7 +15695,7 @@
    <tile gid="5131"/>
   </data>
  </layer>
- <layer name="logical debug" width="100" height="52" opacity="0.56">
+ <layer name="logical debug" width="100" height="52" visible="0" opacity="0.56">
   <properties>
    <property name="die" type="bool" value="true"/>
   </properties>

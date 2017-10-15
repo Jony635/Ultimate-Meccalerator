@@ -15,6 +15,12 @@ class j1Scene;
 class j1Map;
 class j1Player;
 
+enum Levels
+{
+	FIRST_LEVEL = 0,
+	SECOND_LEVEL
+};
+
 class j1App
 {
 public:
@@ -103,6 +109,9 @@ private:
 	bool				want_to_load;
 	p2SString			load_game;
 	mutable p2SString	save_game;
+
+public:
+	Levels actual_lvl = Levels::FIRST_LEVEL;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

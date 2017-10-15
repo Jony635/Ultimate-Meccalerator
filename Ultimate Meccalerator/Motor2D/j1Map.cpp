@@ -115,8 +115,12 @@ bool j1Map::CleanUp()
 		}
 		data.LayerList.clear();
 	}
+	if(LogicalTileset!=nullptr)
+	{
+		delete LogicalTileset;
+		LogicalTileset = nullptr;
+	}
 	
-	delete LogicalTileset;
 	// Clean up the pugui tree
 	map_file.reset();
 

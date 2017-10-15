@@ -8,6 +8,7 @@
 #include "j1Window.h"
 #include "j1Map.h"
 #include "j1Scene.h"
+#include "j1Player.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -30,8 +31,18 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	pugi::xml_document doc;
-	App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
+	if(App->actual_lvl==FIRST_LEVEL)
+	{
+		pugi::xml_document doc;
+		App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());	
+	}
+	else
+	{
+		App->render->camera.x = 0;
+		App->map->Load("Level_2_x2.tmx");
+		App->player->Start();
+	}
+	
 	return true;
 }
 
@@ -91,6 +102,7 @@ bool j1Scene::PostUpdate()
 bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
-
+	App->player->CleanUp();
+	App->map->CleanUp();
 	return true;
 }

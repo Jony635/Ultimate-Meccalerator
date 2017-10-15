@@ -171,6 +171,7 @@ bool j1Player::PreUpdate()
 bool j1Player::Update(float dt)
 {
 	CheckWin();
+	
 	CheckAccels();
 	CheckFalls();
 	
@@ -505,6 +506,21 @@ void j1Player::CheckWin()
 				}
 			}
 		}
+	}
+	if (win)
+	{
+		if (App->actual_lvl == Levels::FIRST_LEVEL)
+		{
+			App->actual_lvl = Levels::SECOND_LEVEL;
+			App->scene->CleanUp();
+			App->scene->Start();
+			win = false;
+		}
+		/*else
+		{
+			
+		}*/
+		
 	}
 }
 
