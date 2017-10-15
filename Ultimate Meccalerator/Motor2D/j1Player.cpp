@@ -371,10 +371,19 @@ void j1Player::CheckFalls()
 		}
 		else
 		{
-			pos.y = getDownYCol({ (int)pos.x + 15, (int)pos.y }) - 44;
-			grounded = true;
-			jumps = 1;
-			speed_y = 0;
+			if(speed_y<0)
+			{
+				pos.y = getDownYCol({ (int)pos.x + 15, (int)pos.y }) - 44;
+				grounded = true;
+				jumps = 1;
+				speed_y = 0;
+			}
+			else
+				if (speed_y > 0)
+				{
+					pos.y -= speed_y;
+					speed_y -= App->scene->Gravity;
+				}
 		}
 	}
 
@@ -463,7 +472,7 @@ void j1Player::CheckAccels()
 	if (accel_y != 0)
 		speed_y -= accel_y / 60;
 
-	/*float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
+	float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
 	if (accel_x != 0)
 	{
 		speed_x += accel_x / 60;
@@ -475,7 +484,7 @@ void j1Player::CheckAccels()
 			speed_x -= 9.8 / 60;
 		else
 			if (speed_x < standard_speed_x)
-				speed_x = standard_speed_x;*/
+				speed_x = standard_speed_x;
 }
 
 void j1Player::CheckWin()
