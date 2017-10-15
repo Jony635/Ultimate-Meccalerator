@@ -147,7 +147,7 @@ bool j1Player::PreUpdate()
 		if (current_anim != &IdleRight)
 		current_anim = &IdleRight;
 	}
-	else if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
+	else if ( speed_x<=standard_speed_x && (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
 		!CheckLeftPos({ (int)pos.x-4, (int)pos.y + 40 }))
 	{
 		pos.x -= speed_x;
