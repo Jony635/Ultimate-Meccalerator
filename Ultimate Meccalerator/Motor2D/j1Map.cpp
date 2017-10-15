@@ -411,6 +411,8 @@ bool j1Map::Load(pugi::xml_node& mapnode)
 	{
 		layer->data->pos.x = layernode.attribute("x").as_float();
 	}
+	App->actual_lvl=(Levels)mapnode.child("ActualLvl").attribute("name").as_int();
+	App->RestartScene();
 	return true;
 }
 
@@ -422,6 +424,6 @@ bool j1Map::Save(pugi::xml_node& mapnode) const
 	{
 		layers.append_child("layer").append_attribute("x") = layer->data->pos.x;
 	}
-
+	mapnode.append_child("ActualLvl").append_attribute("name") = App->actual_lvl;
 	return true;
 }

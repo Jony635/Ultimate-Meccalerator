@@ -11,12 +11,10 @@
 			<layer x="0" />
 			<layer x="0" />
 		</layers>
+		<ActualLvl name="0" />
 	</map>
 	<scene />
 	<player>
-		<lastPos x="312" y="1036" />
-	</player>
-	<renderer>
-		<camera x="0" y="-536" />
+
 	</renderer>
 </game_state>

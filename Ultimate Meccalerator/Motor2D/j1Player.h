@@ -47,19 +47,22 @@ public:
 	float speed_x;
 	bool win = false;
 	float speed_y = 0;
+	SDL_Texture* playerText = nullptr;
 
+
+	bool CheckDownPos(iPoint pos)const;
 private:
 	
 	fPoint Startingpos;
 
 	uint jumps = 1;
 	bool grounded = true;
-	
+	bool dead = false;
 	
 	float standard_speed_x = 0;
 
 	float tiles_sec_jump;
-	SDL_Texture* playerText = nullptr;
+	bool alreadyLoaded = false;
 
 	Animation* current_anim = nullptr;
 	Animation IdleRight;
@@ -74,12 +77,12 @@ private:
 	void CheckFalls();
 	void CheckAccels();
 	void CheckWin();
+	void CheckMovements();
 
-
-	bool CheckDownPos(iPoint pos)const;
+	
 	bool CheckRightPos(iPoint pos)const;
 	bool CheckLeftPos(iPoint pos)const;
-	
+	bool CheckDieCol(iPoint pos) const;
 
 
 
@@ -87,6 +90,11 @@ private:
 	float getAccelY(iPoint pos) const;
 	float getAccelX(iPoint pos) const;
 	uint getDownYCol(iPoint pos) const;
+
+
+
+
+	int dieCounter = 0;
 };
 
 
