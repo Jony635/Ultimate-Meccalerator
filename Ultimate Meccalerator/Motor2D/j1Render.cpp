@@ -6,6 +6,7 @@
 #include "j1Map.h"
 #include "j1Player.h"
 #include "j1Input.h"
+#include "j1Textures.h"
 
 #define VSYNC true
 
@@ -59,6 +60,7 @@ bool j1Render::Start()
 {
 	LOG("render start");
 	// back background
+	defwinText = App->tex->Load("textures/win_screen.png");
 	camera.y = App->map->data.camera_starting_y * App->map->data.tile_height;
 	SDL_RenderSetLogicalSize(renderer, App->win->screen_surface->w, App->win->screen_surface->h);
 	SDL_RenderGetViewport(renderer, &viewport);
@@ -76,7 +78,8 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
-	
+	if (defWin)
+		Blit(defwinText, 0, 0);
 	return true;
 }
 
@@ -92,6 +95,8 @@ bool j1Render::PostUpdate()
 bool j1Render::CleanUp()
 {
 	LOG("Destroying SDL render");
+	if(defwinText!=nullptr)
+	App->tex->UnLoad(this->defwinText);
 	SDL_DestroyRenderer(renderer);
 	return true;
 }

@@ -43,12 +43,16 @@ public:
 	// Set background color
 	void SetBackgroundColor(SDL_Color color);
 	void CheckCameraPos();
-public:
 
+	
+
+public:
+	SDL_Texture* defwinText = nullptr;
 	SDL_Renderer*	renderer;
 	SDL_Rect		camera;
 	SDL_Rect		viewport;
 	SDL_Color		background;
+	bool defWin = false;
 };
 
 #endif // __j1RENDER_H__

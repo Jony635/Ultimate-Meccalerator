@@ -540,14 +540,15 @@ void j1Player::CheckWin()
 		if (App->actual_lvl == Levels::FIRST_LEVEL)
 		{
 			App->actual_lvl = Levels::SECOND_LEVEL;
-			App->scene->CleanUp();
-			App->scene->Start();
 			win = false;
-		}
-		/*else
-		{
+			App->RestartScene();
 			
-		}*/
+		}
+		else
+		{
+			App->scene->CleanUp();
+			App->render->defWin = true;
+		}
 		
 	}
 }
