@@ -123,6 +123,7 @@ bool j1Player::Awake(pugi::xml_node& playernode)
 
 bool j1Player::Start()
 {
+	DieGoingRight.Reset();
 	current_anim = &IdleRight;
 	dieCounter = 0;
 	dead = false;
@@ -142,14 +143,18 @@ bool j1Player::Start()
 
 bool j1Player::PreUpdate()
 {
-	if(!dead)
+	if (CheckDieCol({ (int)pos.x, (int)pos.y + 15 }))
+	{
+		dead = true;
+	}
+	if (!dead)
 	{
 		CheckMovements();
 	}
 	else
 	{
-		if(current_anim!=&DieGoingRight)
-		current_anim = &DieGoingRight;
+		if (current_anim != &DieGoingRight)
+			current_anim = &DieGoingRight;
 	}
 	return true;
 }
@@ -187,10 +192,7 @@ bool j1Player::Update(float dt)
 
 bool j1Player::PostUpdate()
 {
-	if (CheckDieCol({ (int)pos.x, (int)pos.y+15 }))
-	{
-		dead = true;
-	}
+	
 	return true;
 }
 
