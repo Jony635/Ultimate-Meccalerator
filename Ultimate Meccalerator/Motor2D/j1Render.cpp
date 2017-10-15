@@ -79,7 +79,11 @@ bool j1Render::PreUpdate()
 bool j1Render::Update(float dt)
 {
 	if (defWin)
+	{
+		camera.x = camera.y = 0;
 		Blit(defwinText, 0, 0);
+	}
+		
 	return true;
 }
 
