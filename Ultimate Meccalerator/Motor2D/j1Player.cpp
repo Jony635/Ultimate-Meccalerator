@@ -171,7 +171,9 @@ bool j1Player::Update(float dt)
 {
 	if(grounded==false )
 	{
-		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y - speed_y) + App->map->data.tile_height / 2 }) == false)
+		pos.y -= speed_y;
+		speed_y -= App->scene->Gravity;
+		/*if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y - speed_y) + App->map->data.tile_height / 2 }) == false)
 		{
 			pos.y -= speed_y;
 			speed_y -= App->scene->Gravity;
@@ -179,12 +181,12 @@ bool j1Player::Update(float dt)
 		else
 		{
 			pos.y = Startingpos.y;
-		}
+		}*/
 	}
 	
 	if (CheckDownPos({ (int)pos.x+20, (int)(pos.y) + App->map->data.tile_height / 2 + 1 }) == false)
 		grounded = false;
-	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.y), (int)pos.y+App->map->data.tile_height/2 +1}))
+	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.x+20), (int)pos.y+App->map->data.tile_height/2 +1}))
 	{
 		
 		grounded = true;
