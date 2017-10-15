@@ -53,7 +53,7 @@ private:
 
 	
 	float speed_y=0;
-
+	float standard_speed_x = 0;
 
 	float tiles_sec_jump;
 	SDL_Texture* playerText = nullptr;

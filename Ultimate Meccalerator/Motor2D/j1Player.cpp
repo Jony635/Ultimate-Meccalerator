@@ -125,6 +125,7 @@ bool j1Player::Start()
 	SetStartingPos();
 	pos = Startingpos;
 	speed_x = (speed_x * App->map->data.tile_width) / 60;
+	standard_speed_x = speed_x;
 	playerText = App->tex->Load("textures/Player_SpriteSheet.png");
 	
 
@@ -422,12 +423,51 @@ float j1Player::getAccelY(iPoint pos) const
 	return 0;
 }
 
+float j1Player::getAccelX(iPoint pos) const
+{
+	iPoint pos_tile = App->map->World_to_Map(pos);
+	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	{
+		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
+			int x = 0, y = 0;
+			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
+			{
+
+				if (x == pos_tile.x * TileSet->data->tile_width && (y == (pos_tile.y)* TileSet->data->tile_height + 30))
+					if (*(layer->data->data + num_tile) == 5193 + 3 || *(layer->data->data + num_tile) == 5193 + 5)
+					{
+						if (*(layer->data->data + num_tile) == 5193 + 3)
+							return App->map->LogicalTileset->find_child_by_attribute("id", "3").child("properties").find_child_by_attribute("name", "accel_x").attribute("value").as_int();
+						else
+							return App->map->LogicalTileset->find_child_by_attribute("id", "5").child("properties").find_child_by_attribute("name", "accel_x").attribute("value").as_int();
+					}
+				x += TileSet->data->tile_width;
+
+				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
+				{
+					x = 0;
+					y += TileSet->data->tile_height;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+
 void j1Player::CheckAccels()
 {
 	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
 	if (accel_y != 0)
 		speed_y -= accel_y / 60;
-
+	float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
+	if (accel_x != 0)
+		speed_x += accel_x / 60;
+	/*else
+		speed_x = standard_speed_x;*/
 }
 
 
