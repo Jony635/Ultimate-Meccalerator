@@ -7,16 +7,16 @@
 	<map>
 		<layers>
 			<layer x="0" />
-			<layer x="-1.1920929e-07" />
+			<layer x="0" />
 			<layer x="0" />
 			<layer x="0" />
 		</layers>
 	</map>
 	<scene />
 	<player>
-		<lastPos x="192" y="1036.98669" />
+		<lastPos x="312" y="1036" />
 	</player>
 	<renderer>
-		<camera x="0" y="-420" />
+		<camera x="0" y="-536" />
 	</renderer>
 </game_state>

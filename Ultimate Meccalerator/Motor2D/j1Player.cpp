@@ -481,7 +481,7 @@ void j1Player::CheckAccels()
 	}
 	else
 		if (speed_x > standard_speed_x)
-			speed_x -= 9.8 / 60;
+			speed_x -= 6 / 60;
 		else
 			if (speed_x < standard_speed_x)
 				speed_x = standard_speed_x;
