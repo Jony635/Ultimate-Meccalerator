@@ -270,12 +270,5 @@ void j1Render::CheckCameraPos()
 		camera.x -= App->player->speed_x;
 	}
 
-	if(App->player->pos.y >= (-1*camera.y + camera.h)/2 -90)
-	{
-		camera.y += App->player->speed_y;
-	}
-	else if (App->player->pos.y < (camera.y*-1 + camera.h) / 2 + 90)
-	{
-		camera.y -= App->player->speed_y;
-	}
+	camera.y = App->player->pos.y * -1 +500;
 }
