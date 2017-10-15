@@ -15,9 +15,6 @@
 	</map>
 	<scene />
 	<player>
-		<lastPos x="530" y="916" />
-	</player>
-	<renderer>
-		<camera x="0" y="-416" />
+
 	</renderer>
 </game_state>
