@@ -93,6 +93,7 @@ j1Player::j1Player() : j1Module()
 	DoubleJump_GoingRight.PushBack({ 247, 427, 46, 48 });
 	DoubleJump_GoingRight.PushBack({ 307, 435, 46, 46 });
 	DoubleJump_GoingRight.speed = 0.4f;
+	DoubleJump_GoingRight.loop = false;
 
 	DoubleJump_GoingLeft.PushBack({ 666, 344, 46, 48 });
 	DoubleJump_GoingLeft.PushBack({ 606, 344, 46, 48 });
@@ -107,6 +108,7 @@ j1Player::j1Player() : j1Module()
 	DoubleJump_GoingLeft.PushBack({ 426, 427, 46, 48 });
 	DoubleJump_GoingLeft.PushBack({ 366, 435, 46, 46 });
 	DoubleJump_GoingLeft.speed = 0.4f;
+	DoubleJump_GoingLeft.loop = false;
 }
 
 // Destructor
@@ -182,9 +184,6 @@ bool j1Player::Update(float dt)
 			App->render->Blit(playerText, pos.x, pos.y, &current_anim->frames[current_anim->last_frame - 1]);
 			dieCounter = dieCounter + 1;
 		}
-			
-		
-
 	}
 		
 	return true;
@@ -385,6 +384,9 @@ void j1Player::CheckFalls()
 		{
 			if(speed_y<0)
 			{
+				DoubleJump_GoingRight.Reset();
+				DoubleJump_GoingLeft.Reset();
+				current_anim = &IdleRight;
 				pos.y = getDownYCol({ (int)pos.x + 15, (int)pos.y }) - 44;
 				grounded = true;
 				jumps = 1;
@@ -400,10 +402,15 @@ void j1Player::CheckFalls()
 	}
 
 	if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y) + App->map->data.tile_height / 2 + 1 }) == false)
+	{
 		grounded = false;
+	}
+
 	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.x + 20), (int)pos.y + App->map->data.tile_height / 2 + 1 }))
 	{
-
+		DoubleJump_GoingRight.Reset();
+		DoubleJump_GoingLeft.Reset();
+		current_anim = &IdleRight;
 		grounded = true;
 		jumps = 1;
 		speed_y = 0;
@@ -550,8 +557,11 @@ void j1Player::CheckMovements()
 		pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
 		!CheckRightPos({ (int)pos.x + 3, (int)pos.y + 40 }))
 	{
-		if (current_anim != &GoRight)
+		if (current_anim != &GoRight && current_anim->Finished())
+		{
 			current_anim = &GoRight;
+		}
+			
 		pos.x += speed_x;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
@@ -559,20 +569,48 @@ void j1Player::CheckMovements()
 		if (current_anim != &IdleRight)
 			current_anim = &IdleRight;
 	}
-	else if (speed_x <= standard_speed_x && (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
+	 if ( (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
 		!CheckLeftPos({ (int)pos.x - 4, (int)pos.y + 40 }))
 	{
+		 if (current_anim != &GoLeft && current_anim->Finished())
+		 {
+			 current_anim = &GoLeft;
+		 }
 		pos.x -= speed_x;
 	}
+	 if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
+	 {
+		 if (current_anim != &IdleLeft)
+			 current_anim = &IdleLeft;
+	 }
 
 	if (jumps>0 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		if (grounded == false)
+		{
 			jumps--;
+			if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+			{
+				if (current_anim != &DoubleJump_GoingRight)
+					current_anim = &DoubleJump_GoingRight;
+			}
+			else if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+			{
+				if (current_anim != &DoubleJump_GoingLeft)
+					current_anim = &DoubleJump_GoingLeft;
+			}
+			else
+			{
+				if (current_anim != &DoubleJump_GoingRight)
+					current_anim = &DoubleJump_GoingRight;
+			}
+			
+			
+		}
 		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
 		grounded = false;
-
 	}
+	
 }
 
 bool j1Player::CheckDieCol(iPoint pos) const
