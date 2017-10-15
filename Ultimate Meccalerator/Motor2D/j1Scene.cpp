@@ -35,6 +35,9 @@ bool j1Scene::Start()
 	{
 		pugi::xml_document doc;
 		App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());	
+		App->render->camera.x = 0;
+		if(App->player->playerText==nullptr)
+		App->player->Start();
 	}
 	else
 	{

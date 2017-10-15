@@ -365,3 +365,9 @@ bool j1App::SavegameNow() const
 	want_to_save = false;
 	return ret;
 }
+
+void j1App::RestartScene() const
+{
+	App->scene->CleanUp();
+	App->scene->Start();
+}

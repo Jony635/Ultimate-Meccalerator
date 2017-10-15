@@ -63,7 +63,8 @@ j1Player::j1Player() : j1Module()
 	DieGoingRight.PushBack({ 187, 133, 46, 48 });
 	DieGoingRight.PushBack({ 247, 133, 46, 48 });
 	DieGoingRight.PushBack({ 307, 133, 46, 48 });
-	DieGoingRight.speed = 0.4f;
+	DieGoingRight.speed = 0.2f;
+	DieGoingRight.loop = false;
 
 	DieGoingLeft.PushBack({ 666, 73, 46, 48 });
 	DieGoingLeft.PushBack({ 606, 73, 46, 48 });
@@ -122,11 +123,18 @@ bool j1Player::Awake(pugi::xml_node& playernode)
 
 bool j1Player::Start()
 {
+	current_anim = &IdleRight;
+	dieCounter = 0;
+	dead = false;
 	SetStartingPos();
 	pos = Startingpos;
-	if(App->actual_lvl==FIRST_LEVEL)
-	speed_x = (speed_x * App->map->data.tile_width) / 60;
-	standard_speed_x = speed_x;
+	if(!alreadyLoaded)
+	{
+		speed_x = (speed_x * App->map->data.tile_width) / 60;
+		standard_speed_x = speed_x;
+		alreadyLoaded = true;
+	}
+	speed_x = standard_speed_x;
 	if(playerText==nullptr)
 	playerText = App->tex->Load("textures/Player_SpriteSheet.png");
 	return true;
@@ -134,54 +142,55 @@ bool j1Player::Start()
 
 bool j1Player::PreUpdate()
 {
-	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) && 
-		pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
-		!CheckRightPos({ (int)pos.x+3, (int)pos.y+40 }))
+	if(!dead)
 	{
-		if(current_anim!=&GoRight)
-		current_anim = &GoRight;
-		pos.x += speed_x;
+		CheckMovements();
 	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
+	else
 	{
-		if (current_anim != &IdleRight)
-		current_anim = &IdleRight;
+		if(current_anim!=&DieGoingRight)
+		current_anim = &DieGoingRight;
 	}
-	else if ( speed_x<=standard_speed_x && (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
-		!CheckLeftPos({ (int)pos.x-4, (int)pos.y + 40 }))
-	{
-		pos.x -= speed_x;
-	}
-
-	if (jumps>0 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		if(grounded==false)
-			jumps--;
-		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
-		grounded = false;
-		
-	}
-	
-
 	return true;
 }
-
 
 bool j1Player::Update(float dt)
 {
 	CheckWin();
-	
 	CheckAccels();
 	CheckFalls();
 	
-	App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
+	if (current_anim != &DieGoingRight || !current_anim->Finished())
+	{
+		App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
+	}
+	
+	else
+	{
+		if (dieCounter > 120)
+		{
+			current_anim->Reset();
+			App->RestartScene();
+		}
+		else
+		{
+			App->render->Blit(playerText, pos.x, pos.y, &current_anim->frames[current_anim->last_frame - 1]);
+			dieCounter = dieCounter + 1;
+		}
+			
+		
+
+	}
+		
 	return true;
 }
 
-
-
 bool j1Player::PostUpdate()
 {
+	if (CheckDieCol({ (int)pos.x, (int)pos.y+15 }))
+	{
+		dead = true;
+	}
 	return true;
 }
 
@@ -532,4 +541,64 @@ void j1Player::CheckWin()
 	}
 }
 
+void j1Player::CheckMovements() 
+{
+	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) &&
+		pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
+		!CheckRightPos({ (int)pos.x + 3, (int)pos.y + 40 }))
+	{
+		if (current_anim != &GoRight)
+			current_anim = &GoRight;
+		pos.x += speed_x;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
+	{
+		if (current_anim != &IdleRight)
+			current_anim = &IdleRight;
+	}
+	else if (speed_x <= standard_speed_x && (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
+		!CheckLeftPos({ (int)pos.x - 4, (int)pos.y + 40 }))
+	{
+		pos.x -= speed_x;
+	}
 
+	if (jumps>0 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		if (grounded == false)
+			jumps--;
+		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
+		grounded = false;
+
+	}
+}
+
+bool j1Player::CheckDieCol(iPoint pos) const
+{
+	iPoint pos_tile = App->map->World_to_Map(pos);
+	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	{
+		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
+			int x = 0, y = 0;
+			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
+			{
+
+				if (x == pos_tile.x * TileSet->data->tile_width && y == pos_tile.y * TileSet->data->tile_height)
+					if (*(layer->data->data + num_tile) == 5193 + 0)
+					{
+						return true;
+					}
+				x += TileSet->data->tile_width;
+
+				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
+				{
+					x = 0;
+					y += TileSet->data->tile_height;
+				}
+			}
+		}
+	}
+	return false;
+}

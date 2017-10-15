@@ -58,6 +58,7 @@ public:
 
 	pugi::xml_node LoadConfig(pugi::xml_document&) const;
 
+	void RestartScene()const;
 private:
 
 	// Load config file
@@ -81,6 +82,8 @@ private:
 	// Load / Save
 	bool LoadGameNow();
 	bool SavegameNow() const;
+
+
 
 public:
 
