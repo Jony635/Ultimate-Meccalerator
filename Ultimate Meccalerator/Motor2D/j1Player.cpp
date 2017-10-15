@@ -463,11 +463,20 @@ void j1Player::CheckAccels()
 	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
 	if (accel_y != 0)
 		speed_y -= accel_y / 60;
+
 	float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
 	if (accel_x != 0)
+	{
 		speed_x += accel_x / 60;
-	/*else
-		speed_x = standard_speed_x;*/
+		if (!CheckRightPos({(int)(pos.x+speed_x), (int)pos.x+30}))
+		pos.x += speed_x;
+	}
+	else
+		if (speed_x > standard_speed_x)
+			speed_x -= 9.8 / 60;
+		else
+			if (speed_x < standard_speed_x)
+				speed_x = standard_speed_x;
 }
 
 

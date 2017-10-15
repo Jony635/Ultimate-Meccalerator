@@ -257,14 +257,14 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 
 void j1Render::CheckCameraPos()
 {
-	if (App->player->pos.x <= (-1 * (camera.x - (camera.w / 2))) - App->map->data.tile_width && camera.x < 0 &&
-		(App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT))
+	if (App->player->pos.x <= (-1 * (camera.x - (camera.w / 2))) - App->map->data.tile_width && camera.x < 0 /*&&*/
+		/*(App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)*/)
 	{
 		App->map->UpdateLayers("left");
 		camera.x += App->player->speed_x;
 	}
-	else if (App->player->pos.x >= -1 * (camera.x - (camera.w / 2)) + App->map->data.tile_width && -1 * (camera.x - camera.w) <= App->map->data.width*App->map->data.tile_width &&
-		(App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT))
+	else if (App->player->pos.x >= -1 * (camera.x - (camera.w / 2)) + App->map->data.tile_width && -1 * (camera.x - camera.w) <= App->map->data.width*App->map->data.tile_width /*&&*/
+		/*(App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)*/)
 	{
 		App->map->UpdateLayers("right");
 		camera.x -= App->player->speed_x;
