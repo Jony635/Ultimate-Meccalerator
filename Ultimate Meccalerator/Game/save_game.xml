@@ -6,15 +6,18 @@
 	<audio />
 	<map>
 		<layers>
-			<layer x="0" />
-			<layer x="0" />
+			<layer x="444.601837" />
+			<layer x="117" />
 			<layer x="0" />
 			<layer x="0" />
 		</layers>
-		<ActualLvl name="0" />
+		<ActualLvl name="1" />
 	</map>
 	<scene />
 	<player>
-
+		<lastPos x="1475.3833" y="1156" />
+	</player>
+	<renderer>
+		<camera x="-935" y="-656" />
 	</renderer>
 </game_state>
