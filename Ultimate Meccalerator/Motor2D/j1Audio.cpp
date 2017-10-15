@@ -2,6 +2,7 @@
 #include "p2Log.h"
 #include "j1Audio.h"
 #include "p2List.h"
+#include "j1App.h"
 
 #include "SDL/include/SDL.h"
 #include "SDL_mixer\include\SDL_mixer.h"
@@ -20,6 +21,7 @@ j1Audio::~j1Audio()
 // Called before render is available
 bool j1Audio::Awake(pugi::xml_node& config)
 {
+
 	LOG("Loading Audio Mixer");
 	bool ret = true;
 	SDL_Init(0);
@@ -49,6 +51,8 @@ bool j1Audio::Awake(pugi::xml_node& config)
 		active = false;
 		ret = true;
 	}
+
+	App->audio->PlayMusic("audio/music/BSO.wav");
 
 	return ret;
 }
@@ -91,7 +95,7 @@ bool j1Audio::PlayMusic(const char* path, float fade_time)
 	{
 		if(fade_time > 0.0f)
 		{
-			Mix_VolumeMusic(128);
+			Mix_VolumeMusic(64);
 			Mix_FadeOutMusic(int(fade_time * 1000.0f));
 		}
 		else

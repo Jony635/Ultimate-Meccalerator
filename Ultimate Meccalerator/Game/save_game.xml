@@ -6,8 +6,8 @@
 	<audio />
 	<map>
 		<layers>
-			<layer x="444.601837" />
-			<layer x="117" />
+			<layer x="104.499908" />
+			<layer x="27.5" />
 			<layer x="0" />
 			<layer x="0" />
 		</layers>
@@ -15,9 +15,9 @@
 	</map>
 	<scene />
 	<player>
-		<lastPos x="1475.3833" y="1156" />
+		<lastPos x="761.299988" y="1096" />
 	</player>
 	<renderer>
-		<camera x="-935" y="-656" />
+		<camera x="-220" y="-596" />
 	</renderer>
 </game_state>
