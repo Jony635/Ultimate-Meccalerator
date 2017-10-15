@@ -116,7 +116,7 @@ bool j1Map::CleanUp()
 		data.LayerList.clear();
 	}
 	
-
+	delete LogicalTileset;
 	// Clean up the pugui tree
 	map_file.reset();
 
@@ -278,6 +278,12 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 {
 	bool ret = true;
 	set->name.create(tileset_node.attribute("name").as_string());
+	if (set->name == "Logical_tileset")
+	{
+		this->LogicalTileset = new pugi::xml_node;
+		*this->LogicalTileset = tileset_node;
+	}
+		
 	set->firstgid = tileset_node.attribute("firstgid").as_int();
 	set->tile_width = tileset_node.attribute("tilewidth").as_int();
 	set->tile_height = tileset_node.attribute("tileheight").as_int();

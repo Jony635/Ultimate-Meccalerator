@@ -96,8 +96,12 @@ public:
 
 	// TODO 8: Create a method that translates x,y coordinates from map positions to world positions
 	iPoint MapToWorld(int x, int y) const;
+
 	p2Point<int> World_to_Map(p2Point<int> world_coordinates);
+
 	void UpdateLayers(char*);
+
+
 private:
 
 	bool LoadMap();
@@ -112,6 +116,7 @@ private:
 
 public:
 	
+	pugi::xml_node* LogicalTileset = nullptr;
 	MapData data;
 
 private:

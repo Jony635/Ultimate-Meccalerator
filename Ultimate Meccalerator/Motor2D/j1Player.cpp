@@ -169,31 +169,10 @@ bool j1Player::PreUpdate()
 
 bool j1Player::Update(float dt)
 {
-	if(grounded==false )
-	{
-		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y - speed_y) + App->map->data.tile_height / 2 }) == false)
-		{
-			pos.y -= speed_y;
-			speed_y -= App->scene->Gravity;
-		}
-		else
-		{
-			pos.y = getDownYCol({ (int)pos.x+15, (int)pos.y})-44;
-			grounded = true;
-			jumps = 1;
-			speed_y = 0;
-		}
-	}
-	
-	if (CheckDownPos({ (int)pos.x+20, (int)(pos.y) + App->map->data.tile_height / 2 + 1 }) == false)
-		grounded = false;
-	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.x+20), (int)pos.y+App->map->data.tile_height/2 +1}))
-	{
-		
-		grounded = true;
-		jumps = 1;
-		speed_y = 0;
-	}
+
+
+	CheckAccels();
+	CheckFalls();
 	App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
 	return true;
 }
@@ -378,6 +357,77 @@ uint j1Player::getDownYCol(iPoint pos) const
 		}
 	}
 	return 0;
+}
+
+void j1Player::CheckFalls()
+{
+	if (grounded == false)
+	{
+		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y - speed_y) + App->map->data.tile_height / 2 }) == false)
+		{
+			pos.y -= speed_y;
+			speed_y -= App->scene->Gravity;
+		}
+		else
+		{
+			pos.y = getDownYCol({ (int)pos.x + 15, (int)pos.y }) - 44;
+			grounded = true;
+			jumps = 1;
+			speed_y = 0;
+		}
+	}
+
+	if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y) + App->map->data.tile_height / 2 + 1 }) == false)
+		grounded = false;
+	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.x + 20), (int)pos.y + App->map->data.tile_height / 2 + 1 }))
+	{
+
+		grounded = true;
+		jumps = 1;
+		speed_y = 0;
+	}
+}
+
+float j1Player::getAccelY(iPoint pos) const
+{
+	iPoint pos_tile = App->map->World_to_Map(pos);
+	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	{
+		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
+			int x = 0, y = 0;
+			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
+			{
+
+				if (x == pos_tile.x * TileSet->data->tile_width && (y == (pos_tile.y)* TileSet->data->tile_height + 30))
+					if (*(layer->data->data + num_tile) == 5193 + 1 || *(layer->data->data + num_tile) == 5193 + 7)
+					{
+						if(*(layer->data->data + num_tile) == 5193 + 1)
+							return App->map->LogicalTileset->find_child_by_attribute("id", "1").child("properties").find_child_by_attribute("name","accel_y").attribute("value").as_int();
+						else
+							return App->map->LogicalTileset->find_child_by_attribute("id", "7").child("properties").find_child_by_attribute("name", "accel_y").attribute("value").as_int();
+					}
+				x += TileSet->data->tile_width;
+
+				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
+				{
+					x = 0;
+					y += TileSet->data->tile_height;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+void j1Player::CheckAccels()
+{
+	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
+	if (accel_y != 0)
+		speed_y -= accel_y / 60;
+
 }
 
 

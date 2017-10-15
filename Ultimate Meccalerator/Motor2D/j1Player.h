@@ -68,11 +68,21 @@ private:
 	Animation DoubleJump_GoingRight;
 	Animation DoubleJump_GoingLeft;
 
+	void CheckFalls();
+	void CheckAccels();
+
+
 
 	bool CheckDownPos(iPoint pos)const;
 	bool CheckRightPos(iPoint pos)const;
 	bool CheckLeftPos(iPoint pos)const;
+	
+
+
+
 	void SetStartingPos();
+	float getAccelY(iPoint pos) const;
+	float getAccelX(iPoint pos) const;
 	uint getDownYCol(iPoint pos) const;
 };
 
