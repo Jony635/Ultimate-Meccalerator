@@ -67,10 +67,10 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
-	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN )
 		App->LoadGame();
 
-	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->player->CheckDownPos({ (int)App->player->pos.x + 20, (int)(App->player->pos.y) + App->map->data.tile_height / 2 + 1 }))
 		App->SaveGame();
 
 	//App->render->Blit(img, 0, 0);

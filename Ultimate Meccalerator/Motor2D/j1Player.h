@@ -48,6 +48,9 @@ public:
 	bool win = false;
 	float speed_y = 0;
 	SDL_Texture* playerText = nullptr;
+
+
+	bool CheckDownPos(iPoint pos)const;
 private:
 	
 	fPoint Startingpos;
@@ -76,7 +79,7 @@ private:
 	void CheckWin();
 	void CheckMovements();
 
-	bool CheckDownPos(iPoint pos)const;
+	
 	bool CheckRightPos(iPoint pos)const;
 	bool CheckLeftPos(iPoint pos)const;
 	bool CheckDieCol(iPoint pos) const;
