@@ -1,4 +1,4 @@
-//LISENCE
+# LISENCE
 
 This is free and unencumbered software released into the public domain.
 
@@ -28,25 +28,25 @@ For more information, please refer to <http://unlicense.org/>
 
 
 
-ULTIMATE MECCALERATOR
+# ULTIMATE MECCALERATOR
 
 
-//INFO
+## INFO
 
-Ultimate Meccalerator is a 2D Side Scroller Videogame where a meccanic robot has to go throw a abandoned factory to achieve the freedom. 
+Ultimate Meccalerator is a 2D Side Scroller Videogame where a meccanic robot has to go throw an abandoned factory to achieve the freedom. 
 Along this journey the meccanic boy will face a lot of dangers like acid or spikes.
 To cross the stage, the player will be helped by some sections that gives acceleration and allows to reach other platforms.
 The acceleration sections can also become harmful.
 
-//AUTHORS
+## AUTHORS
 
-Jonathan Molina and Oriol de Dios are the authors of this game from Flan Studio
+Jonathan Molina and Oriol de Dios, members of FlanStudio, are the authors of this game.
 
-//GITHUB REPOSITORY LINK
+## GITHUB REPOSITORY LINK
 
-https://github.com/Jony635/Ultimate-Meccalerator
+http://github.com/Jony635/Ultimate-Meccalerator
 
-//GAME INSTRUCTIONS
+## GAME INSTRUCTIONS
 
 A to go left
 D to go right
@@ -59,7 +59,7 @@ LOSE: Fall into the acid or touch a spike kills the player and respawns it at th
 
 ACCELERATION AREAS give more velocity to the player in a particular direction (the player has to discover it by himself)
 
-//DEBUG FEATURES
+## DEBUG FEATURES
 
 F1:Start at the beggining of the first level
 F2:Start at the beggining of the current level
