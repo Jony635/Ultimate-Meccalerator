@@ -1,4 +1,6 @@
-# LICENSE
+# ULTIMATE MECCALERATOR
+
+## LICENSE
 
 This is free and unencumbered software released into the public domain.
 
@@ -28,7 +30,7 @@ For more information, please refer to <http://unlicense.org/>
 
 
 
-# ULTIMATE MECCALERATOR
+
 
 
 ## INFO
