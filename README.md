@@ -44,7 +44,7 @@ Jonathan Molina and Oriol de Dios, members of FlanStudio, are the authors of thi
 
 ## GITHUB REPOSITORY LINK
 
-http://github.com/Jony635/Ultimate-Meccalerator
+[](http://github.com/Jony635/Ultimate-Meccalerator)
 
 ## GAME INSTRUCTIONS
 
