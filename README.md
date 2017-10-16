@@ -62,8 +62,13 @@ ACCELERATION AREAS give more velocity to the player in a particular direction (t
 ## DEBUG FEATURES
 
 F1:Start at the beggining of the first level
+
 F2:Start at the beggining of the current level
+
 F3:Start at the beggining of the second level
+
 F4:Active debug layer
+
 F5:Save current state
+
 F6:Load saved state
