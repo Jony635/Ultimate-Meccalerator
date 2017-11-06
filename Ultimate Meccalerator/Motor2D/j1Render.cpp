@@ -60,7 +60,7 @@ bool j1Render::Start()
 {
 	LOG("render start");
 	// back background
-	defwinText = App->tex->Load("textures/win_screen.png");
+	defwinText = App->tex->Load("Resources/textures/win_screen.png");
 	camera.y = App->map->data.camera_starting_y * App->map->data.tile_height;
 	SDL_RenderSetLogicalSize(renderer, App->win->screen_surface->w, App->win->screen_surface->h);
 	SDL_RenderGetViewport(renderer, &viewport);

@@ -23,7 +23,7 @@
   </file_system>
 
   <map>
-    <folder>maps/</folder>
+    <folder>Resources/maps/</folder>
     <file>Level_1_x2.tmx</file>
   </map>
 
