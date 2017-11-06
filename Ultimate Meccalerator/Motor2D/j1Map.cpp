@@ -7,6 +7,7 @@
 #include <math.h>
 #include "j1Input.h"
 #include "j1Player.h"
+#include "j1FileSystem.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -133,7 +134,11 @@ bool j1Map::Load(const char* file_name)
 	bool ret = true;
 	p2SString tmp("%s%s", folder.GetString(), file_name);
 
-	pugi::xml_parse_result result = map_file.load_file(tmp.GetString());
+	char* buf;
+	int size = App->fs->Load(tmp.GetString(), &buf);
+	pugi::xml_parse_result result = map_file.load_buffer(buf, size);
+
+	RELEASE(buf);
 
 	if(result == NULL)
 	{
