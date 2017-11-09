@@ -29,6 +29,20 @@ bool j1Map::Awake(pugi::xml_node& config)
 	return ret;
 }
 
+int Properties::Get(const char* value, int default_value) const
+{
+	p2List_item<Property*>* item = list.start;
+
+	while (item)
+	{
+		if (item->data->name == value)
+			return item->data->value;
+		item = item->next;
+	}
+
+	return default_value;
+}
+
 void j1Map::Draw()
 {
 	if(map_loaded == false)
@@ -65,13 +79,70 @@ void j1Map::Draw()
 
 }
 
+TileSet* j1Map::GetTilesetFromTileId(int id) const
+{
+	p2List_item<TileSet*>* item = data.tilesets.start;
+	TileSet* set = item->data;
+
+	while (item)
+	{
+		if (id < item->data->firstgid)
+		{
+			set = item->prev->data;
+			break;
+		}
+		set = item->data;
+		item = item->next;
+	}
+
+	return set;
+}
 
 iPoint j1Map::MapToWorld(int x, int y) const
 {
 	iPoint ret;
 
-	ret.x = x * data.tile_width;
-	ret.y = y * data.tile_height;
+	if (data.type == MAPTYPE_ORTHOGONAL)
+	{
+		ret.x = x * data.tile_width;
+		ret.y = y * data.tile_height;
+	}
+	else if (data.type == MAPTYPE_ISOMETRIC)
+	{
+		ret.x = (x - y) * (data.tile_width * 0.5f);
+		ret.y = (x + y) * (data.tile_height * 0.5f);
+	}
+	else
+	{
+		LOG("Unknown map type");
+		ret.x = x; ret.y = y;
+	}
+
+	return ret;
+}
+
+iPoint j1Map::World_to_Map(iPoint world_coordinates)
+{
+	iPoint ret(0, 0);
+
+	if (data.type == MAPTYPE_ORTHOGONAL)
+	{
+		ret.x = world_coordinates.x / data.tile_width;
+		ret.y = world_coordinates.y / data.tile_height;
+	}
+	else if (data.type == MAPTYPE_ISOMETRIC)
+	{
+
+		float half_width = data.tile_width * 0.5f;
+		float half_height = data.tile_height * 0.5f;
+		ret.x = int((world_coordinates.x / half_width + world_coordinates.y / half_height) / 2) - 1;
+		ret.y = int((world_coordinates.y / half_height - (world_coordinates.x / half_width)) / 2);
+	}
+	else
+	{
+		LOG("Unknown map type");
+		ret.x = world_coordinates.x; ret.y = world_coordinates.y;
+	}
 
 	return ret;
 }
@@ -358,14 +429,16 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	layer->height = node.attribute("height").as_uint();
 	layer->visible = node.attribute("visible").as_bool(true);
 	layer->alpha = node.attribute("opacity").as_float(1);
+	LoadProperties(node, layer->properties);
 	layer->speed = node.child("properties").find_child_by_attribute("name", "speed").attribute("value").as_float()*App->map->data.tile_width / 60;
+
 	for (pugi::xml_node TileToCopy = node.child("data").child("tile"); TileToCopy != nullptr; TileToCopy = TileToCopy.next_sibling())
 	{
 		layer->size_data++;
 	}
-	layer->data = new uint[layer->size_data];
 
-	//memset(layer->data, 0, layer->size_data);
+	layer->data = new uint[layer->size_data];
+	memset(layer->data, 0, layer->width*layer->height);
 
 	int i = 0;
 	for (pugi::xml_node TileToCopy = node.child("data").child("tile"); TileToCopy != nullptr; TileToCopy = TileToCopy.next_sibling(), ++i)
@@ -375,17 +448,28 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	return true;
 }
 
-void memset(uint* ptr, int value, size_t num)
+bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
 {
-	for (int i = 0; i < num; ++i)
-	{
-		*(ptr + i) = value;
-	}
-}
+	bool ret = false;
 
-p2Point<int> j1Map::World_to_Map (p2Point<int> world_coordinates)
-{
-	return p2Point<int>(world_coordinates.x / data.tile_width,  world_coordinates.y / data.tile_height);
+	pugi::xml_node data = node.child("properties");
+
+	if (data != NULL)
+	{
+		pugi::xml_node prop;
+
+		for (prop = data.child("property"); prop; prop = prop.next_sibling("property"))
+		{
+			Properties::Property* p = new Properties::Property();
+
+			p->name = prop.attribute("name").as_string();
+			p->value = prop.attribute("value").as_int();
+
+			properties.list.add(p);
+		}
+	}
+
+	return ret;
 }
 
 void j1Map::UpdateLayers(char* direction)
@@ -431,4 +515,51 @@ bool j1Map::Save(pugi::xml_node& mapnode) const
 	}
 	mapnode.append_child("ActualLvl").append_attribute("name") = App->actual_lvl;
 	return true;
+}
+
+bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
+{
+	bool ret = false;
+	p2List_item<MapLayer*>* item;
+	item = data.LayerList.start;
+
+	for (item = data.LayerList.start; item != NULL; item = item->next)
+	{
+		MapLayer* layer = item->data;
+
+		if (layer->properties.Get("Navigation", 0) == 0)
+			continue;
+
+		uchar* map = new uchar[layer->width*layer->height];
+		memset(map, 1, layer->width*layer->height);
+
+		for (int y = 0; y < data.height; ++y)
+		{
+			for (int x = 0; x < data.width; ++x)
+			{
+				int i = (y*layer->width) + x;
+
+				int tile_id = layer->Get(x, y);
+				TileSet* tileset = (tile_id > 0) ? GetTilesetFromTileId(tile_id) : NULL;
+
+				if (tileset != NULL)
+				{
+					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					/*TileType* ts = tileset->GetTileType(tile_id);
+					if(ts != NULL)
+					{
+					map[i] = ts->properties.Get("walkable", 1);
+					}*/
+				}
+			}
+		}
+		*buffer = map;
+		width = data.width;
+		height = data.height;
+		ret = true;
+
+		break;
+	}
+
+	return ret;
 }

@@ -6,6 +6,33 @@
 #include "p2Point.h"
 #include "j1Module.h"
 
+struct Properties
+{
+	struct Property
+	{
+		p2SString name;
+		int value;
+	};
+
+	~Properties()
+	{
+		p2List_item<Property*>* item;
+		item = list.start;
+
+		while (item != NULL)
+		{
+			RELEASE(item->data);
+			item = item->next;
+		}
+
+		list.clear();
+	}
+
+	int Get(const char* name, int default_value = 0) const;
+
+	p2List<Property*>	list;
+};
+
 // TODO 1: Create a struct for the map layer
 // ----------------------------------------------------
 struct MapLayer
@@ -19,12 +46,22 @@ struct MapLayer
 	fPoint pos = { 0,0 };
 	float speed = 0.0f;
 	float alpha = 0;
+	Properties	properties;
+
+	MapLayer() : data(NULL)
+	{}
+
 	~MapLayer()
 	{
 		RELEASE(data);
 	}
-};
+
 	// TODO 6: Short function to get the value of x,y
+	inline uint Get(int x, int y) const
+	{
+		return data[(y*width) + x];
+	}
+};
 	
 
 // ----------------------------------------------------
@@ -69,9 +106,6 @@ struct MapData
 	p2List <MapLayer*> LayerList;
 	int camera_starting_y = 0;
 };
-
-void memset(uint* ptr, int value, size_t num);
-
 // ----------------------------------------------------
 class j1Map : public j1Module
 {
@@ -97,7 +131,9 @@ public:
 	// TODO 8: Create a method that translates x,y coordinates from map positions to world positions
 	iPoint MapToWorld(int x, int y) const;
 
-	p2Point<int> World_to_Map(p2Point<int> world_coordinates);
+	iPoint World_to_Map(iPoint world_coordinates);
+
+	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
 	void UpdateLayers(char*);
 
@@ -107,8 +143,11 @@ private:
 	bool LoadMap();
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
+	TileSet* GetTilesetFromTileId(int id) const;
+
 	// TODO 3: Create a method that loads a single laye
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
+	bool LoadProperties(pugi::xml_node& node, Properties& properties);
 
 	bool Load(pugi::xml_node&);
 
