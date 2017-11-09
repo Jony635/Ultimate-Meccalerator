@@ -9,6 +9,7 @@
 #include "j1Map.h"
 #include "j1Scene.h"
 #include "j1Player.h"
+#include "j1Pathfinding.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -36,6 +37,13 @@ bool j1Scene::Start()
 	{
 		pugi::xml_document doc;
 		App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());	
+
+		int w, h;
+		uchar* data = NULL;
+		if (App->map->CreateWalkabilityMap(w, h, &data))
+			App->pathfinding->SetMap(w, h, data);
+		RELEASE_ARRAY(data);
+
 		App->render->camera.x = 0;
 		if(App->player->playerText==nullptr)
 		App->player->Start();
