@@ -19,6 +19,7 @@ struct Properties
 	{
 		p2SString name;
 		int value;
+		uint index = 0;
 	};
 
 	~Properties()

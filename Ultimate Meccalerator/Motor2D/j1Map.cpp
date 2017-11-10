@@ -474,6 +474,25 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties, Propert
 	else if (type == TILESET_PROPERTY)
 	{
 		pugi::xml_node data = node.child("tile");
+		uint index = 0;
+		if (data != NULL)
+		{
+			pugi::xml_node prop;
+			for (data; data != nullptr; data = data.next_sibling())
+			{
+				index = data.attribute("id").as_uint();
+				for (prop = data.child("properties").child("property"); prop; prop = prop.next_sibling("property"))
+				{
+					Properties::Property* p = new Properties::Property();
+
+					p->name = prop.attribute("name").as_string();
+					p->value = prop.attribute("value").as_int();
+					p->index = index;
+
+					properties.list.add(p);
+				}
+			}
+		}
 	}
 	
 	return ret;
