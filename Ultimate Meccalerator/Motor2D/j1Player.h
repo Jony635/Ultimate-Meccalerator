@@ -9,7 +9,6 @@
 struct SDL_Texture;
 
 
-
 class j1Player : public j1Module
 {
 
@@ -44,6 +43,8 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 public:
+
+	 
 
 	fPoint pos;
 	float speed_x;

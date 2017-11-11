@@ -16,6 +16,15 @@
 #include "j1FileSystem.h"
 #include "j1Pathfinding.h"
 
+bool j1Rect::Collides(j1Rect rec2)
+{
+	return 	(this->rec.x < rec2.rec.x + rec2.rec.w &&
+			this->rec.x + this->rec.w > rec2.rec.x &&
+			this->rec.y < rec2.rec.y + rec2.rec.h &&
+			this->rec.h + this->rec.y > rec2.rec.y);
+}
+
+
 // Constructor
 j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 {

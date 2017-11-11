@@ -5,6 +5,7 @@
 #include "j1Module.h"
 #include "PugiXml\src\pugixml.hpp"
 #include "p2SString.h"
+#include "SDL\include\SDL_rect.h"
 
 // Modules
 class j1Window;
@@ -17,6 +18,14 @@ class j1Scene;
 class j1Map;
 class j1Player;
 class j1PathFinding;
+
+
+
+struct j1Rect
+{
+	SDL_Rect rec;
+	bool Collides(j1Rect);
+};
 
 enum Levels
 {
