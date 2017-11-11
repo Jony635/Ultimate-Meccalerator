@@ -503,7 +503,7 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties, Propert
 					Properties::Property* p = new Properties::Property();
 
 					p->name = prop.attribute("name").as_string();
-					p->value = prop.attribute("value").as_int();
+					p->value = prop.attribute("value").as_int(0);
 					p->index = index;
 
 					properties.list.add(p);
