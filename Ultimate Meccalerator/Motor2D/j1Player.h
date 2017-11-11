@@ -14,7 +14,9 @@ class j1Player : public j1Module
 {
 
 public:
+
 	j1Player();
+
 	// Destructor
 	virtual ~j1Player();
 
