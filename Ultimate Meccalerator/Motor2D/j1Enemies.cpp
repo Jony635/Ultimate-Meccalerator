@@ -36,6 +36,25 @@ bool j1Enemies::Start()
 
 bool j1Enemies::CleanUp()
 {
+
+	//Clear EnemyDataList
+	p2List_item<EnemyData*>* data = EnemyDataList.start;
+	while (data != nullptr)
+	{
+		RELEASE(data);
+		data = data->next;
+	}
+	EnemyDataList.clear();
+
+	//Clear EnemyList
+	p2List_item<Enemy*>* data = EnemyList.start;
+	while (data != nullptr)
+	{
+		RELEASE(data);
+		data = data->next;
+	}
+	EnemyList.clear();
+
 	return true;
 }
 
