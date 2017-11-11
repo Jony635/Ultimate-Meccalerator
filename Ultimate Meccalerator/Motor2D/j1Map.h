@@ -6,12 +6,20 @@
 #include "p2Point.h"
 #include "j1Module.h"
 
+enum PropertyType
+{
+	NO_TYPE = -1,
+	LAYER_PROPERTY,
+	TILESET_PROPERTY
+};
+
 struct Properties
 {
 	struct Property
 	{
 		p2SString name;
 		int value;
+		uint index = 0;
 	};
 
 	~Properties()
@@ -28,7 +36,8 @@ struct Properties
 		list.clear();
 	}
 
-	int Get(const char* name, int default_value = 0) const;
+	int Get(const char* name, int default_value = 0, int index = -1) const;
+
 
 	p2List<Property*>	list;
 };
@@ -69,7 +78,7 @@ struct TileSet
 {
 	// TODO 7: Create a method that receives a tile id and returns it's Rectfind the Rect associated with a specific tile id
 	SDL_Rect GetTileRect(int id) const;
-
+	Properties properties;
 	p2SString			name;
 	int					firstgid;
 	int					margin;
@@ -147,7 +156,7 @@ private:
 
 	// TODO 3: Create a method that loads a single laye
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
-	bool LoadProperties(pugi::xml_node& node, Properties& properties);
+	bool LoadProperties(pugi::xml_node& node, Properties& properties, PropertyType type = LAYER_PROPERTY);
 
 	bool Load(pugi::xml_node&);
 

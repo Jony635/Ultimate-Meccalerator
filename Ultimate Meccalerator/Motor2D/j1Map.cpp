@@ -29,18 +29,35 @@ bool j1Map::Awake(pugi::xml_node& config)
 	return ret;
 }
 
-int Properties::Get(const char* value, int default_value) const
+int Properties::Get(const char* value, int default_value, int index) const
 {
-	p2List_item<Property*>* item = list.start;
-
-	while (item)
+	if (index == -1)
 	{
-		if (item->data->name == value)
-			return item->data->value;
-		item = item->next;
-	}
+		p2List_item<Property*>* item = list.start;
 
-	return default_value;
+		while (item)
+		{
+			if (item->data->name == value)
+				return item->data->value;
+			item = item->next;
+		}
+
+		return default_value;
+	}
+	else
+	{
+		p2List_item<Property*>* item = list.start;
+
+		while (item)
+		{
+			if (item->data->name == value && item->data->index == index)
+				return item->data->value;
+			item = item->next;
+		}
+
+		return default_value;
+	}
+	
 }
 
 void j1Map::Draw()
@@ -369,6 +386,7 @@ bool j1Map::LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set)
 	set->tile_height = tileset_node.attribute("tileheight").as_int();
 	set->margin = tileset_node.attribute("margin").as_int();
 	set->spacing = tileset_node.attribute("spacing").as_int();
+	LoadProperties(tileset_node, set->properties, TILESET_PROPERTY);
 	pugi::xml_node offset = tileset_node.child("tileoffset");
 
 	if(offset != NULL)
@@ -448,27 +466,52 @@ bool j1Map::LoadLayer(pugi::xml_node& node, MapLayer* layer)
 	return true;
 }
 
-bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties)
+bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties, PropertyType type)
 {
 	bool ret = false;
-
-	pugi::xml_node data = node.child("properties");
-
-	if (data != NULL)
+	if (type == LAYER_PROPERTY)
 	{
-		pugi::xml_node prop;
+		pugi::xml_node data = node.child("properties");
 
-		for (prop = data.child("property"); prop; prop = prop.next_sibling("property"))
+		if (data != NULL)
 		{
-			Properties::Property* p = new Properties::Property();
+			pugi::xml_node prop;
 
-			p->name = prop.attribute("name").as_string();
-			p->value = prop.attribute("value").as_int();
+			for (prop = data.child("property"); prop; prop = prop.next_sibling("property"))
+			{
+				Properties::Property* p = new Properties::Property();
 
-			properties.list.add(p);
+				p->name = prop.attribute("name").as_string();
+				p->value = prop.attribute("value").as_int();
+
+				properties.list.add(p);
+			}
 		}
 	}
+	else if (type == TILESET_PROPERTY)
+	{
+		pugi::xml_node data = node.child("tile");
+		uint index = 0;
+		if (data != NULL)
+		{
+			pugi::xml_node prop;
+			for (data; data != nullptr; data = data.next_sibling())
+			{
+				index = data.attribute("id").as_uint();
+				for (prop = data.child("properties").child("property"); prop; prop = prop.next_sibling("property"))
+				{
+					Properties::Property* p = new Properties::Property();
 
+					p->name = prop.attribute("name").as_string();
+					p->value = prop.attribute("value").as_int();
+					p->index = index;
+
+					properties.list.add(p);
+				}
+			}
+		}
+	}
+	
 	return ret;
 }
 
@@ -527,7 +570,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 	{
 		MapLayer* layer = item->data;
 
-		if (layer->properties.Get("Navigation", 0) == 0)
+		if (layer->name != "pathfinding")
 			continue;
 
 		uchar* map = new uchar[layer->width*layer->height];
@@ -544,7 +587,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 				if (tileset != NULL)
 				{
-					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					map[i] = tileset->properties.Get("walkability", 0, tile_id - tileset->firstgid);
 					/*TileType* ts = tileset->GetTileType(tile_id);
 					if(ts != NULL)
 					{

@@ -50,6 +50,12 @@ bool j1Scene::Start()
 	}
 	else
 	{
+		int w, h;
+		uchar* data = NULL;
+		if (App->map->CreateWalkabilityMap(w, h, &data))
+			App->pathfinding->SetMap(w, h, data);
+		RELEASE_ARRAY(data);
+
 		App->render->camera.x = 0;
 		App->map->Load("Level_2_x2.tmx");
 		App->player->Start();
