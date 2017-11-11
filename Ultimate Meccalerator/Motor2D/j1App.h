@@ -18,6 +18,7 @@ class j1Scene;
 class j1Map;
 class j1Player;
 class j1PathFinding;
+class j1Enemies;
 
 
 
@@ -100,16 +101,17 @@ private:
 public:
 
 	// Modules
-	j1Window*			win = nullptr;
-	j1Input*			input = nullptr;
-	j1Render*			render = nullptr;
-	j1Textures*			tex = nullptr;
-	j1Audio*			audio = nullptr;
-	j1Scene*			scene = nullptr;
-	j1FileSystem*		fs = nullptr;
-	j1Map*				map = nullptr;
-	j1Player*			player = nullptr;
-	j1PathFinding*		pathfinding = nullptr;
+	j1Window*			win				=	nullptr;
+	j1Input*			input			=	nullptr;
+	j1Render*			render			=	nullptr;
+	j1Textures*			tex				=	nullptr;
+	j1Audio*			audio			=	nullptr;
+	j1Scene*			scene			=	nullptr;
+	j1FileSystem*		fs				=	nullptr;
+	j1Map*				map				=	nullptr;
+	j1Player*			player			=	nullptr;
+	j1PathFinding*		pathfinding		=	nullptr;
+	j1Enemies*			enemies			=	nullptr;
 
 private:
 

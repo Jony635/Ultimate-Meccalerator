@@ -37,6 +37,7 @@ bool j1Scene::Start()
 	{
 		pugi::xml_document doc;
 		App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());	
+		App->enemies->FillEnemiesData();
 
 		int w, h;
 		uchar* data = NULL;
@@ -45,19 +46,22 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 
 		App->render->camera.x = 0;
+
 		if(App->player->playerText==nullptr)
-		App->player->Start();
+			App->player->Start();
 	}
 	else
 	{
+		App->render->camera.x = 0;
+		App->map->Load("Level_2_x2.tmx");
+
 		int w, h;
 		uchar* data = NULL;
 		if (App->map->CreateWalkabilityMap(w, h, &data))
 			App->pathfinding->SetMap(w, h, data);
 		RELEASE_ARRAY(data);
 
-		App->render->camera.x = 0;
-		App->map->Load("Level_2_x2.tmx");
+		App->enemies->FillEnemiesData();
 		App->player->Start();
 	}
 	

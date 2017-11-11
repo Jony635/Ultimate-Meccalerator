@@ -7,6 +7,12 @@
 #include "j1App.h"
 #include "j1Module.h"
 
+class EnemyData
+{
+public:
+	EnemyData(int x, int y);
+	iPoint position;
+};
 
 
 class Enemy
@@ -24,7 +30,13 @@ public:
 
 class j1Enemies : public j1Module
 {
+private:
+
 	p2List<Enemy*> EnemyList;
+	p2List<EnemyData*> EnemyDataList;
+
+public:
+
 
 	j1Enemies();
 
@@ -55,7 +67,7 @@ class j1Enemies : public j1Module
 	bool Save(pugi::xml_node&) const;
 
 
-
+	void FillEnemiesData();
 };
 
 

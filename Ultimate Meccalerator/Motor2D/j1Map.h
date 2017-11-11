@@ -5,6 +5,7 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "j1Module.h"
+#include "j1Enemies.h"
 
 enum PropertyType
 {
@@ -146,13 +147,13 @@ public:
 
 	void UpdateLayers(char*);
 
+	TileSet* GetTilesetFromTileId(int id) const;
 
 private:
 
 	bool LoadMap();
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
-	TileSet* GetTilesetFromTileId(int id) const;
 
 	// TODO 3: Create a method that loads a single laye
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
