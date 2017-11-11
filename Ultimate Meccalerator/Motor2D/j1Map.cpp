@@ -29,18 +29,35 @@ bool j1Map::Awake(pugi::xml_node& config)
 	return ret;
 }
 
-int Properties::Get(const char* value, int default_value) const
+int Properties::Get(const char* value, int default_value, int index) const
 {
-	p2List_item<Property*>* item = list.start;
-
-	while (item)
+	if (index == -1)
 	{
-		if (item->data->name == value)
-			return item->data->value;
-		item = item->next;
-	}
+		p2List_item<Property*>* item = list.start;
 
-	return default_value;
+		while (item)
+		{
+			if (item->data->name == value)
+				return item->data->value;
+			item = item->next;
+		}
+
+		return default_value;
+	}
+	else
+	{
+		p2List_item<Property*>* item = list.start;
+
+		while (item)
+		{
+			if (item->data->name == value && item->data->index == index)
+				return item->data->value;
+			item = item->next;
+		}
+
+		return default_value;
+	}
+	
 }
 
 void j1Map::Draw()
@@ -570,7 +587,7 @@ bool j1Map::CreateWalkabilityMap(int& width, int& height, uchar** buffer) const
 
 				if (tileset != NULL)
 				{
-					map[i] = (tile_id - tileset->firstgid) > 0 ? 0 : 1;
+					map[i] = tileset->properties.Get("walkability", 0, tile_id - tileset->firstgid);
 					/*TileType* ts = tileset->GetTileType(tile_id);
 					if(ts != NULL)
 					{

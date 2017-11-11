@@ -36,7 +36,8 @@ struct Properties
 		list.clear();
 	}
 
-	int Get(const char* name, int default_value = 0) const;
+	int Get(const char* name, int default_value = 0, int index = -1) const;
+
 
 	p2List<Property*>	list;
 };
