@@ -101,6 +101,13 @@ bool j1App::Awake()
 	}
 	save_game.create("save_game.xml");
 	load_game.create("save_game.xml");
+
+	if (config.child("renderer").child("vsync").attribute("value").as_bool())
+		vsync_on = true;
+	else
+		vsync_on = false;
+
+
 	return ret;
 }
 
@@ -163,6 +170,15 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
+	frame_count++;
+	last_sec_frame_count++;
+
+	dt = dt_timer.ReadMs() / 1000;
+	LOG("dt is %lf ms", dt);
+
+	dt_timer.Start();
+	frame_time.Start();
+
 }
 
 // ---------------------------------------------
@@ -173,6 +189,33 @@ void j1App::FinishUpdate()
 
 	if(want_to_load == true)
 		LoadGameNow();
+
+	if (last_sec_frame_time.Read() > 1000)
+	{
+		last_sec_frame_time.Start();
+		prev_last_sec_frame_count = last_sec_frame_count;
+		last_sec_frame_count = 0;
+	}
+
+	float avg_fps = float(frame_count) / startup_time.ReadSec();
+	uint32 last_frame_ms = frame_time.Read();
+	uint32 frames_on_last_update = prev_last_sec_frame_count;
+
+	if (framerate_cap!=0)
+		cap_on = true;
+	else
+		cap_on = false;
+	
+
+	static char title[256];
+	sprintf_s(title, 256, "FPS: %i Average FPS: %.2f MS of the last frame: %02u Cap on: %s Vsync on: %s",
+		frames_on_last_update,avg_fps, last_frame_ms,GetBoolString(cap_on),GetBoolString(vsync_on));
+	App->win->SetTitle(title);
+
+	if (framerate_cap > 0)
+	{
+		SDL_Delay((float)abs((1000 / framerate_cap) - (float)last_frame_ms));
+	}
 }
 
 // Call modules before each loop iteration
@@ -395,4 +438,12 @@ void j1App::RestartScene() const
 {
 	App->scene->CleanUp();
 	App->scene->Start();
+}
+
+char* j1App::GetBoolString(const bool b) const
+{
+	if (b)
+		return "true";
+	else
+		return "false";
 }

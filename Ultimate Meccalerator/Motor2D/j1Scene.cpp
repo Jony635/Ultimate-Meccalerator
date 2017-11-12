@@ -104,20 +104,8 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->player->CheckDownPos({ (int)App->player->pos.x + 20, (int)(App->player->pos.y) + App->map->data.tile_height / 2 + 1 }))
 		App->SaveGame("save_game.xml");
 
-	//App->render->Blit(img, 0, 0);
 	App->map->Draw();
-	int mousex, mousey;
-	App->input->GetMousePosition(mousex, mousey);
-	// TODO 7: Set the window title like
-	// "Map:%dx%d Tiles:%dx%d Tilesets:%d"
-	p2SString title("Map:%dx%d Tiles:%dx%d Tilesets:%d Mouse coordinates:%d,%d Tile Selected:%d,%d",
-		App->map->data.width, App->map->data.height,
-		App->map->data.tile_width, App->map->data.tile_height,
-		App->map->data.tilesets.count(),
-		mousex, mousey,
-		App->map->World_to_Map({mousex, mousey}));
 
-	App->win->SetTitle(title.GetString());
 	return true;
 }
 
