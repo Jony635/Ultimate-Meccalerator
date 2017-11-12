@@ -1,11 +1,11 @@
 #ifndef __j1ENEMIES_H__
 #define __j1ENEMIES_H__
 
-#include "Animation.h"
 #include "p2Point.h"
 #include "p2List.h"
 #include "j1App.h"
 #include "j1Module.h"
+
 
 class EnemyData
 {
@@ -18,16 +18,11 @@ public:
 class Enemy
 {
 private:
-	Animation main_Anim;
-	iPoint position;
-	int speed;
-
+	int speed = 3;
 public:
-	Enemy(iPoint);
+	Enemy();
 	
-
-
-	virtual void Move();
+	virtual void Move(float dt);
 	virtual void Draw() const;
 };
 
@@ -76,6 +71,12 @@ public:
 
 	//Check enemies data list to spawn them when closer to the player to 50 pixels (only in x)
 	void SpawnEnemies();
+
+	//Blit all enemies in their respective positions
+	void DrawEnemies();
+
+	//Calculate each enemy movement by his path
+	void MoveEnemies(float dt);
 };
 
 

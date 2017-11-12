@@ -1,13 +1,14 @@
 #include "j1Enemies.h"
 #include "j1Map.h"
 #include "j1Player.h"
+#include "GroundedEnemy.h"
 
 
 
 EnemyData::EnemyData(int x, int y) : position(iPoint(x, y)) {}
-Enemy::Enemy(iPoint data_pos) : position(data_pos) {}
+Enemy::Enemy() {}
 
-void Enemy::Move() {}
+void Enemy::Move(float dt) {}
 
 void Enemy::Draw() const {}
 
@@ -57,16 +58,19 @@ bool j1Enemies::CleanUp()
 bool j1Enemies::PreUpdate()
 {
 	SpawnEnemies();
+
 	return true;
 }
 
 bool j1Enemies::Update(float dt)
 {
+	MoveEnemies(dt);
 	return true;
 }
 
 bool j1Enemies::PostUpdate()
 {
+	DrawEnemies();
 	return true;
 }
 
@@ -110,9 +114,34 @@ void j1Enemies::SpawnEnemies()
 	{
 		if (abs(data->data->position.x - App->player->pos.x) < 40 * App->map->data.tile_width)
 		{
- 			Enemy* enemy = new Enemy(data->data->position);
+			Enemy* enemy;
+			if (App->actual_lvl == Levels::FIRST_LEVEL)
+				enemy = new GroundedEnemy(data->data->position);
+			else
+			{}
 			EnemyDataList.del(data);
+			EnemyList.add(enemy);
 		}
 		data = data->next;
+	}
+}
+
+void j1Enemies::MoveEnemies(float dt)
+{
+	p2List_item<Enemy*>* enemy = EnemyList.start;
+	while (enemy)
+	{
+		enemy->data->Move();
+		enemy = enemy->next;
+	}
+}
+
+void j1Enemies::DrawEnemies()
+{
+	p2List_item<Enemy*>* enemy = EnemyList.start;
+	while (enemy)
+	{
+		enemy->data->Draw();
+		enemy = enemy->next;
 	}
 }
