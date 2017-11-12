@@ -86,6 +86,13 @@ bool j1App::Awake()
 		app_config = config.child("app");
 		title.create(app_config.child("title").child_value());
 		organization.create(app_config.child("organization").child_value());
+
+		framerate_cap = app_config.attribute("framerate_cap").as_int(0);
+
+		if (config.child("renderer").child("vsync").attribute("value").as_bool())
+			vsync_on = true;
+		else
+			vsync_on = false;
 	}
 
 	if(ret == true)
@@ -102,10 +109,7 @@ bool j1App::Awake()
 	save_game.create("save_game.xml");
 	load_game.create("save_game.xml");
 
-	if (config.child("renderer").child("vsync").attribute("value").as_bool())
-		vsync_on = true;
-	else
-		vsync_on = false;
+	
 
 
 	return ret;
@@ -214,7 +218,14 @@ void j1App::FinishUpdate()
 
 	if (framerate_cap > 0)
 	{
-		SDL_Delay((float)abs((1000 / framerate_cap) - (float)last_frame_ms));
+		int time_to_wait = (double)(1000 / framerate_cap) - last_frame_ms;
+		if (time_to_wait > 0)
+		{
+			j1PerfTimer Delay_Timer;
+			Delay_Timer.Start();
+			SDL_Delay(time_to_wait);
+			LOG("We wanted to wait %3.d and we waited %0.2f", time_to_wait, Delay_Timer.ReadMs());
+		}
 	}
 }
 

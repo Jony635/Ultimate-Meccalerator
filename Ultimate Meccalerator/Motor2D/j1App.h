@@ -129,6 +129,7 @@ private:
 	j1Timer				startup_time;
 	j1Timer				frame_time;
 	j1PerfTimer			dt_timer;
+
 	uint32				framerate_cap;
 
 	bool				cap_on = false;

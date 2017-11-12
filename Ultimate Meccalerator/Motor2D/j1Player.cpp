@@ -141,11 +141,20 @@ bool j1Player::Start()
 	speed_x = standard_speed_x;
 	if(playerText==nullptr)
 	playerText = App->tex->Load("Resources/textures/Player_SpriteSheet.png");
+
 	return true;
 }
 
 bool j1Player::PreUpdate()
 {
+	
+
+	return true;
+}
+
+bool j1Player::Update(float dt)
+{
+	
 	if (CheckDieCol({ (int)pos.x, (int)pos.y + 15 }))
 	{
 		dead = true;
@@ -153,27 +162,27 @@ bool j1Player::PreUpdate()
 	if (!dead)
 	{
 		diesoundplayed = false;
-		CheckMovements();
+		CheckMovements(dt);
 	}
 	else
 	{
 		if (current_anim != &DieGoingRight)
 			current_anim = &DieGoingRight;
 	}
+	CheckFalls(dt);
 	return true;
 }
 
-bool j1Player::Update(float dt)
+bool j1Player::PostUpdate()
 {
 	CheckWin();
 	CheckAccels();
-	CheckFalls();
 	
 	if (current_anim != &DieGoingRight || !current_anim->Finished())
 	{
 		App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
 	}
-	
+
 	else
 	{
 		if (dieCounter > 120)
@@ -187,13 +196,6 @@ bool j1Player::Update(float dt)
 			dieCounter = dieCounter + 1;
 		}
 	}
-		
-	return true;
-}
-
-bool j1Player::PostUpdate()
-{
-	
 	return true;
 }
 
@@ -373,14 +375,14 @@ uint j1Player::getDownYCol(iPoint pos) const
 	return 0;
 }
 
-void j1Player::CheckFalls()
+void j1Player::CheckFalls(float dt)
 {
 	if (grounded == false)
 	{
 		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y - speed_y) + App->map->data.tile_height / 2 }) == false)
 		{
-			pos.y -= speed_y;
-			speed_y -= App->scene->Gravity;
+			pos.y -= speed_y * 75 * dt;
+			speed_y -= App->scene->Gravity * 75 * dt;
 		}
 		else
 		{
@@ -559,7 +561,7 @@ void j1Player::CheckWin()
 	}
 }
 
-void j1Player::CheckMovements() 
+void j1Player::CheckMovements(float dt) 
 {
 	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) &&
 		pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
@@ -570,7 +572,7 @@ void j1Player::CheckMovements()
 			current_anim = &GoRight;
 		}
 			
-		pos.x += speed_x;
+		pos.x += speed_x * 75 * dt;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
 	{
@@ -585,7 +587,7 @@ void j1Player::CheckMovements()
 		 {
 			 current_anim = &GoLeft;
 		 }
-		pos.x -= speed_x;
+		pos.x -= speed_x * 75 * dt;
 	}
 	 if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
 	 {
@@ -617,7 +619,7 @@ void j1Player::CheckMovements()
 			
 			
 		}
-		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
+		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60 * 75 * dt;
 		grounded = false;
 	}
 	

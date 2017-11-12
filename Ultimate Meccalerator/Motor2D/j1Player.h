@@ -75,10 +75,10 @@ private:
 	Animation DoubleJump_GoingRight;
 	Animation DoubleJump_GoingLeft;
 
-	void CheckFalls();
+	void CheckFalls(float dt);
 	void CheckAccels();
 	void CheckWin();
-	void CheckMovements();
+	void CheckMovements(float dt);
 
 	
 	bool CheckRightPos(iPoint pos)const;
