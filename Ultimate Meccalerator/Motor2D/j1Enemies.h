@@ -12,7 +12,7 @@ class EnemyData
 {
 public:
 	EnemyData(int x, int y);
-	iPoint position;
+	fPoint position;
 };
 
 

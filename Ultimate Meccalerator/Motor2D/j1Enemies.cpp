@@ -7,7 +7,7 @@
 
 
 
-EnemyData::EnemyData(int x, int y) : position(iPoint(x, y)) {}
+EnemyData::EnemyData(int x, int y) : position(fPoint(x, y)) {}
 Enemy::Enemy() {}
 
 void Enemy::Move(float dt) {}

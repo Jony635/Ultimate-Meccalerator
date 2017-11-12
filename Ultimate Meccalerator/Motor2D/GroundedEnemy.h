@@ -10,11 +10,11 @@ struct SDL_Texture;
 class GroundedEnemy : public Enemy
 {
 private:
-	iPoint position;
+	fPoint position;
 	Animation std_anim;
 	Animation* main_Anim;
 public:
-	GroundedEnemy(iPoint);
+	GroundedEnemy(fPoint);
 	void Move(float dt);
 	void Draw(SDL_Texture* enemyTex) const;
 };

@@ -6,7 +6,7 @@
 #include "j1Render.h"
 #include "j1Map.h"
 
-GroundedEnemy::GroundedEnemy(iPoint data_pos) : position(data_pos) 
+GroundedEnemy::GroundedEnemy(fPoint data_pos) : position(data_pos) 
 {
 	std_anim.PushBack({ 3,0,50,29 });
 	std_anim.PushBack({ 60,0,50,29 });
@@ -20,21 +20,28 @@ GroundedEnemy::GroundedEnemy(iPoint data_pos) : position(data_pos)
 
 void GroundedEnemy::Move(float dt)
 {
-	iPoint pos_mapped = App->map->World_to_Map(position);
-	iPoint playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
-	/*App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 1);
-
-
+	p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
+	p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
+	App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2);
 
 	const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 	
 	const iPoint* tile_mapped = path->At(1);
-	iPoint tile_world = App->map->MapToWorld(tile_mapped->x, tile_mapped->y);
+	if (tile_mapped)
+	{
+		iPoint tile_world = App->map->MapToWorld(tile_mapped->x, tile_mapped->y);
+		position.x += (tile_world.x - position.x)* 2 * dt;
+		position.y += (tile_world.y - position.y)* 2 * dt;
+	}
 	
-	position.x += (tile_world.x - position.x) * 60 * dt;
-	position.y += (tile_world.y - position.y) * 60 * dt;*/
-
-
+	const iPoint* tile_mapped2 = path->At(2);
+	if (tile_mapped2)
+	{
+		iPoint tile_world2 = App->map->MapToWorld(tile_mapped2->x, tile_mapped2->y);
+		position.x += (tile_world2.x - position.x)* 2 * dt;
+		position.y += (tile_world2.y - position.y)* 2 * dt;
+	}
+	
 }
 
 void GroundedEnemy::Draw(SDL_Texture* enemyTex) const
