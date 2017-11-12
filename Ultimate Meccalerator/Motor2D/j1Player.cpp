@@ -154,7 +154,7 @@ bool j1Player::PreUpdate()
 
 bool j1Player::Update(float dt)
 {
-		CheckAccels(dt);
+	CheckAccels(dt);
 
 	if (CheckDieCol({ (int)pos.x, (int)pos.y + 15 }))
 	{
@@ -170,6 +170,7 @@ bool j1Player::Update(float dt)
 		if (current_anim != &DieGoingRight)
 			current_anim = &DieGoingRight;
 	}
+
 	CheckFalls(dt);
 	return true;
 }
@@ -265,7 +266,7 @@ bool j1Player::CheckDownPos(iPoint pos) const
 			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
 			{
 				
-				if(x== pos_tile.x * TileSet->data->tile_width && (y==(pos_tile.y+1)*TileSet->data->tile_height))
+				if(x== pos_tile.x * TileSet->data->tile_width && (y==(pos_tile.y)*TileSet->data->tile_height))
 					if (*(layer->data->data + num_tile) == 5193+8)
 					{
 						return true;
@@ -357,7 +358,7 @@ uint j1Player::getDownYCol(iPoint pos) const
 			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
 			{
 
-				if (x == pos_tile.x * TileSet->data->tile_width && (y > pos_tile.y*TileSet->data->tile_height))
+				if (x == pos_tile.x * TileSet->data->tile_width && (y >= pos_tile.y * TileSet->data->tile_height))
 					if (*(layer->data->data + num_tile) == 5193 + 8)
 					{
 						return y;
@@ -379,7 +380,7 @@ void j1Player::CheckFalls(float dt)
 {
 	if (grounded == false)
 	{
-		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y - speed_y) + App->map->data.tile_height / 2 }) == false)
+		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y + 42 - speed_y * 75 * dt) }) == false)
 		{
 			pos.y -= speed_y * 75 * dt;
 			speed_y -= App->scene->Gravity * 75 * dt;
@@ -391,7 +392,7 @@ void j1Player::CheckFalls(float dt)
 				DoubleJump_GoingRight.Reset();
 				DoubleJump_GoingLeft.Reset();
 				current_anim = &IdleRight;
-				pos.y = getDownYCol({ (int)pos.x + 15, (int)pos.y }) - 44;
+				pos.y = getDownYCol({ (int)pos.x + 20, (int)pos.y + 42 }) -42;
 				grounded = true;
 				jumps = 1;
 				speed_y = 0;
@@ -399,18 +400,18 @@ void j1Player::CheckFalls(float dt)
 			else
 				if (speed_y > 0)
 				{
-					pos.y -= speed_y;
-					speed_y -= App->scene->Gravity;
+					pos.y -= speed_y * 75 * dt;
+					speed_y -= App->scene->Gravity * 75 * dt;
 				}
 		}
 	}
 
-	if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y) + App->map->data.tile_height / 2 + 1 }) == false)
+	if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y+42)}) == false)
 	{
 		grounded = false;
 	}
 
-	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.x + 20), (int)pos.y + App->map->data.tile_height / 2 + 1 }))
+	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.x + 20), (int)pos.y +42}))
 	{
 		DoubleJump_GoingRight.Reset();
 		DoubleJump_GoingLeft.Reset();
@@ -494,7 +495,7 @@ void j1Player::CheckAccels(float dt)
 	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
 	if (accel_y != 0)
 	{
-		speed_y -= (accel_y / 60)*75*dt;
+		speed_y -= (accel_y / 60) * 75 * dt;
 		App->audio->PlayFx(App->audio->accelsound);
 	}
 		
@@ -503,13 +504,13 @@ void j1Player::CheckAccels(float dt)
 	if (accel_x != 0)
 	{
 		App->audio->PlayFx(App->audio->accelsound);
-		speed_x += accel_x / 60;
+		speed_x += (accel_x / 60) * 75 * dt;
 		if (!CheckRightPos({(int)(pos.x+speed_x), (int)pos.x+30}))
-		pos.x += speed_x;
+		pos.x += speed_x * 75 * dt;
 	}
 	else
 		if (speed_x > standard_speed_x)
-			speed_x -= 9.2 / 60;
+			speed_x -= 9.2 / 60 * 75 * dt;
 		else
 			if (speed_x < standard_speed_x)
 				speed_x = standard_speed_x;
