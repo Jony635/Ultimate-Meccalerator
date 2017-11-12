@@ -6,6 +6,7 @@
 #include "j1App.h"
 #include "j1Module.h"
 
+struct SDL_Texture;
 
 class EnemyData
 {
@@ -23,7 +24,7 @@ public:
 	Enemy();
 	
 	virtual void Move(float dt);
-	virtual void Draw() const;
+	virtual void Draw(SDL_Texture*) const;
 };
 
 
@@ -33,6 +34,9 @@ private:
 
 	p2List<Enemy*> EnemyList;
 	p2List<EnemyData*> EnemyDataList;
+
+	SDL_Texture* EnemyTex = nullptr;
+
 
 public:
 

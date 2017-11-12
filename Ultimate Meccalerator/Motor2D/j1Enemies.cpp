@@ -2,6 +2,8 @@
 #include "j1Map.h"
 #include "j1Player.h"
 #include "GroundedEnemy.h"
+#include "j1Textures.h"
+#include "j1FileSystem.h"
 
 
 
@@ -10,7 +12,7 @@ Enemy::Enemy() {}
 
 void Enemy::Move(float dt) {}
 
-void Enemy::Draw() const {}
+void Enemy::Draw(SDL_Texture* enemyTex) const {}
 
 
 j1Enemies::j1Enemies() : j1Module()
@@ -27,7 +29,7 @@ bool j1Enemies::Awake(pugi::xml_node& node)
 
 bool j1Enemies::Start()
 {
-
+	EnemyTex = App->tex->Load("Resources/textures/enemies.png");
 	return true;
 }
 
@@ -131,7 +133,7 @@ void j1Enemies::MoveEnemies(float dt)
 	p2List_item<Enemy*>* enemy = EnemyList.start;
 	while (enemy)
 	{
-		enemy->data->Move();
+		enemy->data->Move(dt);
 		enemy = enemy->next;
 	}
 }
@@ -141,7 +143,7 @@ void j1Enemies::DrawEnemies()
 	p2List_item<Enemy*>* enemy = EnemyList.start;
 	while (enemy)
 	{
-		enemy->data->Draw();
+		enemy->data->Draw(EnemyTex);
 		enemy = enemy->next;
 	}
 }

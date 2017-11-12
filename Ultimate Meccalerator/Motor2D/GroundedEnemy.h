@@ -5,16 +5,18 @@
 #include "j1Enemies.h"
 #include "Animation.h"
 
+struct SDL_Texture;
 
 class GroundedEnemy : public Enemy
 {
 private:
 	iPoint position;
-	Animation main_Anim;
+	Animation std_anim;
+	Animation* main_Anim;
 public:
 	GroundedEnemy(iPoint);
 	void Move(float dt);
-	void Draw() const;
+	void Draw(SDL_Texture* enemyTex) const;
 };
 
 
