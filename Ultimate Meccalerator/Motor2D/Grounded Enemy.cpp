@@ -41,6 +41,13 @@ void GroundedEnemy::Move(float dt)
 		position.x += (tile_world2.x - position.x)* 2 * dt;
 		position.y += (tile_world2.y - position.y)* 2 * dt;
 	}
+	/*const iPoint* tile_mapped3 = path->At(3);
+	if (tile_mapped3)
+	{
+		iPoint tile_world3 = App->map->MapToWorld(tile_mapped3->x, tile_mapped3->y);
+		position.x += (tile_world3.x - position.x) * 2 * dt;
+		position.y += (tile_world3.y - position.y) * 2 * dt;
+	}*/
 	
 }
 

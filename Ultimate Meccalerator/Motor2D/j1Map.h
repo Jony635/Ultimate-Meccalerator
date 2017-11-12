@@ -148,7 +148,7 @@ public:
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 
-	void UpdateLayers(char*);
+	void UpdateLayers(char*, float);
 
 	TileSet* GetTilesetFromTileId(int id) const;
 

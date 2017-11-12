@@ -620,7 +620,7 @@ void j1Player::CheckMovements(float dt)
 			
 			
 		}
-		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60 * 35 * dt;
+		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
 		grounded = false;
 	}
 	
