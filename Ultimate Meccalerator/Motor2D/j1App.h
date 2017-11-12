@@ -5,6 +5,8 @@
 #include "j1Module.h"
 #include "PugiXml\src\pugixml.hpp"
 #include "p2SString.h"
+#include "j1PerfTimer.h"
+#include "j1Timer.h"
 
 // Modules
 class j1Window;
@@ -62,6 +64,8 @@ public:
 	pugi::xml_node LoadConfig(pugi::xml_document&) const;
 
 	void RestartScene()const;
+	char* GetBoolString(const bool b) const;
+
 private:
 
 	// Load config file
@@ -118,7 +122,17 @@ private:
 	p2SString			load_game;
 	mutable p2SString	save_game;
 
-	
+	j1Timer				last_sec_frame_time;
+	uint32				prev_last_sec_frame_count = 0;
+	uint32				last_sec_frame_count = 0;
+	uint64				frame_count = 0;
+	j1Timer				startup_time;
+	j1Timer				frame_time;
+	j1PerfTimer			dt_timer;
+	uint32				framerate_cap;
+
+	bool				cap_on = false;
+	bool				vsync_on = false;
 
 public:
 	Levels actual_lvl = Levels::FIRST_LEVEL;
