@@ -83,7 +83,9 @@ bool j1Render::Update(float dt)
 		camera.x = camera.y = 0;
 		Blit(defwinText, 0, 0);
 	}
-		
+
+	CheckCameraPos(dt);
+
 	return true;
 }
 
@@ -91,7 +93,6 @@ bool j1Render::PostUpdate()
 {
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
-	CheckCameraPos();
 	return true;
 }
 
@@ -264,19 +265,19 @@ bool j1Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, U
 	return ret;
 }
 
-void j1Render::CheckCameraPos()
+void j1Render::CheckCameraPos(float dt)
 {
 	if (App->player->pos.x <= (-1 * (camera.x - (camera.w / 2))) - App->map->data.tile_width && camera.x < 0 /*&&*/
 		/*(App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)*/)
 	{
 		App->map->UpdateLayers("left");
-		camera.x += App->player->speed_x;
+		camera.x += App->player->speed_x*75*dt;
 	}
 	else if (App->player->pos.x >= -1 * (camera.x - (camera.w / 2)) + App->map->data.tile_width && -1 * (camera.x - camera.w) <= App->map->data.width*App->map->data.tile_width /*&&*/
 		/*(App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)*/)
 	{
 		App->map->UpdateLayers("right");
-		camera.x -= App->player->speed_x;
+		camera.x -= App->player->speed_x*75*dt;
 	}
 
 	camera.y = App->player->pos.y * -1 +500;
