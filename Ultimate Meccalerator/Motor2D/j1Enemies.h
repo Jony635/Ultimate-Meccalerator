@@ -23,8 +23,12 @@ private:
 	int speed;
 
 public:
-	void Move();
-	void Draw() const;
+	Enemy(iPoint);
+	
+
+
+	virtual void Move();
+	virtual void Draw() const;
 };
 
 
@@ -36,7 +40,6 @@ private:
 	p2List<EnemyData*> EnemyDataList;
 
 public:
-
 
 	j1Enemies();
 
@@ -66,8 +69,13 @@ public:
 
 	bool Save(pugi::xml_node&) const;
 
+public:
 
+	//Read enemies spawn from the tmx of the current map
 	void FillEnemiesData();
+
+	//Check enemies data list to spawn them when closer to the player to 50 pixels (only in x)
+	void SpawnEnemies();
 };
 
 

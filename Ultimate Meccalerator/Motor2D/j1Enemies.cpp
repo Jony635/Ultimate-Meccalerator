@@ -1,20 +1,16 @@
 #include "j1Enemies.h"
 #include "j1Map.h"
+#include "j1Player.h"
 
 
 
 EnemyData::EnemyData(int x, int y) : position(iPoint(x, y)) {}
+Enemy::Enemy(iPoint data_pos) : position(data_pos) {}
 
+void Enemy::Move() {}
 
-void Enemy::Move()
-{
+void Enemy::Draw() const {}
 
-}
-
-void Enemy::Draw() const
-{
-
-}
 
 j1Enemies::j1Enemies() : j1Module()
 {
@@ -41,17 +37,17 @@ bool j1Enemies::CleanUp()
 	p2List_item<EnemyData*>* data = EnemyDataList.start;
 	while (data != nullptr)
 	{
-		RELEASE(data);
+		RELEASE(data->data);
 		data = data->next;
 	}
 	EnemyDataList.clear();
 
 	//Clear EnemyList
-	p2List_item<Enemy*>* data = EnemyList.start;
-	while (data != nullptr)
+	p2List_item<Enemy*>* enemy = EnemyList.start;
+	while (enemy != nullptr)
 	{
-		RELEASE(data);
-		data = data->next;
+		RELEASE(enemy->data);
+		enemy = enemy->next;
 	}
 	EnemyList.clear();
 
@@ -60,6 +56,7 @@ bool j1Enemies::CleanUp()
 
 bool j1Enemies::PreUpdate()
 {
+	SpawnEnemies();
 	return true;
 }
 
@@ -96,12 +93,26 @@ void j1Enemies::FillEnemiesData()
 			{
 				int tile_id = layer_it->data->Get(x, y);
 				TileSet* tileset = (tile_id > 0) ? App->map->GetTilesetFromTileId(tile_id) : NULL;
-				if (tile_id - tileset->firstgid == 4)
+				if (tileset && tile_id - tileset->firstgid == 4)
 				{
-					EnemyData* data = new EnemyData(x, y);
+					EnemyData* data = new EnemyData(x*tileset->tile_width, y*tileset->tile_height);
 					EnemyDataList.add(data);
 				}
 			}
 		}
+	}
+}
+
+void j1Enemies::SpawnEnemies()
+{
+	p2List_item<EnemyData*>* data = EnemyDataList.start;
+	while (data)
+	{
+		if (abs(data->data->position.x - App->player->pos.x) < 40 * App->map->data.tile_width)
+		{
+ 			Enemy* enemy = new Enemy(data->data->position);
+			EnemyDataList.del(data);
+		}
+		data = data->next;
 	}
 }

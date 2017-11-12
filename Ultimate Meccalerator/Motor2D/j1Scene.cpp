@@ -142,5 +142,6 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 	App->player->CleanUp();
 	App->map->CleanUp();
+	App->enemies->CleanUp();
 	return true;
 }

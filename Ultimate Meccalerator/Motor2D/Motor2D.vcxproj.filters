@@ -52,6 +52,9 @@
     <ClCompile Include="j1Enemies.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Grounded Enemy.cpp">
+      <Filter>Desenvolupament  ========\EnemyTypes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="j1Window.h">
@@ -126,6 +129,9 @@
     <ClInclude Include="j1Enemies.h">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="GroundedEnemy.h">
+      <Filter>Desenvolupament  ========\EnemyTypes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Programacio 2 ===========">
@@ -145,6 +151,9 @@
     </Filter>
     <Filter Include="Desenvolupament  ========\Tools\PuguiXML">
       <UniqueIdentifier>{7cb78d67-17cc-45eb-af97-e2106becce7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Desenvolupament  ========\EnemyTypes">
+      <UniqueIdentifier>{0516624d-e984-4ea9-a9d1-857bef4c9194}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

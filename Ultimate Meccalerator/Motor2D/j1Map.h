@@ -7,6 +7,9 @@
 #include "j1Module.h"
 #include "j1Enemies.h"
 
+
+struct SDL_Texture;
+
 enum PropertyType
 {
 	NO_TYPE = -1,
