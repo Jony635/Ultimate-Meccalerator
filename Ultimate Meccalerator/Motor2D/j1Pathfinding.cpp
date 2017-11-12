@@ -123,22 +123,22 @@ uint PathNode::FindWalkableAdjacents(PathList& list_to_fill) const
 	// north
 	cell.create(pos.x, pos.y + 1);
 	if(App->pathfinding->IsWalkable(cell))
-		list_to_fill.list.add(PathNode(this->g+1, -1, cell, this));
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
 	// south
 	cell.create(pos.x, pos.y - 1);
 	if(App->pathfinding->IsWalkable(cell))
-		list_to_fill.list.add(PathNode(this->g + 1, -1, cell, this));
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
 	// east
 	cell.create(pos.x + 1, pos.y);
 	if(App->pathfinding->IsWalkable(cell))
-		list_to_fill.list.add(PathNode(this->g + 1, -1, cell, this));
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
 	// west
 	cell.create(pos.x - 1, pos.y);
 	if(App->pathfinding->IsWalkable(cell))
-		list_to_fill.list.add(PathNode(this->g + 1, -1, cell, this));
+		list_to_fill.list.add(PathNode(-1, -1, cell, this));
 
 	return list_to_fill.list.count();
 }
@@ -154,10 +154,20 @@ int PathNode::Score() const
 // PathNode -------------------------------------------------------------------------
 // Calculate the F for a specific destination tile
 // ----------------------------------------------------------------------------------
-int PathNode::CalculateF(const iPoint& destination)
+int PathNode::CalculateF(const iPoint& destination, int filter)
 {
-	g = parent->g + 1;
-	h = pos.DistanceTo(destination);
+	uchar cost = App->pathfinding->GetTileAt(pos);
+	if (filter == -1)
+	{
+		g = parent->g + cost;
+		h = pos.DistanceTo(destination);
+	}
+	else
+	{
+		if(cost != filter)
+			g = parent->g + cost + 6;	//If the enemy dont have to path by this terrain, increment his cost
+		h = pos.DistanceTo(destination);
+	}
 
 	return g + h;
 }
@@ -165,7 +175,7 @@ int PathNode::CalculateF(const iPoint& destination)
 // ----------------------------------------------------------------------------------
 // Actual A* algorithm: return number of steps in the creation of the path or -1 ----
 // ----------------------------------------------------------------------------------
-int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
+int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, int filter)
 {
 	int ret = -1;
 	// TODO 1: if origin or destination are not walkable, return -1
@@ -222,13 +232,14 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 				{
 					if (pathnode->data.g > itnode->data.g)
 					{
+						itnode->data.CalculateF(destination, filter);
 						pathnode->data.g = itnode->data.g;
 						pathnode->data.parent = itnode->data.parent;
 					}
 				}
 				else
 				{
-					itnode->data.CalculateF(destination);
+					itnode->data.CalculateF(destination, filter);
 					open.list.add(itnode->data);
 				}
 			}

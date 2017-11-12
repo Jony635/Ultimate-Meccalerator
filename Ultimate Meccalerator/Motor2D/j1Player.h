@@ -9,12 +9,13 @@
 struct SDL_Texture;
 
 
-
 class j1Player : public j1Module
 {
 
 public:
+
 	j1Player();
+
 	// Destructor
 	virtual ~j1Player();
 
@@ -42,6 +43,8 @@ public:
 	bool Save(pugi::xml_node&) const;
 
 public:
+
+	 
 
 	fPoint pos;
 	float speed_x;
