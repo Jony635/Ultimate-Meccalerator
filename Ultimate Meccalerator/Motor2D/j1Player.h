@@ -76,7 +76,7 @@ private:
 	Animation DoubleJump_GoingLeft;
 
 	void CheckFalls(float dt);
-	void CheckAccels();
+	void CheckAccels(float dt);
 	void CheckWin();
 	void CheckMovements(float dt);
 

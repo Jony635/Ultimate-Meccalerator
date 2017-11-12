@@ -154,7 +154,8 @@ bool j1Player::PreUpdate()
 
 bool j1Player::Update(float dt)
 {
-	
+		CheckAccels(dt);
+
 	if (CheckDieCol({ (int)pos.x, (int)pos.y + 15 }))
 	{
 		dead = true;
@@ -176,7 +177,6 @@ bool j1Player::Update(float dt)
 bool j1Player::PostUpdate()
 {
 	CheckWin();
-	CheckAccels();
 	
 	if (current_anim != &DieGoingRight || !current_anim->Finished())
 	{
@@ -489,12 +489,12 @@ float j1Player::getAccelX(iPoint pos) const
 	return 0;
 }
 
-void j1Player::CheckAccels()
+void j1Player::CheckAccels(float dt)
 {
 	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
 	if (accel_y != 0)
 	{
-		speed_y -= accel_y / 60;
+		speed_y -= (accel_y / 60)*75*dt;
 		App->audio->PlayFx(App->audio->accelsound);
 	}
 		
@@ -619,7 +619,7 @@ void j1Player::CheckMovements(float dt)
 			
 			
 		}
-		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60 * 75 * dt;
+		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60 * 35 * dt;
 		grounded = false;
 	}
 	
