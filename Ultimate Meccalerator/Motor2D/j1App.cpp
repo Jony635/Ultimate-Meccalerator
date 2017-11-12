@@ -224,7 +224,7 @@ void j1App::FinishUpdate()
 	
 
 	static char title[256];
-	sprintf_s(title, 256, "FPS: %i Average FPS: %.2f MS of the last frame: %02u Cap on: %s Vsync on: %s",
+	sprintf_s(title, 256, "FPS: %i AverageFPS: %.2f Last_frame ms: %02u Cap_On: %s VSync_On: %s",
 		frames_on_last_update,avg_fps, last_frame_ms,GetBoolString(cap_on),GetBoolString(vsync_on));
 	App->win->SetTitle(title);
 
@@ -466,7 +466,7 @@ void j1App::RestartScene() const
 char* j1App::GetBoolString(const bool b) const
 {
 	if (b)
-		return "true";
+		return "True";
 	else
-		return "false";
+		return "False";
 }
