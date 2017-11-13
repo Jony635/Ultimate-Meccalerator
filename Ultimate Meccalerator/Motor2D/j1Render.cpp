@@ -62,6 +62,7 @@ bool j1Render::Start()
 	// back background
 	defwinText = App->tex->Load("Resources/textures/win_screen.png");
 	camera.y = App->map->data.camera_starting_y * App->map->data.tile_height;
+	fcamera.y = camera.y;
 	SDL_RenderSetLogicalSize(renderer, App->win->screen_surface->w, App->win->screen_surface->h);
 	SDL_RenderGetViewport(renderer, &viewport);
 	return true;
@@ -81,6 +82,7 @@ bool j1Render::Update(float dt)
 	if (defWin)
 	{
 		camera.x = camera.y = 0;
+		fcamera = fPoint(camera.x, camera.y);
 		Blit(defwinText, 0, 0);
 	}
 
@@ -111,6 +113,8 @@ bool j1Render::Load(pugi::xml_node& data)
 {
 	camera.x = data.child("camera").attribute("x").as_int();
 	camera.y = data.child("camera").attribute("y").as_int();
+	fcamera.x = camera.x;
+	fcamera.y = camera.y;
 
 	return true;
 }
@@ -271,13 +275,15 @@ void j1Render::CheckCameraPos(float dt)
 		/*(App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)*/)
 	{
 		App->map->UpdateLayers("left", dt);
-		camera.x += App->player->speed_x * 75 * dt;
+		fcamera.x += App->player->speed_x * 75 * dt;
+		camera.x = fcamera.x;
 	}
 	else if (App->player->pos.x >= -1 * (camera.x - (camera.w / 2)) + App->map->data.tile_width && -1 * (camera.x - camera.w) <= App->map->data.width*App->map->data.tile_width /*&&*/
 		/*(App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)*/)
 	{
 		App->map->UpdateLayers("right", dt);
-		camera.x -= App->player->speed_x * 75 * dt;
+		fcamera.x -= App->player->speed_x * 75 * dt;
+		camera.x = fcamera.x;
 	}
 
 	camera.y = App->player->pos.y * -1 +500;

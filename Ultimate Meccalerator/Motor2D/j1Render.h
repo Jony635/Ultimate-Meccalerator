@@ -50,6 +50,7 @@ public:
 	SDL_Texture* defwinText = nullptr;
 	SDL_Renderer*	renderer;
 	SDL_Rect		camera;
+	fPoint			fcamera;
 	SDL_Rect		viewport;
 	SDL_Color		background;
 	bool defWin = false;
