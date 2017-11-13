@@ -116,13 +116,17 @@ void j1Enemies::SpawnEnemies()
 	{
 		if (abs(data->data->position.x - App->player->pos.x) < 40 * App->map->data.tile_width)
 		{
-			Enemy* enemy;
+			Enemy* enemy = nullptr;
 			if (App->actual_lvl == Levels::FIRST_LEVEL)
 				enemy = new GroundedEnemy(data->data->position);
 			else
 			{}
 			EnemyDataList.del(data);
-			EnemyList.add(enemy);
+			delete data->data;
+			data->data = nullptr;
+
+			if(enemy)
+				EnemyList.add(enemy);
 		}
 		data = data->next;
 	}

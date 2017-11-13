@@ -515,7 +515,7 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties, Propert
 	return ret;
 }
 
-void j1Map::UpdateLayers(char* direction)
+void j1Map::UpdateLayers(char* direction, float dt)
 {
 	if (direction == "right")
 	{
