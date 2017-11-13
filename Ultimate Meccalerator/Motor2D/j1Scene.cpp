@@ -46,6 +46,7 @@ bool j1Scene::Start()
 		RELEASE_ARRAY(data);
 
 		App->render->camera.x = 0;
+		App->render->fcamera.x = 0;
 
 		if(App->player->playerText==nullptr)
 			App->player->Start();
@@ -53,6 +54,7 @@ bool j1Scene::Start()
 	else
 	{
 		App->render->camera.x = 0;
+		App->render->fcamera.x = 0;
 		App->map->Load("Level_2_x2.tmx");
 
 		int w, h;
