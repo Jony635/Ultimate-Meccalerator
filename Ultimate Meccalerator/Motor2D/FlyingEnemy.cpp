@@ -62,8 +62,7 @@ void FlyingEnemy::Move(float dt)
 		if (timeWaited == 0.0f)
 			waitTimer.Start();
 		timeWaited = waitTimer.ReadSec();
-	}
-
+	 }
 }
 
 void FlyingEnemy::Draw(SDL_Texture* enemyTex) const

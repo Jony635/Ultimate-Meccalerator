@@ -47,6 +47,7 @@ bool j1Scene::Start()
 
 		App->render->camera.x = 0;
 		App->render->fcamera.x = 0;
+
 		if(App->player->playerText==nullptr)
 			App->player->Start();
 	}

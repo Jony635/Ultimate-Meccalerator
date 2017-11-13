@@ -59,12 +59,10 @@ void GroundedEnemy::Move(float dt)
 			timeWaited = 0;
 			wait = false;
 		}
-
+    
 		if (timeWaited == 0.0f)
 			waitTimer.Start();
-		timeWaited = waitTimer.ReadSec();
-	}
-	
+		  timeWaited = waitTimer.ReadSec();
 }
 
 void GroundedEnemy::Draw(SDL_Texture* enemyTex) const
