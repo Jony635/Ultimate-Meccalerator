@@ -642,7 +642,7 @@ bool j1Player::CheckDieCol(iPoint pos) const
 				if (x == pos_tile.x * TileSet->data->tile_width && y == pos_tile.y * TileSet->data->tile_height)
 					if (*(layer->data->data + num_tile) == 5193 + 0)
 					{
-						if (!diesoundplayed) 
+						if (!diesoundplayed)
 						{
 							App->audio->PlayFx(App->audio->dieSound);
 							diesoundplayed = true;
@@ -659,5 +659,22 @@ bool j1Player::CheckDieCol(iPoint pos) const
 			}
 		}
 	}
+
+	/*for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+	{
+		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+			continue;
+		if (layer->data->data[App->map->getTileid(pos_tile)+1] == 5193 + 0)
+		{
+			int id = App->map->getTileid(pos_tile);
+			if (!diesoundplayed)
+			{
+				App->audio->PlayFx(App->audio->dieSound);
+				diesoundplayed = true;
+			}
+			return true;
+		}
+	}*/
+
 	return false;
 }

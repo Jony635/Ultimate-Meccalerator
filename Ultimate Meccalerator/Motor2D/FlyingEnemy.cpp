@@ -20,7 +20,7 @@ FlyingEnemy::FlyingEnemy(fPoint data_pos) : position(data_pos)
 
 void FlyingEnemy::Move(float dt)
 {
-	p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
+	/*p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
 	p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
 	App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2);
 
@@ -40,7 +40,7 @@ void FlyingEnemy::Move(float dt)
 		iPoint tile_world2 = App->map->MapToWorld(tile_mapped2->x, tile_mapped2->y);
 		position.x += (tile_world2.x - position.x) * 2 * dt;
 		position.y += (tile_world2.y - position.y) * 2 * dt;
-	}
+	}*/
 	/*const iPoint* tile_mapped3 = path->At(3);
 	if (tile_mapped3)
 	{
