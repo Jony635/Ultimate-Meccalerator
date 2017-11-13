@@ -16,7 +16,7 @@ private:
 	Animation* main_Anim;
 	
 	bool wait = false;
-	float timeWaited = 0.0f;
+	double timeWaited = 0.0f;
 	j1Timer waitTimer;
 public:
 	GroundedEnemy(fPoint);

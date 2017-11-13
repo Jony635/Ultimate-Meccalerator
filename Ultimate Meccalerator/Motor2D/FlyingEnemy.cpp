@@ -24,7 +24,7 @@ void FlyingEnemy::Move(float dt)
 	p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
 	if (!wait)
 	{
-		int pathFounded = App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 1);
+		int pathFounded = App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2);
 
 		const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 
