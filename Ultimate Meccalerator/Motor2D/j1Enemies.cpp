@@ -4,6 +4,7 @@
 #include "GroundedEnemy.h"
 #include "j1Textures.h"
 #include "j1FileSystem.h"
+#include "FlyingEnemy.h"
 
 
 
@@ -120,11 +121,11 @@ void j1Enemies::SpawnEnemies()
 			if (App->actual_lvl == Levels::FIRST_LEVEL)
 				enemy = new GroundedEnemy(data->data->position);
 			else
-			{}
+				enemy = new FlyingEnemy(data->data->position);
+			
+			RELEASE(data->data);
 			EnemyDataList.del(data);
-			delete data->data;
-			data->data = nullptr;
-
+			
 			if(enemy)
 				EnemyList.add(enemy);
 		}

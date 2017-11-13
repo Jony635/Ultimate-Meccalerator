@@ -52,7 +52,10 @@
     <ClCompile Include="j1Enemies.cpp">
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Grounded Enemy.cpp">
+    <ClCompile Include="GroundedEnemy.cpp">
+      <Filter>Desenvolupament  ========\EnemyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyingEnemy.cpp">
       <Filter>Desenvolupament  ========\EnemyTypes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -130,6 +133,9 @@
       <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
     <ClInclude Include="GroundedEnemy.h">
+      <Filter>Desenvolupament  ========\EnemyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyingEnemy.h">
       <Filter>Desenvolupament  ========\EnemyTypes</Filter>
     </ClInclude>
   </ItemGroup>
