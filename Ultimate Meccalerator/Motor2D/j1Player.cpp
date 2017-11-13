@@ -156,7 +156,7 @@ bool j1Player::Update(float dt)
 {
 	CheckAccels(dt);
 
-	if (CheckDieCol({ (int)pos.x, (int)pos.y + 15 }))
+	if (CheckDieCol({ (int)pos.x+1, (int)pos.y + 15 }))
 	{
 		dead = true;
 	}
@@ -251,95 +251,19 @@ void j1Player::SetStartingPos()
 			}
 		}
 	}
+	
 }
 
 bool j1Player::CheckDownPos(iPoint pos) const
 {
 	iPoint pos_tile=App->map->World_to_Map(pos);
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
 	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+			continue;
+		if (layer->data->data[App->map->getTileid(pos_tile)] == 5193 + 8)
 		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-				int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-				
-				if(x== pos_tile.x * TileSet->data->tile_width && (y==(pos_tile.y)*TileSet->data->tile_height))
-					if (*(layer->data->data + num_tile) == 5193+8)
-					{
-						return true;
-					}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
-		}
-	}
-	return false;
-}
-
-bool j1Player::CheckRightPos(iPoint pos) const
-{
-	iPoint pos_tile = App->map->World_to_Map(pos);
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
-	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
-		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-			int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-
-				if (x == pos_tile.x * TileSet->data->tile_width + TileSet->data->tile_width && y==pos_tile.y*TileSet->data->tile_height)
-					if (*(layer->data->data + num_tile) == 5193 + 8)
-					{
-						return true;
-					}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
-		}
-	}
-	return false;
-}
-
-bool j1Player::CheckLeftPos(iPoint pos) const
-{
-	iPoint pos_tile = App->map->World_to_Map(pos);
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
-	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
-		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-			int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-				if (x==pos_tile.x*TileSet->data->tile_width && y == pos_tile.y*TileSet->data->tile_height)
-					if (*(layer->data->data + num_tile) == 5193 + 8)
-					{
-						return true;
-					}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
+			return true;
 		}
 	}
 	return false;
@@ -425,32 +349,17 @@ void j1Player::CheckFalls(float dt)
 float j1Player::getAccelY(iPoint pos) const
 {
 	iPoint pos_tile = App->map->World_to_Map(pos);
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
 	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+			continue;
+		int gid = layer->data->data[App->map->getTileid(pos_tile)];
+		if (gid == 5193 + 1 || gid == 5193 + 7)
 		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-			int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-
-				if (x == pos_tile.x * TileSet->data->tile_width && (y == (pos_tile.y)* TileSet->data->tile_height + 30))
-					if (*(layer->data->data + num_tile) == 5193 + 1 || *(layer->data->data + num_tile) == 5193 + 7)
-					{
-						if(*(layer->data->data + num_tile) == 5193 + 1)
-							return App->map->LogicalTileset->find_child_by_attribute("id", "1").child("properties").find_child_by_attribute("name","accel_y").attribute("value").as_int();
-						else
-							return App->map->LogicalTileset->find_child_by_attribute("id", "7").child("properties").find_child_by_attribute("name", "accel_y").attribute("value").as_int();
-					}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
+			if (gid == 5193 + 1)
+				return App->map->LogicalTileset->find_child_by_attribute("id", "1").child("properties").find_child_by_attribute("name", "accel_y").attribute("value").as_int();
+			else
+				return App->map->LogicalTileset->find_child_by_attribute("id", "7").child("properties").find_child_by_attribute("name", "accel_y").attribute("value").as_int();
 		}
 	}
 	return 0;
@@ -459,32 +368,19 @@ float j1Player::getAccelY(iPoint pos) const
 float j1Player::getAccelX(iPoint pos) const
 {
 	iPoint pos_tile = App->map->World_to_Map(pos);
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	
+	
+	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
 	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+			continue;
+		int gid = layer->data->data[App->map->getTileid(pos_tile)];
+		if (gid == 5193 + 3 || gid == 5193 + 5)
 		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-			int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-
-				if (x == pos_tile.x * TileSet->data->tile_width && (y == (pos_tile.y)* TileSet->data->tile_height + 30))
-					if (*(layer->data->data + num_tile) == 5193 + 3 || *(layer->data->data + num_tile) == 5193 + 5)
-					{
-						if (*(layer->data->data + num_tile) == 5193 + 3)
-							return App->map->LogicalTileset->find_child_by_attribute("id", "3").child("properties").find_child_by_attribute("name", "accel_x").attribute("value").as_int();
-						else
-							return App->map->LogicalTileset->find_child_by_attribute("id", "5").child("properties").find_child_by_attribute("name", "accel_x").attribute("value").as_int();
-					}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
+			if (gid == 5193 + 3)
+				return App->map->LogicalTileset->find_child_by_attribute("id", "3").child("properties").find_child_by_attribute("name", "accel_x").attribute("value").as_int();
+			else
+				return App->map->LogicalTileset->find_child_by_attribute("id", "5").child("properties").find_child_by_attribute("name", "accel_x").attribute("value").as_int();
 		}
 	}
 	return 0;
@@ -492,7 +388,7 @@ float j1Player::getAccelX(iPoint pos) const
 
 void j1Player::CheckAccels(float dt)
 {
-	float accel_y = getAccelY({ (int)pos.x, (int)pos.y });
+	float accel_y = getAccelY({ (int)pos.x, (int)pos.y + 30});
 	if (accel_y != 0)
 	{
 		speed_y -= (accel_y / 60) * 75 * dt;
@@ -505,7 +401,7 @@ void j1Player::CheckAccels(float dt)
 	{
 		App->audio->PlayFx(App->audio->accelsound);
 		speed_x += (accel_x / 60) * 75 * dt;
-		if (!CheckRightPos({(int)(pos.x+speed_x), (int)pos.x+30}))
+		if (!CheckCol({(int)(pos.x+speed_x + App->map->data.tile_width), (int)pos.x+30})) // Right
 		pos.x += speed_x * 75 * dt;
 	}
 	else
@@ -519,29 +415,13 @@ void j1Player::CheckAccels(float dt)
 void j1Player::CheckWin()
 {
 	iPoint pos_tile = App->map->World_to_Map({ (int)pos.x, (int)pos.y });
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
 	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+			continue;
+		if (layer->data->data[App->map->getTileid(pos_tile)] == 5193 + 6)
 		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-			int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-
-				if (x == pos_tile.x * TileSet->data->tile_width && y == pos_tile.y*TileSet->data->tile_height + TileSet->data->tile_height)
-					if (*(layer->data->data + num_tile) == 5193 + 6)
-					{
-						win = true;
-					}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
+			win = true;
 		}
 	}
 	if (win)
@@ -558,7 +438,6 @@ void j1Player::CheckWin()
 			App->scene->CleanUp();
 			App->render->defWin = true;
 		}
-		
 	}
 }
 
@@ -566,7 +445,7 @@ void j1Player::CheckMovements(float dt)
 {
 	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) &&
 		pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
-		!CheckRightPos({ (int)pos.x + 3, (int)pos.y + 40 }))
+		!CheckCol({ (int)pos.x + 3 + App->map->data.tile_width, (int)pos.y + 40 })) //Right
 	{
 		if (current_anim != &GoRight && current_anim->Finished())
 		{
@@ -582,7 +461,7 @@ void j1Player::CheckMovements(float dt)
 	}
 	
 	 if ( (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
-		!CheckLeftPos({ (int)pos.x - 4, (int)pos.y + 40 }))
+		!CheckCol({ (int)pos.x - 4, (int)pos.y + 40 })) //Left
 	{
 		 if (current_anim != &GoLeft && current_anim->Finished())
 		 {
@@ -629,44 +508,12 @@ void j1Player::CheckMovements(float dt)
 bool j1Player::CheckDieCol(iPoint pos) const
 {
 	iPoint pos_tile = App->map->World_to_Map(pos);
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
-	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
-		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-			int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-
-				if (x == pos_tile.x * TileSet->data->tile_width && y == pos_tile.y * TileSet->data->tile_height)
-					if (*(layer->data->data + num_tile) == 5193 + 0)
-					{
-						if (!diesoundplayed)
-						{
-							App->audio->PlayFx(App->audio->dieSound);
-							diesoundplayed = true;
-						}
-						return true;
-					}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
-		}
-	}
-
-	/*for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
 	{
 		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
 			continue;
-		if (layer->data->data[App->map->getTileid(pos_tile)+1] == 5193 + 0)
+		if (layer->data->data[App->map->getTileid(pos_tile)] == 5193 + 0)
 		{
-			int id = App->map->getTileid(pos_tile);
 			if (!diesoundplayed)
 			{
 				App->audio->PlayFx(App->audio->dieSound);
@@ -674,7 +521,22 @@ bool j1Player::CheckDieCol(iPoint pos) const
 			}
 			return true;
 		}
-	}*/
+	}
 
+	return false;
+}
+
+bool j1Player::CheckCol(iPoint pos) const
+{
+	iPoint pos_tile = App->map->World_to_Map(pos);
+	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+	{
+		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+			continue;
+		if (layer->data->data[App->map->getTileid(pos_tile)] == 5193 + 8)
+		{
+			return true;
+		}
+	}
 	return false;
 }
