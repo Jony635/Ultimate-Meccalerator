@@ -81,6 +81,7 @@ void j1Map::Draw()
 				{
 					SDL_SetTextureAlphaMod(TileSet->data->texture, layer_to_draw->data->alpha*255);
 				}
+				if(x > (-1 * App->render->camera.x)-30 && x < (-1 * App->render->camera.x + App->render->camera.w) )
 				App->render->Blit(TileSet->data->texture, x, y, &TileSet->data->GetTileRect(*(layer_to_draw->data->data+num_tile)));
 				x += TileSet->data->tile_width;
 
