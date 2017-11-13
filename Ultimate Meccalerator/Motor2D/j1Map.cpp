@@ -138,7 +138,7 @@ iPoint j1Map::MapToWorld(int x, int y) const
 	return ret;
 }
 
-iPoint j1Map::World_to_Map(iPoint world_coordinates)
+iPoint j1Map::World_to_Map(iPoint world_coordinates) const
 {
 	iPoint ret(0, 0);
 
@@ -162,6 +162,22 @@ iPoint j1Map::World_to_Map(iPoint world_coordinates)
 	}
 
 	return ret;
+}
+
+iPoint j1Map::TileToMap(int tile_id) const
+{
+	iPoint ret = { 0,0 };
+	if (data.width != 0)
+	{
+		ret.y = (int)(tile_id / data.width);
+		ret.x = (int)(tile_id - 1 - (ret.y * data.width));
+	}
+	return ret;
+}
+
+int j1Map::getTileid(iPoint Tile) const
+{
+	return (Tile.y * (data.width-1)) + Tile.x + Tile.y;
 }
 
 SDL_Rect TileSet::GetTileRect(int id) const

@@ -144,7 +144,11 @@ public:
 	// TODO 8: Create a method that translates x,y coordinates from map positions to world positions
 	iPoint MapToWorld(int x, int y) const;
 
-	iPoint World_to_Map(iPoint world_coordinates);
+	iPoint World_to_Map(iPoint world_coordinates)const;
+
+	iPoint TileToMap(int tile_id) const;
+
+	int getTileid(iPoint Tile) const;
 
 	bool CreateWalkabilityMap(int& width, int& height, uchar** buffer) const;
 

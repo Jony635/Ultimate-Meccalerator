@@ -84,11 +84,9 @@ private:
 	void CheckMovements(float dt);
 
 	
-	bool CheckRightPos(iPoint pos)const;
-	bool CheckLeftPos(iPoint pos)const;
 	bool CheckDieCol(iPoint pos) const;
 
-
+	bool CheckCol(iPoint pos) const;
 
 	void SetStartingPos();
 	float getAccelY(iPoint pos) const;

@@ -13,6 +13,10 @@ private:
 	fPoint position;
 	Animation std_anim;
 	Animation* main_Anim;
+
+	bool wait = false;
+	float timeWaited = 0.0f;
+	j1Timer waitTimer;
 public:
 	FlyingEnemy(fPoint);
 	void Move(float dt);
