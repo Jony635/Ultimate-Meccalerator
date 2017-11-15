@@ -14,6 +14,7 @@ class GroundedEnemy : public Enemy
 {
 private:
 	fPoint position;
+	iPoint last_PlayerPos;
 	Animation std_anim;
 	Animation* main_Anim;
 	
@@ -22,6 +23,7 @@ private:
 	j1Timer waitTimer;
 	const p2DynArray<iPoint>* previous_path;
 	int tile_it = 1;
+	int pathFounded = 0;
 
 public:
 	GroundedEnemy(fPoint);

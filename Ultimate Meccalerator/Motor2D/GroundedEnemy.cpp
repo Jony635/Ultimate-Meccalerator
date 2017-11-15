@@ -15,6 +15,7 @@ GroundedEnemy::GroundedEnemy(fPoint data_pos) : position(data_pos)
 	std_anim.speed = 0.2f;
 
 	main_Anim = &std_anim;
+	last_PlayerPos = { 0,0 };
 }
 
 void GroundedEnemy::Move(float dt)
@@ -24,8 +25,11 @@ void GroundedEnemy::Move(float dt)
 
 	if (!wait)
 	{
-		if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2) != -1)
+		if (last_PlayerPos != playerpos_mapped)
+			pathFounded = App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2) != -1;
+		if (pathFounded != -1)
 		{
+			last_PlayerPos = playerpos_mapped;
 			const p2DynArray<iPoint>* newPath = App->pathfinding->GetLastPath();
 			/*if (!previous_path || previous_path != newPath)
 			{

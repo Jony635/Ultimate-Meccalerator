@@ -198,7 +198,7 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, i
 			open.list.del(LowestScoreNode);
 			++ret;
 
-			if (LowestScoreNode->data.pos == destination /*|| close.list.count() > (App->map->data.width * App->map->data.height) / 2*/) //Stop if you have looked around the half map (For reducing costs)
+			if (LowestScoreNode->data.pos == destination || close.list.count() > (App->map->data.width * App->map->data.height) / 2) //Stop if you have looked around the half map (For reducing costs)
 			{
 				// If we just added the destination, we are done!
 				// Backtrack to create the final path
