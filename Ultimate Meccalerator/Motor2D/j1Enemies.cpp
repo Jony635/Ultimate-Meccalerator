@@ -5,6 +5,8 @@
 #include "j1Textures.h"
 #include "j1FileSystem.h"
 #include "FlyingEnemy.h"
+#include "Brofiler\Brofiler.h"
+#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 
 
@@ -67,6 +69,8 @@ bool j1Enemies::PreUpdate()
 
 bool j1Enemies::Update(float dt)
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	MoveEnemies(dt);
 	return true;
 }

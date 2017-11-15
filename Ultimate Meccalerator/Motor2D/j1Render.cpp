@@ -7,6 +7,8 @@
 #include "j1Player.h"
 #include "j1Input.h"
 #include "j1Textures.h"
+#include "Brofiler\Brofiler.h"
+#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 #define VSYNC true
 
@@ -79,6 +81,8 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	if (defWin)
 	{
 		camera.x = camera.y = 0;

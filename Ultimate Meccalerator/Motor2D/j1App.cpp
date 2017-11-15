@@ -17,6 +17,10 @@
 #include "j1Pathfinding.h"
 #include "j1Enemies.h"
 
+#include "Brofiler\Brofiler.h"
+#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
+
+
 bool j1Rect::Collides(j1Rect rec2)
 {
 	return 	(this->rec.x < rec2.rec.x + rec2.rec.w &&
@@ -146,6 +150,8 @@ bool j1App::Start()
 // Called each loop iteration
 bool j1App::Update()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	bool ret = true;
 	PrepareUpdate();
 
@@ -186,6 +192,8 @@ pugi::xml_node j1App::LoadConfig(pugi::xml_document& config_file) const
 // ---------------------------------------------
 void j1App::PrepareUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	frame_count++;
 	last_sec_frame_count++;
 
@@ -288,6 +296,8 @@ bool j1App::DoUpdate()
 // Call modules after each loop iteration
 bool j1App::PostUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	j1Module* pModule = NULL;
