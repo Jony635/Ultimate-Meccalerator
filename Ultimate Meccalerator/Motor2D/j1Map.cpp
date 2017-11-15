@@ -8,6 +8,8 @@
 #include "j1Input.h"
 #include "j1Player.h"
 #include "j1FileSystem.h"
+#include "Brofiler\Brofiler.h"
+#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -62,6 +64,8 @@ int Properties::Get(const char* value, int default_value, int index) const
 
 void j1Map::Draw()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	if(map_loaded == false)
 		return;
 
@@ -534,6 +538,8 @@ bool j1Map::LoadProperties(pugi::xml_node& node, Properties& properties, Propert
 
 void j1Map::UpdateLayers(char* direction, float dt)
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	if (direction == "right")
 	{
 		for (p2List_item<MapLayer*>* layertoupdate = data.LayerList.start; layertoupdate != nullptr; layertoupdate = layertoupdate->next)

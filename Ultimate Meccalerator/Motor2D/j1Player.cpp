@@ -5,6 +5,8 @@
 #include "j1Input.h"
 #include "j1Scene.h"
 #include "j1Audio.h"
+#include "Brofiler\Brofiler.h"
+#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 
 j1Player::j1Player() : j1Module()
@@ -154,6 +156,8 @@ bool j1Player::PreUpdate()
 
 bool j1Player::Update(float dt)
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	CheckAccels(dt);
 
 	if (CheckDieCol({ (int)pos.x+1, (int)pos.y + 15 }))
