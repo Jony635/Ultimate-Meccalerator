@@ -6,7 +6,6 @@
 #include "j1FileSystem.h"
 #include "FlyingEnemy.h"
 #include "Brofiler\Brofiler.h"
-#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 
 
@@ -139,6 +138,8 @@ void j1Enemies::SpawnEnemies()
 
 void j1Enemies::MoveEnemies(float dt)
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	p2List_item<Enemy*>* enemy = EnemyList.start;
 	while (enemy)
 	{
@@ -149,6 +150,8 @@ void j1Enemies::MoveEnemies(float dt)
 
 void j1Enemies::DrawEnemies()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	p2List_item<Enemy*>* enemy = EnemyList.start;
 	while (enemy)
 	{

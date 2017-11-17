@@ -9,7 +9,6 @@
 #include "j1Player.h"
 #include "j1FileSystem.h"
 #include "Brofiler\Brofiler.h"
-#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {

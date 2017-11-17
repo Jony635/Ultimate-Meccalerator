@@ -6,7 +6,6 @@
 #include "j1Scene.h"
 #include "j1Audio.h"
 #include "Brofiler\Brofiler.h"
-#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 
 j1Player::j1Player() : j1Module()

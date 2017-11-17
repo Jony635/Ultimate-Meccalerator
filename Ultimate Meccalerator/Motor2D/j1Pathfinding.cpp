@@ -3,7 +3,6 @@
 #include "j1App.h"
 #include "j1PathFinding.h"
 #include "Brofiler\Brofiler.h"
-#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
 
 j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(DEFAULT_PATH_LENGTH),width(0), height(0)
 {
