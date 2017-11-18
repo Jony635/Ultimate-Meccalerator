@@ -19,8 +19,8 @@ private:
 	Animation* main_Anim;
 	
 	bool wait = false;
-	double timeWaited = 0.0f;
-	j1Timer waitTimer;
+	float accumulated_time=0.0f;
+
 	const p2DynArray<iPoint>* previous_path;
 	int tile_it = 1;
 	int pathFounded = 0;

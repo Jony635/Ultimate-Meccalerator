@@ -23,40 +23,12 @@ void GroundedEnemy::Move(float dt)
 	p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
 	p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
 
-	if (!wait)
+	if (accumulated_time >= 0.01f)
 	{
-		if (last_PlayerPos != playerpos_mapped)
-			pathFounded = App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2) != -1;
-		if (pathFounded != -1)
+		accumulated_time = 0.0f;
+		if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2) != -1)
 		{
-			last_PlayerPos = playerpos_mapped;
-			const p2DynArray<iPoint>* newPath = App->pathfinding->GetLastPath();
-			/*if (!previous_path || previous_path != newPath)
-			{
-				previous_path = newPath;
-				tile_it = 1;
-			}
-			else if (previous_path->Count() != newPath->Count())
-				previous_path = newPath;*/
-			
-			const iPoint* tile_mapped = newPath->At(1);
-			if (tile_mapped)
-			{
-				iPoint tile_world = App->map->MapToWorld(tile_mapped->x, tile_mapped->y);
-				position.x += (tile_world.x - position.x) * 2 * dt;
-				position.y += (tile_world.y - position.y) * 2 * dt;
-			}
-			const iPoint* tile_mapped2 = newPath->At(2);
-			if (tile_mapped2)
-			{
-				iPoint tile_world2 = App->map->MapToWorld(tile_mapped2->x, tile_mapped2->y);
-				position.x += (tile_world2.x - position.x) * 2 * dt;
-				position.y += (tile_world2.y - position.y) * 2 * dt;
-			}
-
-			//works
-
-			/*const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
+			const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 
 			const iPoint* tile_mapped = path->At(1);
 			if (tile_mapped)
@@ -68,26 +40,14 @@ void GroundedEnemy::Move(float dt)
 			const iPoint* tile_mapped2 = path->At(2);
 			if (tile_mapped2)
 			{
-				iPoint tile_world2 = App->map->MapToWorld(tile_mapped2->x, tile_mapped2->y);
-				position.x += (tile_world2.x - position.x) * 2 * dt;
-				position.y += (tile_world2.y - position.y) * 2 * dt;
-			}*/
+				iPoint tile_world = App->map->MapToWorld(tile_mapped2->x, tile_mapped2->y);
+				position.x += (tile_world.x - position.x) * 2 * dt;
+				position.y += (tile_world.y - position.y) * 2 * dt;
+			}
 		}
 	}
-	else
-	{
-		if (timeWaited == 0.0f)
-			waitTimer.Start();
-		timeWaited = waitTimer.ReadSec()+0.0000000001f;
 
-		if (timeWaited > 0.00000002f)
-		{
-			timeWaited = 0;
-			wait = false;
-		}
-
-		
-	}
+	accumulated_time += dt;
 }
 
 void GroundedEnemy::Draw(SDL_Texture* enemyTex) const
