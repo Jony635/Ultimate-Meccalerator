@@ -35,21 +35,6 @@ bool j1Scene::Start()
 	Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
 	Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
 
-	uint w_player_shape_rect;
-	uint h_player_shape_rect;
-	App->tex->GetSize(Player_shape, w_player_shape_rect, h_player_shape_rect);
-	Player_shape_rect.h = h_player_shape_rect;
-	Player_shape_rect.w = w_player_shape_rect;
-	Player_shape_rect.x = 0;
-	Player_shape_rect.y = 0;
-
-	uint w_tp_rect;
-	uint h_tp_rect;
-	App->tex->GetSize(Tp_circle_texture, w_tp_rect, h_tp_rect);
-	Player_shape_rect.h = h_tp_rect;
-	Player_shape_rect.w = w_tp_rect;
-	Player_shape_rect.x = 0;
-	Player_shape_rect.y = 0;
 
 	if(App->actual_lvl==FIRST_LEVEL)
 	{
@@ -135,9 +120,15 @@ bool j1Scene::Update(float dt)
 		App->tp_mode_enabled = false;
 
 	if (App->tp_mode_enabled)
+	{
+		App->map->Draw();
 		TpMode();
+	}
+	else 
+	{
+		App->map->Draw();
+	}
 
-	App->map->Draw();
 	return true;
 }
 
@@ -166,12 +157,12 @@ bool j1Scene::CleanUp()
 }
 
 //Teleport Mode
-void j1Scene::TpMode() 
+void j1Scene::TpMode()const
 {
 	LOG("Tp paused mode");
 	int mouse_x;
 	int mouse_y;
 	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(Tp_circle_texture, App->player->pos.x, App->player->pos.y,&Tp_circle_rect);
-	App->render->Blit(Player_shape, mouse_x, mouse_y,&Player_shape_rect);
+	App->render->Blit(Tp_circle_texture, App->player->pos.x-45, App->player->pos.y-37);
+	App->render->Blit(Player_shape, mouse_x-20, mouse_y+520);
 }

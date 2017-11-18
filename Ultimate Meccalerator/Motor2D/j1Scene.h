@@ -33,14 +33,12 @@ public:
 	bool CleanUp();
 
 	//Teleport mode
-	void TpMode();
+	void TpMode()const;
 
 public:
 	SDL_Texture* Tp_circle_texture=nullptr;
 	SDL_Texture* Player_shape=nullptr;
 
-	SDL_Rect Tp_circle_rect;
-	SDL_Rect Player_shape_rect;
 	float Gravity = 9.8 / 60;
 };
 
