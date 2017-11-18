@@ -32,9 +32,13 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-public:
+	//Teleport mode
+	void TpMode()const;
 
-	
+public:
+	SDL_Texture* Tp_circle_texture=nullptr;
+	SDL_Texture* Player_shape=nullptr;
+
 	float Gravity = 9.8 / 60;
 };
 
