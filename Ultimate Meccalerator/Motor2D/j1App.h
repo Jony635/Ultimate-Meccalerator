@@ -76,6 +76,7 @@ public:
 
 	void RestartScene()const;
 	char* GetBoolString(const bool b) const;
+	bool tp_mode_enabled=false;
 
 private:
 

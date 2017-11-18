@@ -32,7 +32,25 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	
+	Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
+	Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
+
+	uint w_player_shape_rect;
+	uint h_player_shape_rect;
+	App->tex->GetSize(Player_shape, w_player_shape_rect, h_player_shape_rect);
+	Player_shape_rect.h = h_player_shape_rect;
+	Player_shape_rect.w = w_player_shape_rect;
+	Player_shape_rect.x = 0;
+	Player_shape_rect.y = 0;
+
+	uint w_tp_rect;
+	uint h_tp_rect;
+	App->tex->GetSize(Tp_circle_texture, w_tp_rect, h_tp_rect);
+	Player_shape_rect.h = h_tp_rect;
+	Player_shape_rect.w = w_tp_rect;
+	Player_shape_rect.x = 0;
+	Player_shape_rect.y = 0;
+
 	if(App->actual_lvl==FIRST_LEVEL)
 	{
 		pugi::xml_document doc;
@@ -110,6 +128,15 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->player->CheckDownPos({ (int)App->player->pos.x + 20, (int)(App->player->pos.y + 42)}))
 		App->SaveGame("save_game.xml");
 
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN)
+		App->tp_mode_enabled = true;
+
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_UP)
+		App->tp_mode_enabled = false;
+
+	if (App->tp_mode_enabled)
+		TpMode();
+
 	App->map->Draw();
 	return true;
 }
@@ -129,8 +156,22 @@ bool j1Scene::PostUpdate()
 bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
+	App->tex->UnLoad(Tp_circle_texture);
+	App->tex->UnLoad(Player_shape);
 	App->player->CleanUp();
 	App->map->CleanUp();
 	App->enemies->CleanUp();
+
 	return true;
+}
+
+//Teleport Mode
+void j1Scene::TpMode() 
+{
+	LOG("Tp paused mode");
+	int mouse_x;
+	int mouse_y;
+	App->input->GetMousePosition(mouse_x, mouse_y);
+	App->render->Blit(Tp_circle_texture, App->player->pos.x, App->player->pos.y,&Tp_circle_rect);
+	App->render->Blit(Player_shape, mouse_x, mouse_y,&Player_shape_rect);
 }
