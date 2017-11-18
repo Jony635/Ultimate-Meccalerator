@@ -198,18 +198,23 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, i
 			open.list.del(LowestScoreNode);
 			++ret;
 
-			if (LowestScoreNode->data.pos == destination || close.list.count() > (App->map->data.width * App->map->data.height) / 2) //Stop if you have looked around the half map (For reducing costs)
+			if (LowestScoreNode->data.pos == destination || close.list.count() > 100) //Stop if you have looked around the half map (For reducing costs)
 			{
-				// If we just added the destination, we are done!
-				// Backtrack to create the final path
-				// Use the Pathnode::parent and Flip() the path when you are finish
-				last_path.Clear();
-				for (p2List_item<PathNode>* itnode = close.list.end; itnode != nullptr && itnode->data.pos!=origin; itnode=close.Find(itnode->data.parent->pos))
+				if (LowestScoreNode->data.pos == destination)
 				{
-					last_path.PushBack(itnode->data.pos);
+					// If we just added the destination, we are done!
+					// Backtrack to create the final path
+					// Use the Pathnode::parent and Flip() the path when you are finish
+					last_path.Clear();
+					for (p2List_item<PathNode>* itnode = close.list.end; itnode != nullptr && itnode->data.pos != origin; itnode = close.Find(itnode->data.parent->pos))
+					{
+						last_path.PushBack(itnode->data.pos);
+					}
+					last_path.PushBack(origin);
+					last_path.Flip();
 				}
-				last_path.PushBack(origin);
-				last_path.Flip();
+				else
+					ret = -1;
 				break;
 			}
 

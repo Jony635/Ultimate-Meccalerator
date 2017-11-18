@@ -53,8 +53,8 @@ public:
 	float speed_y = 0;
 	SDL_Texture* playerText = nullptr;
 
+	bool CheckCol(iPoint pos) const;
 
-	bool CheckDownPos(iPoint pos)const;
 private:
 	
 	fPoint Startingpos;
@@ -86,7 +86,7 @@ private:
 	
 	bool CheckDieCol(iPoint pos) const;
 
-	bool CheckCol(iPoint pos) const;
+	
 
 	void SetStartingPos();
 	float getAccelY(iPoint pos) const;

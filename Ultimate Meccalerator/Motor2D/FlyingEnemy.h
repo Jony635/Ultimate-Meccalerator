@@ -15,8 +15,8 @@ private:
 	Animation* main_Anim;
 
 	bool wait = false;
-	float timeWaited = 0.0f;
-	j1Timer waitTimer;
+	float accumulated_time = 0.0f;
+
 public:
 	FlyingEnemy(fPoint);
 	void Move(float dt);

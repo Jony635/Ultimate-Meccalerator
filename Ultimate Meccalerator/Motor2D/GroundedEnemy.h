@@ -14,16 +14,13 @@ class GroundedEnemy : public Enemy
 {
 private:
 	fPoint position;
-	iPoint last_PlayerPos;
 	Animation std_anim;
 	Animation* main_Anim;
 	
 	bool wait = false;
-	float accumulated_time=0.0f;
+	float accumulated_time = 0.0f;
 
-	const p2DynArray<iPoint>* previous_path;
-	int tile_it = 1;
-	int pathFounded = 0;
+	float speed_y = 0.0f;
 
 public:
 	GroundedEnemy(fPoint);

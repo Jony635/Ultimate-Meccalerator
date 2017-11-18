@@ -4,6 +4,7 @@
 #include "j1FileSystem.h"
 #include "j1Render.h"
 #include "j1Map.h"
+#include "j1Scene.h"
 
 GroundedEnemy::GroundedEnemy(fPoint data_pos) : position(data_pos) 
 {
@@ -15,18 +16,30 @@ GroundedEnemy::GroundedEnemy(fPoint data_pos) : position(data_pos)
 	std_anim.speed = 0.2f;
 
 	main_Anim = &std_anim;
-	last_PlayerPos = { 0,0 };
 }
 
 void GroundedEnemy::Move(float dt)
 {
-	p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
-	p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
-
-	if (accumulated_time >= 0.01f)
+	if (accumulated_time >= 0.01f) //Don't do maths and paths every frame. (dt in secs)
 	{
 		accumulated_time = 0.0f;
-		if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 2) != -1)
+
+		p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
+		p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
+
+		//Check Falls
+		if (!App->player->CheckCol(App->map->TileToMap(App->map->getTileid(pos_mapped) + App->map->data.width))) //Checks the tile under the enemy pos, if doesn't collide, fall down.
+		{
+			pos_mapped = iPoint(pos_mapped.x, pos_mapped.y + 1);
+			
+		}
+		else
+		{
+			speed_y = 0.0f;
+		}
+
+		//Check Paths
+		if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 1) != -1)
 		{
 			const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 
@@ -46,7 +59,6 @@ void GroundedEnemy::Move(float dt)
 			}
 		}
 	}
-
 	accumulated_time += dt;
 }
 
