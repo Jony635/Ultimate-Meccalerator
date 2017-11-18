@@ -28,16 +28,15 @@ void GroundedEnemy::Move(float dt)
 		p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
 
 		//Check Falls
-		if (!App->player->CheckCol(App->map->TileToMap(App->map->getTileid(pos_mapped) + App->map->data.width))) //Checks the tile under the enemy pos, if doesn't collide, fall down.
+		
+		if (!App->player->CheckCol({ (int)position.x + 20, (int)(position.y + 20) })) //Checks the tile under the enemy pos, if doesn't collide, fall down.
 		{
-			pos_mapped = iPoint(pos_mapped.x, pos_mapped.y + 1);
-			
+			position.y += 2 ;
 		}
 		else
 		{
 			speed_y = 0.0f;
 		}
-
 		//Check Paths
 		if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 1) != -1)
 		{

@@ -30,6 +30,7 @@ void FlyingEnemy::Move(float dt)
 		{
 			const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
 
+
 			const iPoint* tile_mapped = path->At(1);
 			if (tile_mapped)
 			{
