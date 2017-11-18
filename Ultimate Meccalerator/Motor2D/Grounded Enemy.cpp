@@ -8,11 +8,10 @@
 
 GroundedEnemy::GroundedEnemy(iPoint data_pos) : position(data_pos) 
 {
-	std_anim.PushBack({ 3,0,50,29 });
-	std_anim.PushBack({ 60,0,50,29 });
-	std_anim.PushBack({ 115,1,50,29 });
-	std_anim.PushBack({ 171,1,50,29 });
-	std_anim.PushBack({ 137,33,50,29 });
+	std_anim.PushBack({ 0,33,30,31 });
+	std_anim.PushBack({ 31,33,29,31 });
+	std_anim.PushBack({ 61,33,30,31 });
+	std_anim.PushBack({ 93,33,32,31 });
 	std_anim.speed = 0.5f;
 
 	main_Anim = &std_anim;
