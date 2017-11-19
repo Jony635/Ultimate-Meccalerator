@@ -117,6 +117,15 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
 		App->godmode = !App->godmode;
 
+	if (App->input->GetKey(SDL_SCANCODE_F11) == KEY_DOWN)
+	{
+		if (App->framerate_cap == 30)
+			App->framerate_cap = 0;
+		else
+			App->framerate_cap = 30;
+	}
+		
+
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && tp_counter>0)
 		App->tp_mode_enabled = true;
 

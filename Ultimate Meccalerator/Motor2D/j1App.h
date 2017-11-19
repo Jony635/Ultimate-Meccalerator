@@ -143,13 +143,14 @@ private:
 	j1Timer				frame_time;
 	j1PerfTimer			dt_timer;
 
-	uint32				framerate_cap;
+	
 
 	bool				cap_on = false;
 	bool				vsync_on = false;
 	
 
 public:
+	uint32				framerate_cap;
 	bool				godmode = false;
 	Levels actual_lvl = Levels::FIRST_LEVEL;
 };
