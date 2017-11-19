@@ -160,7 +160,7 @@ void j1Scene::TpMode()
 	int mouse_x, mouse_y;
 	
 	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29, nullptr, 1.0f, 0, 0, 0, );
+	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29);
 
 	if (mouse_x > (App->render->camera.x) + App->player->pos.x - 114 + 18 &&
 		mouse_x < (App->render->camera.x) + App->player->pos.x + 114 + 18 &&
