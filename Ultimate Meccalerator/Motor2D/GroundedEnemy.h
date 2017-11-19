@@ -2,22 +2,21 @@
 #define __GROUNDEDENEMY_H__
 
 #include "p2Point.h"
+#include "j1Enemies.h"
 #include "Animation.h"
 #include "p2DynArray.h"
 #include "j1Timer.h"
-#include "j1Entities.h"
+
 
 struct SDL_Texture;
 
-class GroundedEnemy : public Entity
+class GroundedEnemy : public Enemy
 {
 private:
 	fPoint position;
 	Animation std_anim;
 	Animation* main_Anim;
 	
-	SDL_Texture* GroundedEnemy_tex = nullptr;
-
 	bool wait = false;
 	float accumulated_time = 0.0f;
 

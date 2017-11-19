@@ -10,7 +10,6 @@
 #include "j1Scene.h"
 #include "j1Player.h"
 #include "j1Pathfinding.h"
-#include "j1Entities.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -42,7 +41,7 @@ bool j1Scene::Start()
 	{
 		pugi::xml_document doc;
 		App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());	
-		App->entities->FillEnemiesData();
+		App->enemies->FillEnemiesData();
 
 		int w, h;
 		uchar* data = NULL;
@@ -53,8 +52,8 @@ bool j1Scene::Start()
 		App->render->camera.x = 0;
 		App->render->fcamera.x = 0;
 
-		if (App->entities->Player_tex == nullptr)
-			App->entities->Start();
+		if(App->player->playerText==nullptr)
+			App->player->Start();
 	}
 	else
 	{
@@ -68,8 +67,8 @@ bool j1Scene::Start()
 			App->pathfinding->SetMap(w, h, data);
 		RELEASE_ARRAY(data);
 
-		App->entities->FillEnemiesData();
-		App->entities->Start();
+		App->enemies->FillEnemiesData();
+		App->player->Start();
 	}
 	
 	return true;
@@ -112,7 +111,7 @@ bool j1Scene::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN )
 		App->LoadGame("save_game.xml");
 
-	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->player->CheckCol({ (int)App->player->position.x + 20, (int)(App->entities->player->position.y + 42)}))
+	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->player->CheckCol({ (int)App->player->pos.x + 20, (int)(App->player->pos.y + 42)}))
 		App->SaveGame("save_game.xml");
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && tp_counter>0)
@@ -147,8 +146,9 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 	App->tex->UnLoad(Tp_circle_texture);
 	App->tex->UnLoad(Player_shape);
+	App->player->CleanUp();
 	App->map->CleanUp();
-	App->entities->CleanUp();
+	App->enemies->CleanUp();
 
 	return true;
 }
@@ -160,19 +160,19 @@ void j1Scene::TpMode()
 	int mouse_x, mouse_y;
 	
 	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(Tp_circle_texture, App->entities->player->position.x-114+18, App->entities->player->position.y-114+29);
+	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29, nullptr, 1.0f, 0, 0, 0, );
 
-	if (mouse_x > (App->render->camera.x) + App->entities->player->position.x - 114 + 18 &&
-		mouse_x < (App->render->camera.x) + App->entities->player->position.x + 114 + 18 &&
-		mouse_y >(App->render->camera.y) + App->entities->player->position.y - 114 + 29 &&
-		mouse_y < (App->render->camera.y) + App->entities->player->position.y + 114 + 29 )
+	if (mouse_x > (App->render->camera.x) + App->player->pos.x - 114 + 18 &&
+		mouse_x < (App->render->camera.x) + App->player->pos.x + 114 + 18 &&
+		mouse_y >(App->render->camera.y) + App->player->pos.y - 114 + 29 &&
+		mouse_y < (App->render->camera.y) + App->player->pos.y + 114 + 29 )
 	{
 		App->render->Blit(Player_shape, (App->render->camera.x*-1) + mouse_x - 18, (App->render->camera.y*-1) + mouse_y - 29);
 		
 		if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
 		{
-			App->entities->player->position.x = (App->render->camera.x*-1) + mouse_x;
-			App->entities->player->position.y = (App->render->camera.y*-1) + mouse_y;
+			App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
+			App->player->pos.y = (App->render->camera.y*-1) + mouse_y;
 			tp_counter--;
 			App->tp_mode_enabled = false;
 		}
