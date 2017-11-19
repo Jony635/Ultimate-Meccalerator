@@ -18,8 +18,6 @@
 #include "j1Enemies.h"
 
 #include "Brofiler\Brofiler.h"
-#pragma comment( lib, "Brofiler/ProfilerCore32.lib")
-
 
 bool j1Rect::Collides(j1Rect rec2)
 {
