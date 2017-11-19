@@ -124,9 +124,15 @@ void j1Enemies::SpawnEnemies()
 		{
 			Enemy* enemy = nullptr;
 			if (App->actual_lvl == Levels::FIRST_LEVEL)
+			{
 				enemy = new GroundedEnemy(data->data->position);
+				enemy->type = EnemyTypes::GROUNDED_ENEMY;
+			}
 			else
+			{
 				enemy = new FlyingEnemy(data->data->position);
+				enemy->type = EnemyTypes::FLYING_ENEMY;
+			}
 			
 			RELEASE(data->data);
 			EnemyDataList.del(data);

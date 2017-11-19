@@ -8,6 +8,14 @@
 
 struct SDL_Texture;
 
+enum EnemyTypes
+{
+	NO_EN_TYPE = -1,
+	GROUNDED_ENEMY,
+	FLYING_ENEMY
+};
+
+
 class EnemyData
 {
 public:
@@ -22,7 +30,7 @@ private:
 	int speed = 3;
 public:
 	Enemy();
-	
+	EnemyTypes type = EnemyTypes::NO_EN_TYPE;
 	virtual void Move(float dt);
 	virtual void Draw(SDL_Texture*) const;
 };

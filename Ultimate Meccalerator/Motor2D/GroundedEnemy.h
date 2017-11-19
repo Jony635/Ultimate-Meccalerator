@@ -4,7 +4,9 @@
 #include "p2Point.h"
 #include "j1Enemies.h"
 #include "Animation.h"
+#include "p2DynArray.h"
 #include "j1Timer.h"
+
 
 struct SDL_Texture;
 
@@ -16,8 +18,10 @@ private:
 	Animation* main_Anim;
 	
 	bool wait = false;
-	double timeWaited = 0.0f;
-	j1Timer waitTimer;
+	float accumulated_time = 0.0f;
+
+	float speed_y = 0.0f;
+
 public:
 	GroundedEnemy(fPoint);
 	void Move(float dt);

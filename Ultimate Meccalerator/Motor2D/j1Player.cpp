@@ -256,22 +256,6 @@ void j1Player::SetStartingPos()
 			}
 		}
 	}
-	
-}
-
-bool j1Player::CheckDownPos(iPoint pos) const
-{
-	iPoint pos_tile=App->map->World_to_Map(pos);
-	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
-	{
-		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-			continue;
-		if (layer->data->data[App->map->getTileid(pos_tile)] == 5193 + 8)
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 uint j1Player::getDownYCol(iPoint pos) const
@@ -309,7 +293,7 @@ void j1Player::CheckFalls(float dt)
 {
 	if (grounded == false)
 	{
-		if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y + 42 - speed_y * 75 * dt) }) == false)
+		if (CheckCol({ (int)pos.x + 20, (int)(pos.y + 42 - speed_y * 75 * dt) }) == false)
 		{
 			pos.y -= speed_y * 75 * dt;
 			speed_y -= App->scene->Gravity * 75 * dt;
@@ -335,12 +319,12 @@ void j1Player::CheckFalls(float dt)
 		}
 	}
 
-	if (CheckDownPos({ (int)pos.x + 20, (int)(pos.y+42)}) == false)
+	if (CheckCol({ (int)pos.x + 20, (int)(pos.y+42)}) == false)
 	{
 		grounded = false;
 	}
 
-	if (grounded == false && speed_y<0 && CheckDownPos({ (int)(pos.x + 20), (int)pos.y +42}))
+	if (grounded == false && speed_y<0 && CheckCol({ (int)(pos.x + 20), (int)pos.y +42}))
 	{
 		DoubleJump_GoingRight.Reset();
 		DoubleJump_GoingLeft.Reset();

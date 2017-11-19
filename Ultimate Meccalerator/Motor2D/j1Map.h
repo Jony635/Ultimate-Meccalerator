@@ -46,7 +46,6 @@ struct Properties
 	p2List<Property*>	list;
 };
 
-// TODO 1: Create a struct for the map layer
 // ----------------------------------------------------
 struct MapLayer
 {
@@ -80,7 +79,6 @@ struct MapLayer
 // ----------------------------------------------------
 struct TileSet
 {
-	// TODO 7: Create a method that receives a tile id and returns it's Rectfind the Rect associated with a specific tile id
 	SDL_Rect GetTileRect(int id) const;
 	Properties properties;
 	p2SString			name;
@@ -115,7 +113,7 @@ struct MapData
 	SDL_Color			background_color;
 	MapTypes			type;
 	p2List<TileSet*>	tilesets;
-	// TODO 2: Add a list/array of layers to the map!
+	
 	p2List <MapLayer*> LayerList;
 	int camera_starting_y = 0;
 };
@@ -141,7 +139,6 @@ public:
 	// Load new map
 	bool Load(const char* path);
 
-	// TODO 8: Create a method that translates x,y coordinates from map positions to world positions
 	iPoint MapToWorld(int x, int y) const;
 
 	iPoint World_to_Map(iPoint world_coordinates)const;
@@ -162,7 +159,7 @@ private:
 	bool LoadTilesetDetails(pugi::xml_node& tileset_node, TileSet* set);
 	bool LoadTilesetImage(pugi::xml_node& tileset_node, TileSet* set);
 
-	// TODO 3: Create a method that loads a single laye
+
 	bool LoadLayer(pugi::xml_node& node, MapLayer* layer);
 	bool LoadProperties(pugi::xml_node& node, Properties& properties, PropertyType type = LAYER_PROPERTY);
 

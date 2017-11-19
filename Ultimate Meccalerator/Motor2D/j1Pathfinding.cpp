@@ -2,6 +2,7 @@
 #include "p2Log.h"
 #include "j1App.h"
 #include "j1PathFinding.h"
+#include "j1Map.h"
 #include "Brofiler\Brofiler.h"
 
 j1PathFinding::j1PathFinding() : j1Module(), map(NULL), last_path(DEFAULT_PATH_LENGTH),width(0), height(0)
@@ -181,11 +182,11 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, i
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
 	int ret = -1;
-	// TODO 1: if origin or destination are not walkable, return -1
+	//If origin or destination are not walkable, return -1
 	if (IsWalkable(origin) && IsWalkable(destination))
 	{
 		ret = 0;
-		// TODO 2: Create two lists: open, close
+		// Create two lists: open, close
 		// Add the origin tile to open
 		// Iterate while we have tile in the open list
 		PathList open;
@@ -194,33 +195,38 @@ int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination, i
 		open.list.add(startNode);
 		while (open.list.count() > 0)
 		{
-			// TODO 3: Move the lowest score cell from open list to the closed list
+			//Move the lowest score cell from open list to the closed list
 			p2List_item<PathNode>* LowestScoreNode = open.GetNodeLowestScore();
 			close.list.add(LowestScoreNode->data);
 			open.list.del(LowestScoreNode);
 			++ret;
 
-			if (LowestScoreNode->data.pos == destination)
+			if (LowestScoreNode->data.pos == destination || close.list.count() > 100) //Stop if you have looked around the half map (For reducing costs)
 			{
-				// TODO 4: If we just added the destination, we are done!
-				// Backtrack to create the final path
-				// Use the Pathnode::parent and Flip() the path when you are finish
-				last_path.Clear();
-				for (p2List_item<PathNode>* itnode = close.list.end; itnode != nullptr && itnode->data.pos!=origin; itnode=close.Find(itnode->data.parent->pos))
+				if (LowestScoreNode->data.pos == destination)
 				{
-					last_path.PushBack(itnode->data.pos);
+					// If we just added the destination, we are done!
+					// Backtrack to create the final path
+					// Use the Pathnode::parent and Flip() the path when you are finish
+					last_path.Clear();
+					for (p2List_item<PathNode>* itnode = close.list.end; itnode != nullptr && itnode->data.pos != origin; itnode = close.Find(itnode->data.parent->pos))
+					{
+						last_path.PushBack(itnode->data.pos);
+					}
+					last_path.PushBack(origin);
+					last_path.Flip();
 				}
-				last_path.PushBack(origin);
-				last_path.Flip();
+				else
+					ret = -1;
 				break;
 			}
 
-			// TODO 5: Fill a list of all adjancent nodes
+			// Fill a list of all adjancent nodes
 			PathList neighbours;
 			p2List_item<PathNode>* itnode = close.list.end;
 			itnode->data.FindWalkableAdjacents(neighbours);
 
-			// TODO 6: Iterate adjancent nodes:
+			// Iterate adjancent nodes:
 			// ignore nodes in the closed list
 			// If it is NOT found, calculate its F and add it to the open list
 			// If it is already in the open list, check if it is a better path (compare G)
