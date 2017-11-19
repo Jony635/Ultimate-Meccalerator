@@ -5,8 +5,9 @@
 #include "j1FileSystem.h"
 #include "j1Render.h"
 #include "j1Map.h"
+#include "j1Textures.h"
 
-FlyingEnemy::FlyingEnemy(fPoint data_pos) : position(data_pos)
+FlyingEnemy::FlyingEnemy(fPoint data_pos) : Entity(data_pos)
 {
 	std_anim.PushBack({ 3,0,50,29 });
 	std_anim.PushBack({ 60,0,50,29 });
@@ -21,7 +22,7 @@ FlyingEnemy::FlyingEnemy(fPoint data_pos) : position(data_pos)
 void FlyingEnemy::Move(float dt)
 {
 	p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
-	p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
+	p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->entities->player->position.x, App->entities->player->position.y));
 
 	if (accumulated_time >= 0.01f)
 	{
