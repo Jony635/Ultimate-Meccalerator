@@ -15,6 +15,9 @@ FlyingEnemy::FlyingEnemy(fPoint data_pos) : position(data_pos)
 	std_anim.PushBack({ 137,33,50,29 });
 	std_anim.speed = 0.5f;
 
+	rec.rec.w = 50;
+	rec.rec.h = 29;
+
 	main_Anim = &std_anim;
 }
 
@@ -46,8 +49,13 @@ void FlyingEnemy::Move(float dt)
 				position.y += (tile_world.y - position.y) * 2 * dt;
 			}
 		}
+		rec.rec.x = position.x;
+		rec.rec.y = position.y;
+		if (App->player->player_col.Collides(rec))
+		{
+			App->player->dead = true;
+		}
 	}
-
 	accumulated_time += dt;
 }
 

@@ -22,6 +22,8 @@ private:
 
 	float speed_y = 0.0f;
 
+	j1Rect rec;
+
 public:
 	GroundedEnemy(fPoint);
 	void Move(float dt);

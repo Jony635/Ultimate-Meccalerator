@@ -13,7 +13,10 @@ GroundedEnemy::GroundedEnemy(fPoint data_pos) : position(data_pos)
 	std_anim.PushBack({ 61,33,30,31 });
 	std_anim.PushBack({ 93,33,32,31 });
 	std_anim.speed = 0.5f;
-  
+	
+	rec.rec.w = 30;
+	rec.rec.h = 31;
+
 	main_Anim = &std_anim;
 }
 
@@ -56,7 +59,15 @@ void GroundedEnemy::Move(float dt)
 				position.y += (tile_world.y - position.y) * 2 * dt;
 			}
 		}
+
+		rec.rec.x = position.x;
+		rec.rec.y = position.y;
+		if (App->player->player_col.Collides(rec))
+		{
+			App->player->dead = true;
+		}
 	}
+	
 	accumulated_time += dt;
 }
 

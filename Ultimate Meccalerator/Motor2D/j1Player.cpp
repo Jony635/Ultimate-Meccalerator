@@ -133,6 +133,10 @@ bool j1Player::Start()
 	dead = false;
 	SetStartingPos();
 	pos = Startingpos;
+	player_col.rec.x = pos.x;
+	player_col.rec.y = pos.y;
+	player_col.rec.w = 32;
+	player_col.rec.h = 48;
 	if(!alreadyLoaded)
 	{
 		speed_x = (speed_x * App->map->data.tile_width) / 60;
@@ -160,11 +164,17 @@ bool j1Player::Update(float dt)
 	if(!App->tp_mode_enabled)
 		CheckAccels(dt);
 
-	if (CheckDieCol({ (int)pos.x+1, (int)pos.y + 15 }))
+	if (App->godmode==false && (CheckDieCol({ (int)pos.x+1, (int)pos.y + 15 }) || dead))
 	{
+		if (!diesoundplayed)
+		{
+			App->audio->PlayFx(App->audio->dieSound);
+			diesoundplayed = true;
+		}
 		dead = true;
 		App->scene->tp_counter = 3;
 	}
+	
 	if (!dead)
 	{
 		diesoundplayed = false;
@@ -178,6 +188,9 @@ bool j1Player::Update(float dt)
 
 	if(!App->tp_mode_enabled)
 	CheckFalls(dt);
+
+	player_col.rec.x = (int)pos.x;
+	player_col.rec.y = (int)pos.y;
 	return true;
 }
 
@@ -506,11 +519,6 @@ bool j1Player::CheckDieCol(iPoint pos) const
 			continue;
 		if (layer->data->data[App->map->getTileid(pos_tile)] == 5193 + 0)
 		{
-			if (!diesoundplayed)
-			{
-				App->audio->PlayFx(App->audio->dieSound);
-				diesoundplayed = true;
-			}
 			return true;
 		}
 	}

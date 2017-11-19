@@ -147,8 +147,10 @@ private:
 
 	bool				cap_on = false;
 	bool				vsync_on = false;
+	
 
 public:
+	bool				godmode = false;
 	Levels actual_lvl = Levels::FIRST_LEVEL;
 };
 

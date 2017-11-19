@@ -73,6 +73,7 @@ bool j1Enemies::Update(float dt)
 	if(!App->tp_mode_enabled)
 	MoveEnemies(dt);
 
+
 	return true;
 }
 

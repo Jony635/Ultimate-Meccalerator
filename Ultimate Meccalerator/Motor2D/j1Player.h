@@ -44,7 +44,7 @@ public:
 
 public:
 
-	 
+	j1Rect player_col;
 
 	fPoint pos;
 	float speed_x;
@@ -52,6 +52,7 @@ public:
 	mutable bool diesoundplayed = false;
 	float speed_y = 0;
 	SDL_Texture* playerText = nullptr;
+	bool dead = false;
 
 	bool CheckCol(iPoint pos) const;
 
@@ -61,7 +62,7 @@ private:
 
 	uint jumps = 1;
 	bool grounded = true;
-	bool dead = false;
+	
 	
 	float standard_speed_x = 0;
 

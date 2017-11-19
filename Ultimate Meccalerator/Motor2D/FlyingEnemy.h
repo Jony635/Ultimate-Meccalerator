@@ -17,6 +17,7 @@ private:
 	bool wait = false;
 	float accumulated_time = 0.0f;
 
+	j1Rect rec;
 public:
 	FlyingEnemy(fPoint);
 	void Move(float dt);

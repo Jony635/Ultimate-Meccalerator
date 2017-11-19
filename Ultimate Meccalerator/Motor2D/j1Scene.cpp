@@ -77,7 +77,7 @@ bool j1Scene::Start()
 // Called each loop iteration
 bool j1Scene::PreUpdate()
 {
-	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F9) == KEY_DOWN)
 	{
 		for (p2List_item<MapLayer*>* layertoset = App->map->data.LayerList.start; layertoset != nullptr; layertoset = layertoset->next)
 		{
@@ -113,6 +113,9 @@ bool j1Scene::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && App->player->CheckCol({ (int)App->player->pos.x + 20, (int)(App->player->pos.y + 42)}))
 		App->SaveGame("save_game.xml");
+
+	if (App->input->GetKey(SDL_SCANCODE_F10) == KEY_DOWN)
+		App->godmode = !App->godmode;
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && tp_counter>0)
 		App->tp_mode_enabled = true;
