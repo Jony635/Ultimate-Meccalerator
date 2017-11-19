@@ -120,15 +120,11 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_UP)
 		App->tp_mode_enabled = false;
 
+	App->map->Draw();
+	
 	if (App->tp_mode_enabled)
-	{
-		App->map->Draw();
 		TpMode();
-	}
-	else 
-	{
-		App->map->Draw();
-	}
+	
 
 	return true;
 }
@@ -161,10 +157,10 @@ bool j1Scene::CleanUp()
 void j1Scene::TpMode()
 {
 	LOG("Tp paused mode");
-	int mouse_x;
-	int mouse_y;
+	int mouse_x, mouse_y;
+	
 	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29);
+	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29, nullptr, 1.0f, 0, 0, 0, );
 
 	if (mouse_x > (App->render->camera.x) + App->player->pos.x - 114 + 18 &&
 		mouse_x < (App->render->camera.x) + App->player->pos.x + 114 + 18 &&

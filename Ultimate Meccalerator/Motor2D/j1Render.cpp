@@ -291,5 +291,5 @@ void j1Render::CheckCameraPos(float dt)
 		camera.x = fcamera.x;
 	}
 
-	camera.y = App->player->pos.y * -1 +500;
+	camera.y = App->player->pos.y * -1 + 500;
 }

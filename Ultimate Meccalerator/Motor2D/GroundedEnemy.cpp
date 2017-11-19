@@ -28,7 +28,7 @@ void GroundedEnemy::Move(float dt)
 
 		//Check Falls
 		
-		if (!App->player->CheckCol({ (int)position.x + 20, (int)(position.y + 20) })) //Checks the tile under the enemy pos, if doesn't collide, fall down.
+		if (!App->player->CheckCol({ (int)position.x + 20, (int)(position.y + 31) })) //Checks the tile under the enemy pos, if doesn't collide, fall down.
 		{
 			position.y += 2 ;
 		}
