@@ -5,53 +5,50 @@
 #include "j1Module.h"
 #include "p2Point.h"
 #include "Animation.h"
+#include "j1Entities.h"
 
 struct SDL_Texture;
 
 
-class j1Player : public j1Module
+class j1Player : public Entity
 {
 
 public:
 
-	j1Player();
+	j1Player(fPoint pos);
 
 	// Destructor
 	virtual ~j1Player();
 
 	//Before render avaiable
-	bool Awake(pugi::xml_node&);
+	void Awake(pugi::xml_node&);
 
 	//Before first frame
-	bool Start();
+	void Start();
 
 	//Before each frame
 	bool PreUpdate();
 
 	//Each frame
-	bool Update(float dt);
+	void Move(float dt);
 
 	//After Each frame
-	bool PostUpdate();
+	void Draw(SDL_Texture*);
 
 	//CleanUp
-	bool CleanUp();
+	void CleanUp();
 
 	//Saving and Loading
-	bool Load(pugi::xml_node&);
+	void Load(pugi::xml_node&);
 		
-	bool Save(pugi::xml_node&) const;
+	void Save(pugi::xml_node&) const;
 
 public:
 
-	 
-
-	fPoint pos;
 	float speed_x;
 	bool win = false;
 	mutable bool diesoundplayed = false;
 	float speed_y = 0;
-	SDL_Texture* playerText = nullptr;
 
 	bool CheckCol(iPoint pos) const;
 
@@ -82,19 +79,13 @@ private:
 	void CheckAccels(float dt);
 	void CheckWin();
 	void CheckMovements(float dt);
-
 	
 	bool CheckDieCol(iPoint pos) const;
-
-	
 
 	void SetStartingPos();
 	float getAccelY(iPoint pos) const;
 	float getAccelX(iPoint pos) const;
 	uint getDownYCol(iPoint pos) const;
-
-
-
 
 	int dieCounter = 0;
 };

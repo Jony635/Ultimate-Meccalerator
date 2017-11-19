@@ -78,7 +78,7 @@
   <ItemGroup>
     <ClCompile Include="FlyingEnemy.cpp" />
     <ClCompile Include="GroundedEnemy.cpp" />
-    <ClCompile Include="j1Enemies.cpp" />
+    <ClCompile Include="j1Entities.cpp" />
     <ClCompile Include="j1FileSystem.cpp" />
     <ClCompile Include="j1Main.cpp" />
     <ClCompile Include="j1App.cpp" />
@@ -100,7 +100,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="FlyingEnemy.h" />
     <ClInclude Include="GroundedEnemy.h" />
-    <ClInclude Include="j1Enemies.h" />
+    <ClInclude Include="j1Entities.h" />
     <ClInclude Include="j1FileSystem.h" />
     <ClInclude Include="j1Map.h" />
     <ClInclude Include="j1Pathfinding.h" />

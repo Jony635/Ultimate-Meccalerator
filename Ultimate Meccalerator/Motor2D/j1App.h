@@ -22,6 +22,7 @@ class j1Map;
 class j1Player;
 class j1PathFinding;
 class j1Enemies;
+class j1Entities;
 
 
 
@@ -117,7 +118,7 @@ public:
 	j1Map*				map				=	nullptr;
 	j1Player*			player			=	nullptr;
 	j1PathFinding*		pathfinding		=	nullptr;
-	j1Enemies*			enemies			=	nullptr;
+	j1Entities*			entities		=	nullptr;
 
 private:
 

@@ -49,14 +49,14 @@
     <ClCompile Include="j1Timer.cpp">
       <Filter>Desenvolupament  ========\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="j1Enemies.cpp">
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClCompile>
     <ClCompile Include="GroundedEnemy.cpp">
       <Filter>Desenvolupament  ========\EnemyTypes</Filter>
     </ClCompile>
     <ClCompile Include="FlyingEnemy.cpp">
       <Filter>Desenvolupament  ========\EnemyTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="j1Entities.cpp">
+      <Filter>Desenvolupament  ========\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,14 +129,14 @@
     <ClInclude Include="j1Timer.h">
       <Filter>Desenvolupament  ========\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="j1Enemies.h">
-      <Filter>Desenvolupament  ========\Modules</Filter>
-    </ClInclude>
     <ClInclude Include="GroundedEnemy.h">
       <Filter>Desenvolupament  ========\EnemyTypes</Filter>
     </ClInclude>
     <ClInclude Include="FlyingEnemy.h">
       <Filter>Desenvolupament  ========\EnemyTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="j1Entities.h">
+      <Filter>Desenvolupament  ========\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,9 +27,10 @@
     <file>Level_1_x2.tmx</file>
   </map>
 
-  <player>
-   <speed tiles_sec="4"/>
-   <speed_jump tiles_sec="10"/>
-  </player>
-
+  <entities>
+    <player>
+     <speed tiles_sec="4"/>
+     <speed_jump tiles_sec="10"/>
+    </player>
+  </entities>
 </config>
