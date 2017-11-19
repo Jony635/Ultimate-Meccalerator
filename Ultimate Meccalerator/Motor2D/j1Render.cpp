@@ -7,6 +7,7 @@
 #include "j1Player.h"
 #include "j1Input.h"
 #include "j1Textures.h"
+#include "Brofiler\Brofiler.h"
 
 #define VSYNC true
 
@@ -79,6 +80,8 @@ bool j1Render::PreUpdate()
 
 bool j1Render::Update(float dt)
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	if (defWin)
 	{
 		camera.x = camera.y = 0;
@@ -93,6 +96,8 @@ bool j1Render::Update(float dt)
 
 bool j1Render::PostUpdate()
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
 	return true;

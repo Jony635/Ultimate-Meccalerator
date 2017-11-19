@@ -5,6 +5,7 @@
 #include "j1Input.h"
 #include "j1Scene.h"
 #include "j1Audio.h"
+#include "Brofiler\Brofiler.h"
 
 
 j1Player::j1Player() : j1Module()
@@ -154,11 +155,14 @@ bool j1Player::PreUpdate()
 
 bool j1Player::Update(float dt)
 {
+	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
+
 	CheckAccels(dt);
 
 	if (CheckDieCol({ (int)pos.x+1, (int)pos.y + 15 }))
 	{
 		dead = true;
+		App->scene->tp_counter = 3;
 	}
 	if (!dead)
 	{
@@ -171,6 +175,7 @@ bool j1Player::Update(float dt)
 			current_anim = &DieGoingRight;
 	}
 
+	if(!App->tp_mode_enabled)
 	CheckFalls(dt);
 	return true;
 }
@@ -427,66 +432,68 @@ void j1Player::CheckWin()
 
 void j1Player::CheckMovements(float dt) 
 {
-	if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) &&
-		pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
-		!CheckCol({ (int)pos.x + 3 + App->map->data.tile_width, (int)pos.y + 40 })) //Right
+	if (!App->tp_mode_enabled)
 	{
-		if (current_anim != &GoRight && current_anim->Finished())
+		if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) &&
+			pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
+			!CheckCol({ (int)pos.x + 3 + App->map->data.tile_width, (int)pos.y + 40 })) //Right
 		{
-			current_anim = &GoRight;
-		}
-			
-		pos.x += speed_x * 75 * dt;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
-	{
-		if (current_anim != &IdleRight)
-			current_anim = &IdleRight;
-	}
-	
-	 if ( (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
-		!CheckCol({ (int)pos.x - 4, (int)pos.y + 40 })) //Left
-	{
-		 if (current_anim != &GoLeft && current_anim->Finished())
-		 {
-			 current_anim = &GoLeft;
-		 }
-		pos.x -= speed_x * 75 * dt;
-	}
-	 if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
-	 {
-		 if (current_anim != &IdleLeft)
-			 current_anim = &IdleLeft;
-	 }
+			if (current_anim != &GoRight && current_anim->Finished())
+			{
+				current_anim = &GoRight;
+			}
 
-	if (jumps>0 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		if (grounded == false)
-		{
-			App->audio->PlayFx(App->audio->doublejumpsound);
-			jumps--;
-			if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-			{
-				if (current_anim != &DoubleJump_GoingRight)
-					current_anim = &DoubleJump_GoingRight;
-			}
-			else if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-			{
-				if (current_anim != &DoubleJump_GoingLeft)
-					current_anim = &DoubleJump_GoingLeft;
-			}
-			else
-			{
-				if (current_anim != &DoubleJump_GoingRight)
-					current_anim = &DoubleJump_GoingRight;
-			}
-			
-			
+			pos.x += speed_x * 75 * dt;
 		}
-		speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
-		grounded = false;
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
+		{
+			if (current_anim != &IdleRight)
+				current_anim = &IdleRight;
+		}
+
+		if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
+			!CheckCol({ (int)pos.x - 4, (int)pos.y + 40 })) //Left
+		{
+			if (current_anim != &GoLeft && current_anim->Finished())
+			{
+				current_anim = &GoLeft;
+			}
+			pos.x -= speed_x * 75 * dt;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
+		{
+			if (current_anim != &IdleLeft)
+				current_anim = &IdleLeft;
+		}
+
+		if (jumps > 0 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+		{
+			if (grounded == false)
+			{
+				App->audio->PlayFx(App->audio->doublejumpsound);
+				jumps--;
+				if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+				{
+					if (current_anim != &DoubleJump_GoingRight)
+						current_anim = &DoubleJump_GoingRight;
+				}
+				else if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+				{
+					if (current_anim != &DoubleJump_GoingLeft)
+						current_anim = &DoubleJump_GoingLeft;
+				}
+				else
+				{
+					if (current_anim != &DoubleJump_GoingRight)
+						current_anim = &DoubleJump_GoingRight;
+				}
+
+
+			}
+			speed_y = (tiles_sec_jump*App->map->data.tile_height) / 60;
+			grounded = false;
+		}
 	}
-	
 }
 
 bool j1Player::CheckDieCol(iPoint pos) const
