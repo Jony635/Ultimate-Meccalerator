@@ -8,10 +8,8 @@
 #include "Brofiler\Brofiler.h"
 
 
-j1Player::j1Player() : j1Module()
+j1Player::j1Player(fPoint pos) : Entity(pos)
 {
-	name.create("player");
-
 	IdleRight.PushBack({ 73, 14, 32, 50 });
 	IdleRight.PushBack({ 133, 14, 32, 50 });
 	IdleRight.PushBack({ 193, 14, 32, 50 });
@@ -117,22 +115,21 @@ j1Player::j1Player() : j1Module()
 j1Player::~j1Player()
 {}
 
-bool j1Player::Awake(pugi::xml_node& playernode)
+void j1Player::Awake(pugi::xml_node& playernode)
 {
-	speed_x = (playernode.child("speed").attribute("tiles_sec").as_float());
-	tiles_sec_jump = playernode.child("speed_jump").attribute("tiles_sec").as_float();
+	speed_x = 4;/*playernode.child("speed").attribute("tiles_sec").as_float();*/
+	tiles_sec_jump = 10;/*playernode.child("speed_jump").attribute("tiles_sec").as_float();*/
 	current_anim = &IdleRight;
-	return true;
 }
 
-bool j1Player::Start()
+void j1Player::Start()
 {
 	DieGoingRight.Reset();
 	current_anim = &IdleRight;
 	dieCounter = 0;
 	dead = false;
 	SetStartingPos();
-	pos = Startingpos;
+	position = Startingpos;
 	if(!alreadyLoaded)
 	{
 		speed_x = (speed_x * App->map->data.tile_width) / 60;
@@ -140,10 +137,7 @@ bool j1Player::Start()
 		alreadyLoaded = true;
 	}
 	speed_x = standard_speed_x;
-	if(playerText==nullptr)
-	playerText = App->tex->Load("Resources/textures/Player_SpriteSheet.png");
-
-	return true;
+	
 }
 
 bool j1Player::PreUpdate()
@@ -153,14 +147,14 @@ bool j1Player::PreUpdate()
 	return true;
 }
 
-bool j1Player::Update(float dt)
+void j1Player::Move(float dt)
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
 	if(!App->tp_mode_enabled)
 		CheckAccels(dt);
 
-	if (CheckDieCol({ (int)pos.x+1, (int)pos.y + 15 }))
+	if (CheckDieCol({ (int)position.x+1, (int)position.y + 15 }))
 	{
 		dead = true;
 		App->scene->tp_counter = 3;
@@ -178,16 +172,15 @@ bool j1Player::Update(float dt)
 
 	if(!App->tp_mode_enabled)
 	CheckFalls(dt);
-	return true;
 }
 
-bool j1Player::PostUpdate()
+void j1Player::Draw(SDL_Texture* player_tex)
 {
 	CheckWin();
 	
 	if (current_anim != &DieGoingRight || !current_anim->Finished())
 	{
-		App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
+		App->render->Blit(player_tex, position.x, position.y, &current_anim->GetCurrentFrame());
 	}
 
 	else
@@ -199,64 +192,27 @@ bool j1Player::PostUpdate()
 		}
 		else
 		{
-			App->render->Blit(playerText, pos.x, pos.y, &current_anim->frames[current_anim->last_frame - 1]);
+			App->render->Blit(player_tex, position.x, position.y, &current_anim->frames[current_anim->last_frame - 1]);
 			dieCounter = dieCounter + 1;
 		}
 	}
-	return true;
 }
 
-bool j1Player::CleanUp()
+void j1Player::CleanUp()
 {
-	if (playerText != nullptr)
-	{
-		App->tex->UnLoad(playerText);
-		playerText = nullptr;
-	}
-	return true;
 }
 
-bool j1Player::Load(pugi::xml_node& playernode)
+void j1Player::Load(pugi::xml_node& playernode)
 {
-	pos.x = playernode.child("lastPos").attribute("x").as_int();
-	pos.y = playernode.child("lastPos").attribute("y").as_int();
-	return true;
+	position.x = playernode.child("lastPos").attribute("x").as_int();
+	position.y = playernode.child("lastPos").attribute("y").as_int();
 }
 
-bool j1Player::Save(pugi::xml_node& playernode) const
+void j1Player::Save(pugi::xml_node& playernode) const
 {
 	pugi::xml_node lastPos = playernode.append_child("lastPos");
-	lastPos.append_attribute("x") = pos.x;
-	lastPos.append_attribute("y") = pos.y;
-	return true;
-}
-
-void j1Player::SetStartingPos()
-{
-	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
-	{
-		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
-		{
-			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
-				continue;
-			int x = 0, y = 0;
-			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
-			{
-				if (*(layer->data->data + num_tile) == 5195)
-				{
-					Startingpos = fPoint(x, y+App->map->data.tile_height/2);
-					break;
-				}
-				x += TileSet->data->tile_width;
-
-				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
-				{
-					x = 0;
-					y += TileSet->data->tile_height;
-				}
-			}
-		}
-	}
+	lastPos.append_attribute("x") = position.x;
+	lastPos.append_attribute("y") = position.y;
 }
 
 uint j1Player::getDownYCol(iPoint pos) const
@@ -294,9 +250,9 @@ void j1Player::CheckFalls(float dt)
 {
 	if (grounded == false)
 	{
-		if (CheckCol({ (int)pos.x + 20, (int)(pos.y + 42 - speed_y * 75 * dt) }) == false)
+		if (CheckCol({ (int)position.x + 20, (int)(position.y + 42 - speed_y * 75 * dt) }) == false)
 		{
-			pos.y -= speed_y * 75 * dt;
+			position.y -= speed_y * 75 * dt;
 			speed_y -= App->scene->Gravity * 75 * dt;
 		}
 		else
@@ -306,7 +262,7 @@ void j1Player::CheckFalls(float dt)
 				DoubleJump_GoingRight.Reset();
 				DoubleJump_GoingLeft.Reset();
 				current_anim = &IdleRight;
-				pos.y = getDownYCol({ (int)pos.x + 20, (int)pos.y + 42 }) -42;
+				position.y = getDownYCol({ (int)position.x + 20, (int)position.y + 42 }) -42;
 				grounded = true;
 				jumps = 1;
 				speed_y = 0;
@@ -314,18 +270,18 @@ void j1Player::CheckFalls(float dt)
 			else
 				if (speed_y > 0)
 				{
-					pos.y -= speed_y * 75 * dt;
+					position.y -= speed_y * 75 * dt;
 					speed_y -= App->scene->Gravity * 75 * dt;
 				}
 		}
 	}
 
-	if (CheckCol({ (int)pos.x + 20, (int)(pos.y+42)}) == false)
+	if (CheckCol({ (int)position.x + 20, (int)(position.y+42)}) == false)
 	{
 		grounded = false;
 	}
 
-	if (grounded == false && speed_y<0 && CheckCol({ (int)(pos.x + 20), (int)pos.y +42}))
+	if (grounded == false && speed_y<0 && CheckCol({ (int)(position.x + 20), (int)position.y +42}))
 	{
 		DoubleJump_GoingRight.Reset();
 		DoubleJump_GoingLeft.Reset();
@@ -378,7 +334,7 @@ float j1Player::getAccelX(iPoint pos) const
 
 void j1Player::CheckAccels(float dt)
 {
-	float accel_y = getAccelY({ (int)pos.x, (int)pos.y + 30});
+	float accel_y = getAccelY({ (int)position.x, (int)position.y + 30});
 	if (accel_y != 0)
 	{
 		speed_y -= (accel_y / 60) * 75 * dt;
@@ -386,13 +342,13 @@ void j1Player::CheckAccels(float dt)
 	}
 		
 
-	float accel_x = getAccelX({ (int)pos.x, (int)pos.y });
+	float accel_x = getAccelX({ (int)position.x, (int)position.y });
 	if (accel_x != 0)
 	{
 		App->audio->PlayFx(App->audio->accelsound);
 		speed_x += (accel_x / 60) * 75 * dt;
-		if (!CheckCol({(int)(pos.x+speed_x + App->map->data.tile_width), (int)pos.x+30})) // Right
-		pos.x += speed_x * 75 * dt;
+		if (!CheckCol({(int)(position.x+speed_x + App->map->data.tile_width), (int)position.x+30})) // Right
+			position.x += speed_x * 75 * dt;
 	}
 	else
 		if (speed_x > standard_speed_x)
@@ -404,7 +360,7 @@ void j1Player::CheckAccels(float dt)
 
 void j1Player::CheckWin()
 {
-	iPoint pos_tile = App->map->World_to_Map({ (int)pos.x, (int)pos.y });
+	iPoint pos_tile = App->map->World_to_Map({ (int)position.x, (int)position.y });
 	for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
 	{
 		if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
@@ -436,15 +392,15 @@ void j1Player::CheckMovements(float dt)
 	if (!App->tp_mode_enabled)
 	{
 		if ((App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) &&
-			pos.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
-			!CheckCol({ (int)pos.x + 3 + App->map->data.tile_width, (int)pos.y + 40 })) //Right
+			position.x + App->map->data.tile_width <= App->map->data.width*App->map->data.tile_width &&
+			!CheckCol({ (int)position.x + 3 + App->map->data.tile_width, (int)position.y + 40 })) //Right
 		{
 			if (current_anim != &GoRight && current_anim->Finished())
 			{
 				current_anim = &GoRight;
 			}
 
-			pos.x += speed_x * 75 * dt;
+			position.x += speed_x * 75 * dt;
 		}
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
 		{
@@ -452,14 +408,14 @@ void j1Player::CheckMovements(float dt)
 				current_anim = &IdleRight;
 		}
 
-		if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && pos.x > 0 &&
-			!CheckCol({ (int)pos.x - 4, (int)pos.y + 40 })) //Left
+		if ((App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && position.x > 0 &&
+			!CheckCol({ (int)position.x - 4, (int)position.y + 40 })) //Left
 		{
 			if (current_anim != &GoLeft && current_anim->Finished())
 			{
 				current_anim = &GoLeft;
 			}
-			pos.x -= speed_x * 75 * dt;
+			position.x -= speed_x * 75 * dt;
 		}
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
 		{
@@ -531,4 +487,32 @@ bool j1Player::CheckCol(iPoint pos) const
 		}
 	}
 	return false;
+}
+
+void j1Player::SetStartingPos()
+{
+	for (p2List_item<TileSet*>* TileSet = App->map->data.tilesets.start; TileSet != nullptr; TileSet = TileSet->next)
+	{
+		for (p2List_item<MapLayer*>* layer = App->map->data.LayerList.start; layer != nullptr; layer = layer->next)
+		{
+			if (strcmp(layer->data->name.GetString(), "logical debug") != 0)
+				continue;
+			int x = 0, y = 0;
+			for (int num_tile = 0; num_tile < layer->data->size_data; ++num_tile)
+			{
+				if (*(layer->data->data + num_tile) == 5195)
+				{
+					Startingpos = fPoint(x, y + App->map->data.tile_height / 2);
+					break;
+				}
+				x += TileSet->data->tile_width;
+
+				if (x % (layer->data->width * TileSet->data->tile_width) == 0)
+				{
+					x = 0;
+					y += TileSet->data->tile_height;
+				}
+			}
+		}
+	}
 }

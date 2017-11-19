@@ -5,8 +5,9 @@
 #include "j1Render.h"
 #include "j1Map.h"
 #include "j1Scene.h"
+#include "j1Textures.h"
 
-GroundedEnemy::GroundedEnemy(fPoint data_pos) : position(data_pos) 
+GroundedEnemy::GroundedEnemy(fPoint pos) : Entity(pos)
 {
 	std_anim.PushBack({ 0,33,30,31 });
 	std_anim.PushBack({ 31,33,29,31 });
@@ -24,7 +25,7 @@ void GroundedEnemy::Move(float dt)
 		accumulated_time = 0.0f;
 
 		p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
-		p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
+		p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->entities->player->position.x, App->entities->player->position.y));
 
 		//Check Falls
 		
@@ -64,3 +65,4 @@ void GroundedEnemy::Draw(SDL_Texture* enemyTex) const
 {
 	App->render->Blit(enemyTex, position.x, position.y, &main_Anim->GetCurrentFrame());
 }
+
