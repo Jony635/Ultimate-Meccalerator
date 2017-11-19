@@ -157,7 +157,8 @@ bool j1Player::Update(float dt)
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
-	CheckAccels(dt);
+	if(!App->tp_mode_enabled)
+		CheckAccels(dt);
 
 	if (CheckDieCol({ (int)pos.x+1, (int)pos.y + 15 }))
 	{
