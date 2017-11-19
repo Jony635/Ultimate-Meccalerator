@@ -70,7 +70,9 @@ bool j1Enemies::Update(float dt)
 {
 	BROFILER_CATEGORY(__FUNCTION__, Profiler::Color::Orchid);
 
+	if(!App->tp_mode_enabled)
 	MoveEnemies(dt);
+
 	return true;
 }
 
