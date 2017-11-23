@@ -29,6 +29,20 @@ struct j1Rect
 {
 	SDL_Rect rec;
 	bool Collides(j1Rect);
+	j1Rect(int x, int y, int w, int h)
+	{
+		rec.x = x;
+		rec.y = y;
+		rec.w = w;
+		rec.h = h;
+	}
+	j1Rect(iPoint pos, int w, int h)
+	{
+		rec.x = pos.x;
+		rec.y = pos.y;
+		rec.w = w;
+		rec.h = h;
+	}
 };
 
 enum Levels

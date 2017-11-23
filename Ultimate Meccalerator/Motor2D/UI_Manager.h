@@ -39,9 +39,12 @@ struct dev_Char
 
 class UI_Font
 {
+public:
+	char* name = nullptr;
 private:
 	SDL_Texture* texture;
 	p2DynArray<dev_Char*> chars;
+	
 };
 
 //------------UI_ELEM HERITAGE-----------------------------------------------
@@ -87,6 +90,7 @@ class InteractuableElem : public UI_Elem
 private:
 	j1Rect collider;
 public:
+	InteractuableElem(UI_ElemType type, iPoint position, j1Rect col);
 	virtual bool Update();
 	bool CheckWithMouse();
 	virtual void Do();
@@ -97,9 +101,9 @@ class Button : public InteractuableElem
 private:
 	UI_ButtonType btype;
 	Label* text;
+public:
+	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, Label* text = nullptr);
 };
-
-
 
 //------------UI_MANAGER MODULE--------------------------------------
 
@@ -115,12 +119,12 @@ public:
 
 public:
 	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, UI_Font* font = nullptr);
-
+	UI_Font* getFontbyName(char* name) const;
 
 private:
+	SDL_Texture* UI_Texture; //Texture for buttons and checkboxes
 	p2List<UI_Elem*> UI_ElemList;
 	p2List<UI_Font*> UI_FontList;
-	
 };
 
 
