@@ -105,6 +105,14 @@ public:
 	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, Label* text = nullptr);
 };
 
+class CheckBox : public InteractuableElem
+{
+private:
+	Label* text;
+public:
+	CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text = nullptr);
+};
+
 //------------UI_MANAGER MODULE--------------------------------------
 
 class UI_Manager : public j1Module

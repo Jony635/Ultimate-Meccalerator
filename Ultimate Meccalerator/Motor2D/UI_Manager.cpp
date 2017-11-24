@@ -12,13 +12,17 @@
 	InteractuableElem::InteractuableElem(UI_ElemType type, iPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
 	Label::Label(UI_ElemType type, iPoint position, char* string, UI_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
 	Image::Image(UI_ElemType type, iPoint position, SDL_Texture* texture) : NO_InteractuableElem(type, position), texture(texture) {}
-	Button::Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, Label* text = nullptr) : InteractuableElem(type, position, col), btype(btype), text(text) {}
+	Button::Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text) {}
+	CheckBox::CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text = nullptr) : InteractuableElem(type, position, col), text(text){}
 	//--------------------------------
 
-	UI_Manager::UI_Manager() : j1Module()
+//------------UI_MANAGER METHODS-----------------------------------------------------
+
+UI_Manager::UI_Manager() : j1Module()
 {
 	name.create("UI_Manager");
 }
+
 UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, UI_ButtonType btype, char* string, UI_Font* font)
 {
 	UI_Elem* elem = nullptr;
@@ -72,7 +76,14 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, UI_ButtonType bt
 		break;
 	//-----CHECKBOX--------------------------------------------------------
 	case UI_ElemType::CHECKBOX:
-
+		Label* label = nullptr;
+		if (string)
+		{
+			label = new Label(LABEL, pos, string, getFontbyName("generic_font")); //This is just an example.
+			if (label)
+				UI_ElemList.add(label);
+		}
+		elem = new CheckBox(type, pos, j1Rect(pos, 23, 57), label); 
 		break;
 	}
 
@@ -87,7 +98,18 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, UI_ButtonType bt
 	}
 }
 
+//Update all elems
+bool UI_Manager::Update()
+{
+	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
+	while (elem)
+	{
+		elem->data->Update();
+		elem = elem->next;
+	}
+}
 
+//Search in Font List by a char* name
 UI_Font* UI_Manager::getFontbyName(char* string) const
 {
 	if (string)
