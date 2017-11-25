@@ -32,7 +32,7 @@ bool j1Fonts::Awake(pugi::xml_node& conf)
 	{
 		const char* path = conf.child("default_font").attribute("file").as_string(DEFAULT_FONT);
 		int size = conf.child("default_font").attribute("size").as_int(DEFAULT_FONT_SIZE);
-		default = Load(path, size);
+		default = Load(path, "OpenSans-Regular",size);
 	}
 
 	return ret;
@@ -42,20 +42,20 @@ bool j1Fonts::Awake(pugi::xml_node& conf)
 bool j1Fonts::CleanUp()
 {
 	LOG("Freeing True Type fonts and library");
-	p2List_item<TTF_Font*>* item;
 
-	for(item = fonts.start; item != NULL; item = item->next)
+	std::map<char*, TTF_Font*>::iterator it = named_fonts.begin();
+	for (it = named_fonts.begin(); it != named_fonts.end(); ++it)
 	{
-		TTF_CloseFont(item->data);
+		TTF_CloseFont(it->second);
 	}
+	named_fonts.clear();
 
-	fonts.clear();
 	TTF_Quit();
 	return true;
 }
 
 // Load new texture from file path
-TTF_Font* const j1Fonts::Load(const char* path, int size)
+TTF_Font* const j1Fonts::Load(const char* path, char* name, int size)
 {
 	TTF_Font* font = TTF_OpenFont(path, size);
 
@@ -66,14 +66,14 @@ TTF_Font* const j1Fonts::Load(const char* path, int size)
 	else
 	{
 		LOG("Successfully loaded font %s size %d", path, size);
-		fonts.add(font);
+		
+		named_fonts.insert(std::pair<char*, TTF_Font*>(name, font));
 	}
-
 	return font;
 }
 
 // Print text using font
-SDL_Texture* j1Fonts::Print(const char* text, SDL_Color color, TTF_Font* font)
+SDL_Texture* j1Fonts::Print(const char* text, SDL_Color color, _TTF_Font* font)
 {
 	SDL_Texture* ret = NULL;
 	SDL_Surface* surface = TTF_RenderText_Blended((font) ? font : default, text, color);
@@ -102,4 +102,9 @@ bool j1Fonts::CalcSize(const char* text, int& width, int& height, _TTF_Font* fon
 		ret = true;
 
 	return ret;
+}
+
+TTF_Font* j1Fonts::getFontbyName(char* name) const
+{
+	return named_fonts.at(name);
 }

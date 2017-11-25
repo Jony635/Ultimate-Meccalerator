@@ -32,4 +32,7 @@
    <speed_jump tiles_sec="10"/>
   </player>
 
+  <atlas file="gui/atlas.png"/>
+  
+  
 </config>

@@ -7,6 +7,9 @@
 #define DEFAULT_FONT "fonts/open_sans/OpenSans-Regular.ttf"
 #define DEFAULT_FONT_SIZE 12
 
+#include <map>
+#include <iostream>
+
 struct SDL_Texture;
 struct _TTF_Font;
 
@@ -27,16 +30,18 @@ public:
 	bool CleanUp();
 
 	// Load Font
-	_TTF_Font* const Load(const char* path, int size = 12);
+	_TTF_Font* const Load(const char* path, char* name , int size = 12);
 
 	// Create a surface from text
 	SDL_Texture* Print(const char* text, SDL_Color color = {255, 255, 255, 255}, _TTF_Font* font = NULL);
 
 	bool CalcSize(const char* text, int& width, int& height, _TTF_Font* font = NULL) const;
 
+	TTF_Font* getFontbyName(char* name) const;
 public:
 
-	p2List<_TTF_Font*>	fonts;
+	std::map<char*, _TTF_Font*> named_fonts;
+
 	_TTF_Font*			default;
 };
 

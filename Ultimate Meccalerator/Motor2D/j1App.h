@@ -8,6 +8,7 @@
 #include "SDL\include\SDL_rect.h"
 #include "j1PerfTimer.h"
 #include "j1Timer.h"
+#include "p2Point.h"
 
 
 // Modules
@@ -22,6 +23,7 @@ class j1Map;
 class j1Player;
 class j1PathFinding;
 class j1Enemies;
+class j1Fonts;
 
 
 
@@ -42,6 +44,13 @@ struct j1Rect
 		rec.y = pos.y;
 		rec.w = w;
 		rec.h = h;
+	}
+	j1Rect()
+	{
+		rec.x = 0;
+		rec.y = 0;
+		rec.w = 0;
+		rec.h = 0;
 	}
 };
 
@@ -132,6 +141,7 @@ public:
 	j1Player*			player			=	nullptr;
 	j1PathFinding*		pathfinding		=	nullptr;
 	j1Enemies*			enemies			=	nullptr;
+	j1Fonts*			fonts			=	nullptr;
 
 private:
 

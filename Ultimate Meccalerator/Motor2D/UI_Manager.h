@@ -2,13 +2,16 @@
 #define __UI_MANAGER_H__
 
 #include "j1Module.h"
-#include "j1App.h"
 #include "p2Point.h"
 #include "p2List.h"
 #include "p2SString.h"
+#include "j1App.h"
 #include "p2DynArray.h"
 
+#define CURSOR_WIDTH 2
+
 struct SDL_Texture;
+class TTF_Font;
 
 //------------ENUMS---------------------------------------------------------
 
@@ -28,24 +31,6 @@ enum UI_ButtonType
 	EXIT
 };
 
-//------------FONTS----------------------------------------------------------
-
-struct dev_Char
-{
-	char _char;
-	iPoint coord;
-	int width;
-};
-
-class UI_Font
-{
-public:
-	char* name = nullptr;
-private:
-	SDL_Texture* texture;
-	p2DynArray<dev_Char*> chars;
-	
-};
 
 //------------UI_ELEM HERITAGE-----------------------------------------------
 
@@ -79,9 +64,9 @@ class Label : public NO_InteractuableElem
 {
 private:
 	p2SString string;
-	UI_Font* font = nullptr;
+	TTF_Font* font = nullptr;
 public:
-	Label(UI_ElemType type, iPoint position, char* string, UI_Font* font);
+	Label(UI_ElemType type, iPoint position, char* string, TTF_Font* font);
 	bool Update();
 };
 
@@ -120,19 +105,21 @@ class UI_Manager : public j1Module
 public:
 	UI_Manager();
 	virtual ~UI_Manager();
-	virtual bool Update();
 
-	bool LoadFonts();
-	bool DestroyFonts();
+	bool Start();
+	bool Awake(pugi::xml_node& uimnode);
+	bool PreUpdate();
+	bool Update();
+	bool PostUpdate();
+	bool CleanUp();
 
 public:
-	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, UI_Font* font = nullptr);
-	UI_Font* getFontbyName(char* name) const;
-
+	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
+	const SDL_Texture* GetAtlas() const;
 private:
-	SDL_Texture* UI_Texture; //Texture for buttons and checkboxes
+	SDL_Texture* atlas = nullptr; //Texture that has everything
+	p2SString atlas_file_name;
 	p2List<UI_Elem*> UI_ElemList;
-	p2List<UI_Font*> UI_FontList;
 };
 
 
