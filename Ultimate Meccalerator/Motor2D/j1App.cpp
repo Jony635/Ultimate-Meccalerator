@@ -17,6 +17,7 @@
 #include "j1Pathfinding.h"
 #include "j1Enemies.h"
 #include "j1Fonts.h"
+#include "UI_Manager.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -47,6 +48,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	pathfinding = new j1PathFinding();
 	enemies = new j1Enemies();
 	fonts = new j1Fonts();
+	ui_manager = new UI_Manager();
+
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
 	AddModule(fs);
@@ -60,6 +63,8 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player);
 	AddModule(pathfinding);
 	AddModule(enemies);
+	AddModule(ui_manager);
+
 	// render last to swap buffer
 	AddModule(render);
 }

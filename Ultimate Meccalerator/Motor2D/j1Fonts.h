@@ -4,15 +4,15 @@
 #include "j1Module.h"
 #include "SDL\include\SDL_pixels.h"
 
-#define DEFAULT_FONT "fonts/open_sans/OpenSans-Regular.ttf"
+#include "SDL_TTF\include\SDL_ttf.h"
+
+#define DEFAULT_FONT "Resources/fonts/open_sans/OpenSans-Regular.ttf"
 #define DEFAULT_FONT_SIZE 12
 
 #include <map>
 #include <iostream>
 
 struct SDL_Texture;
-struct _TTF_Font;
-
 
 class j1Fonts : public j1Module
 {
@@ -38,6 +38,7 @@ public:
 	bool CalcSize(const char* text, int& width, int& height, _TTF_Font* font = NULL) const;
 
 	TTF_Font* getFontbyName(char* name) const;
+
 public:
 
 	std::map<char*, _TTF_Font*> named_fonts;

@@ -7,11 +7,11 @@
 #include "p2SString.h"
 #include "j1App.h"
 #include "p2DynArray.h"
+#include "j1Fonts.h"
 
 #define CURSOR_WIDTH 2
 
 struct SDL_Texture;
-class TTF_Font;
 
 //------------ENUMS---------------------------------------------------------
 
@@ -41,23 +41,27 @@ public:
 	UI_ElemType type;
 public:
 	UI_Elem(UI_ElemType type, iPoint position);
-	virtual bool Update();
+	virtual ~UI_Elem();
+	virtual bool Update(float dt);
+	
 };
 
 class NO_InteractuableElem : public UI_Elem
 {
 public:
 	NO_InteractuableElem(UI_ElemType type, iPoint position);
-	virtual bool Update();
+	virtual ~NO_InteractuableElem();
+	virtual bool Update(float dt);
 };
 
 class Image : public NO_InteractuableElem
 {
 private:
-	SDL_Texture* texture;
+	SDL_Rect rec;
 public:
-	Image(UI_ElemType type, iPoint position, SDL_Texture* texture);
-	bool Update();
+	Image(UI_ElemType type, iPoint position, SDL_Rect rec);
+	virtual ~Image();
+	bool Update(float dt);
 };
 
 class Label : public NO_InteractuableElem
@@ -67,7 +71,8 @@ private:
 	TTF_Font* font = nullptr;
 public:
 	Label(UI_ElemType type, iPoint position, char* string, TTF_Font* font);
-	bool Update();
+	virtual ~Label();
+	bool Update(float dt);
 };
 
 class InteractuableElem : public UI_Elem
@@ -76,9 +81,11 @@ private:
 	j1Rect collider;
 public:
 	InteractuableElem(UI_ElemType type, iPoint position, j1Rect col);
-	virtual bool Update();
+	virtual ~InteractuableElem();
+
+	virtual bool Update(float dt);
 	bool CheckWithMouse();
-	virtual void Do();
+	virtual void Do(float dt);
 };
 
 class Button : public InteractuableElem
@@ -88,14 +95,18 @@ private:
 	Label* text;
 public:
 	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, Label* text = nullptr);
+	virtual ~Button();
+	void Do(float dt);
 };
 
 class CheckBox : public InteractuableElem
 {
 private:
 	Label* text;
-public:
+public: 
 	CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text = nullptr);
+	virtual ~CheckBox();
+	void Do(float dt);
 };
 
 //------------UI_MANAGER MODULE--------------------------------------
@@ -109,12 +120,12 @@ public:
 	bool Start();
 	bool Awake(pugi::xml_node& uimnode);
 	bool PreUpdate();
-	bool Update();
+	bool Update(float dt);
 	bool PostUpdate();
 	bool CleanUp();
 
 public:
-	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
+	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, const SDL_Rect& rec = SDL_Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
 	const SDL_Texture* GetAtlas() const;
 private:
 	SDL_Texture* atlas = nullptr; //Texture that has everything

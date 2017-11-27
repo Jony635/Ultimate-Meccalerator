@@ -24,6 +24,7 @@ class j1Player;
 class j1PathFinding;
 class j1Enemies;
 class j1Fonts;
+class UI_Manager;
 
 
 
@@ -142,6 +143,7 @@ public:
 	j1PathFinding*		pathfinding		=	nullptr;
 	j1Enemies*			enemies			=	nullptr;
 	j1Fonts*			fonts			=	nullptr;
+	UI_Manager*			ui_manager		=	nullptr;
 
 private:
 

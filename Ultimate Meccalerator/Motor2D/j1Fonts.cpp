@@ -3,9 +3,9 @@
 #include "j1App.h"
 #include "j1Textures.h"
 #include "j1Fonts.h"
+#include "j1FileSystem.h"
 
 #include "SDL\include\SDL.h"
-#include "SDL_TTF\include\SDL_ttf.h"
 #pragma comment( lib, "SDL_ttf/libx86/SDL2_ttf.lib" )
 
 j1Fonts::j1Fonts() : j1Module()
@@ -32,7 +32,8 @@ bool j1Fonts::Awake(pugi::xml_node& conf)
 	{
 		const char* path = conf.child("default_font").attribute("file").as_string(DEFAULT_FONT);
 		int size = conf.child("default_font").attribute("size").as_int(DEFAULT_FONT_SIZE);
-		default = Load(path, "OpenSans-Regular",size);
+		default = Load(path, "OpenSans-Regular", size);
+		Load("Resources/fonts/open_sans/OpenSans-Regular.ttf", "OpenSans-GREATER", 50);
 	}
 
 	return ret;
@@ -57,7 +58,9 @@ bool j1Fonts::CleanUp()
 // Load new texture from file path
 TTF_Font* const j1Fonts::Load(const char* path, char* name, int size)
 {
-	TTF_Font* font = TTF_OpenFont(path, size);
+	
+	SDL_RWops* buffer = App->fs->Load(path);
+	TTF_Font* font = TTF_OpenFontRW(buffer, 1, size); //That closes the buffer automatically
 
 	if(font == NULL)
 	{
