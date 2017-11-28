@@ -214,9 +214,9 @@ bool Image::Update(float dt)
 bool Label::Update(float dt)
 {
 	if (App->render->Blit(App->fonts->Print(this->string.GetString(), { 255,0,0, 255 }, this->font), this->position.x, this->position.y))
-		LOG("PUES SE PRINTA BIEN");
+	{	}
 	else
-		LOG("POS NO");
+		LOG("Error Printing Label: %s", this->string.GetString());
 	
 	return true;
 }
