@@ -54,6 +54,19 @@ public:
 	virtual bool Update(float dt);
 };
 
+class InteractuableElem : public UI_Elem
+{
+private:
+	j1Rect collider;
+public:
+	InteractuableElem(UI_ElemType type, iPoint position, j1Rect col);
+	virtual ~InteractuableElem();
+
+	virtual bool Update(float dt);
+	bool CheckWithMouse();
+	virtual void Do(float dt);
+};
+
 class Image : public NO_InteractuableElem
 {
 private:
@@ -75,24 +88,12 @@ public:
 	bool Update(float dt);
 };
 
-class InteractuableElem : public UI_Elem
-{
-private:
-	j1Rect collider;
-public:
-	InteractuableElem(UI_ElemType type, iPoint position, j1Rect col);
-	virtual ~InteractuableElem();
-
-	virtual bool Update(float dt);
-	bool CheckWithMouse();
-	virtual void Do(float dt);
-};
-
 class Button : public InteractuableElem
 {
 private:
 	UI_ButtonType btype;
 	Label* text;
+	SDL_Rect atlasRec;
 public:
 	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, Label* text = nullptr);
 	virtual ~Button();
@@ -103,6 +104,10 @@ class CheckBox : public InteractuableElem
 {
 private:
 	Label* text;
+	bool state;
+	SDL_Rect recTrue;
+	SDL_Rect recFalse;
+	SDL_Rect* actualRec;
 public: 
 	CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text = nullptr);
 	virtual ~CheckBox();
