@@ -14,6 +14,16 @@
 struct SDL_Texture;
 
 //------------ENUMS---------------------------------------------------------
+enum Events
+{
+	NO_EVENT = -1,
+	MOUSE_ENTER,
+	MOUSE_LEAVE,
+	LEFT_CLICKED,
+	LEFT_UNCLICKED,
+	RIGHT_CLICKED,
+	RIGHT_UNCLICKED
+};
 
 enum UI_ElemType
 {
@@ -56,14 +66,19 @@ public:
 
 class InteractuableElem : public UI_Elem
 {
-private:
+	friend class UI_Manager;
+protected:
 	j1Rect collider;
+	Events state = Events::NO_EVENT;
+protected:
+	p2List<j1Module*> listeners;
+
 public:
 	InteractuableElem(UI_ElemType type, iPoint position, j1Rect col);
 	virtual ~InteractuableElem();
 
 	virtual bool Update(float dt);
-	bool CheckWithMouse();
+	bool CheckWithMouse(float dt);
 	virtual void Do(float dt);
 };
 
@@ -93,9 +108,9 @@ class Button : public InteractuableElem
 private:
 	UI_ButtonType btype;
 	Label* text;
-	SDL_Rect atlasRec;
+	j1Rect atlasRec;
 public:
-	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, Label* text = nullptr);
+	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, j1Rect atlasRec, Label* text = nullptr);
 	virtual ~Button();
 	void Do(float dt);
 };
