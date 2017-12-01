@@ -41,6 +41,13 @@ enum UI_ButtonType
 	EXIT
 };
 
+enum Button_State
+{
+	DEFAULT,
+	MOUSE_ON,
+	CLICKED,
+	MAX_STATE
+};
 
 //------------UI_ELEM HERITAGE-----------------------------------------------
 
@@ -108,9 +115,9 @@ class Button : public InteractuableElem
 private:
 	UI_ButtonType btype;
 	Label* text;
-	j1Rect atlasRec;
+	j1Rect atlasRec[Button_State::MAX_STATE];
 public:
-	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, j1Rect atlasRec, Label* text = nullptr);
+	Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, j1Rect* atlasRec = nullptr, Label* text = nullptr);
 	virtual ~Button();
 	void Do(float dt);
 };

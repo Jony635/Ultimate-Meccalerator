@@ -17,7 +17,12 @@
 	InteractuableElem::InteractuableElem(UI_ElemType type, iPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
 	Label::Label(UI_ElemType type, iPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
 	Image::Image(UI_ElemType type, iPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
-	Button::Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, j1Rect atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text), atlasRec(atlasRec){}
+	Button::Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text) 
+	{
+		this->atlasRec[Button_State::DEFAULT] = atlasRec[Button_State::DEFAULT];
+		this->atlasRec[Button_State::MOUSE_ON] = atlasRec[Button_State::MOUSE_ON];
+		this->atlasRec[Button_State::CLICKED] = atlasRec[Button_State::CLICKED];
+	}
 	CheckBox::CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text) : InteractuableElem(type, position, col), text(text){}
 	//--------------------------------
 
@@ -173,7 +178,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, const SDL_Rect& 
 						if (label)
 							UI_ElemList.add(label);
 					}
-					elem = new Button(type, pos, j1Rect(pos, 45, 53), btype, j1Rect(), label); //This is just an example.
+					elem = new Button(type, pos, j1Rect(pos, 45, 53), btype, atlasRec, label); //This is just an example.
 					label = nullptr;
 				}
 				break;
@@ -252,22 +257,6 @@ bool InteractuableElem::CheckWithMouse(float dt)
 	return true;
 }
 
-
-bool Image::Update(float dt)
-{
-	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->rec);
-
-	return true;
-}
-
-bool Label::Update(float dt)
-{
-	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 255,0,0, 255 }, this->font), this->position.x, this->position.y))
-		LOG("Error Printing Label: %s", this->string.GetString());
-	
-	return true;
-}
-
 void Button::Do(float dt)
 {
 	if (state == Events::LEFT_CLICKED)
@@ -287,6 +276,23 @@ void Button::Do(float dt)
 		this->atlasRec = j1Rect();
 	}
 }
+
+bool Image::Update(float dt)
+{
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->rec);
+
+	return true;
+}
+
+bool Label::Update(float dt)
+{
+	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 255,0,0, 255 }, this->font), this->position.x, this->position.y))
+		LOG("Error Printing Label: %s", this->string.GetString());
+	
+	return true;
+}
+
+
 
 void CheckBox::Do(float dt)
 {
