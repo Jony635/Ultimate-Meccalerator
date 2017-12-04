@@ -26,45 +26,48 @@ void GroundedEnemy::Move(float dt)
 	{
 		accumulated_time = 0.0f;
 
-		p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
-		p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
-
 		//Check Falls
-		
+
 		if (!App->player->CheckCol({ (int)position.x + 20, (int)(position.y + 31) })) //Checks the tile under the enemy pos, if doesn't collide, fall down.
 		{
-			position.y += speed_y * 12 * dt;
-			speed_y += App->scene->Gravity;
+			position.y += speed_y * 19 * dt;
+			speed_y += App->scene->Gravity * 19 * dt;
 		}
 		else
 		{
 			speed_y = 0.0f;
 		}
+
+		p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
+		p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
+
 		//Check Paths
-		if (tile_to_go == iPoint() || tile_to_go == pos_mapped)
+		if (!tile_to_go || *tile_to_go == pos_mapped)
 		{
 			if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 1) != -1)
 			{
-				tile_to_go = *App->pathfinding->GetLastPath()->At(1);
-			}
+				tile_to_go = (iPoint*) App->pathfinding->GetLastPath()->At(1);
+			} 
 		}
 			
-		else if (tile_to_go != pos_mapped)
+		else 
 		{
-			const p2DynArray<iPoint>* path = App->pathfinding->GetLastPath();
-
-			const iPoint* tile_mapped = path->At(1);
-			if (tile_mapped)
+			iPoint tile_world = App->map->MapToWorld(tile_to_go->x, tile_to_go->y);
+			if (abs(tile_world.y - position.y) < 0.01)
 			{
-				iPoint tile_world = App->map->MapToWorld(tile_mapped->x, tile_mapped->y);
-				position.x += (tile_world.x - position.x) * 2 * dt;
-				position.y += (tile_world.y - position.y) * 2 * dt;
+				position.x = tile_world.x;
+				position.y = tile_world.y;
 			}
+				
+
+			position.x += (tile_world.x - position.x) * 2 * dt;
+			position.y += (tile_world.y - position.y) * 2 * dt;
+			
 		}
 	
 		rec.rec.x = position.x;
 		rec.rec.y = position.y;
-		if (App->player->player_col.Collides(rec))
+		if (App->player->player_col.Collides(rec) && !App->godmode)
 		{
 			App->player->dead = true;
 		}
