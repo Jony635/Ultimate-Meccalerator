@@ -51,7 +51,7 @@ void FlyingEnemy::Move(float dt)
 		}
 		rec.rec.x = position.x;
 		rec.rec.y = position.y;
-		if (App->player->player_col.Collides(rec))
+		if (App->player->player_col.Collides(rec) && App->godmode)
 		{
 			App->player->dead = true;
 		}
