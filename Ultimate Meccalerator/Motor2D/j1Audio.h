@@ -4,6 +4,7 @@
 #include "j1Module.h"
 #include "SDL_mixer\include\SDL_mixer.h"
 #include "p2List.h"
+#include "UI_Manager.h"
 
 #define DEFAULT_MUSIC_FADE_TIME 2.0f
 
@@ -34,6 +35,10 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
+	void UI_Do(const UI_Elem* elem, Events event)
+	{
+		
+	}
 
 public:
 	uint doublejumpsound = 0;

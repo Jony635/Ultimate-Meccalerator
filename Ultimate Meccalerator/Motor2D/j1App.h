@@ -8,6 +8,7 @@
 #include "SDL\include\SDL_rect.h"
 #include "j1PerfTimer.h"
 #include "j1Timer.h"
+#include "p2Point.h"
 
 
 // Modules
@@ -22,6 +23,8 @@ class j1Map;
 class j1Player;
 class j1PathFinding;
 class j1Enemies;
+class j1Fonts;
+class UI_Manager;
 
 
 
@@ -29,6 +32,27 @@ struct j1Rect
 {
 	SDL_Rect rec;
 	bool Collides(j1Rect);
+	j1Rect(int x, int y, int w, int h)
+	{
+		rec.x = x;
+		rec.y = y;
+		rec.w = w;
+		rec.h = h;
+	}
+	j1Rect(iPoint pos, int w, int h)
+	{
+		rec.x = pos.x;
+		rec.y = pos.y;
+		rec.w = w;
+		rec.h = h;
+	}
+	j1Rect()
+	{
+		rec.x = 0;
+		rec.y = 0;
+		rec.w = 0;
+		rec.h = 0;
+	}
 };
 
 enum Levels
@@ -118,6 +142,8 @@ public:
 	j1Player*			player			=	nullptr;
 	j1PathFinding*		pathfinding		=	nullptr;
 	j1Enemies*			enemies			=	nullptr;
+	j1Fonts*			fonts			=	nullptr;
+	UI_Manager*			ui_manager		=	nullptr;
 
 private:
 
