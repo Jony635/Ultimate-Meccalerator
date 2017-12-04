@@ -478,3 +478,8 @@ char* j1App::GetBoolString(const bool b) const
 	else
 		return "False";
 }
+
+float j1App::getDt() const
+{
+	return dt;
+}

@@ -76,7 +76,7 @@ public:
 
 	void RestartScene()const;
 	char* GetBoolString(const bool b) const;
-	bool tp_mode_enabled=false;
+	float getDt() const;
 
 private:
 
@@ -147,7 +147,9 @@ private:
 
 	bool				cap_on = false;
 	bool				vsync_on = false;
-	
+
+public:
+	bool				tp_mode_enabled = false;
 
 public:
 	uint32				framerate_cap;
