@@ -168,7 +168,7 @@ bool j1Scene::CleanUp()
 //Teleport Mode
 void j1Scene::TpMode()
 {
-	LOG("Tp paused mode");
+	//LOG("Tp paused mode");
 	int mouse_x, mouse_y;
 	
 	App->input->GetMousePosition(mouse_x, mouse_y);
@@ -179,14 +179,17 @@ void j1Scene::TpMode()
 		mouse_y >(App->render->camera.y) + App->player->pos.y - 114 + 29 &&
 		mouse_y < (App->render->camera.y) + App->player->pos.y + 114 + 29 )
 	{
-		App->render->Blit(Player_shape, (App->render->camera.x*-1) + mouse_x - 18, (App->render->camera.y*-1) + mouse_y - 29);
-		
-		if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
+		if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
 		{
-			App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
-			App->player->pos.y = (App->render->camera.y*-1) + mouse_y;
-			tp_counter--;
-			App->tp_mode_enabled = false;
-		}
+			App->render->Blit(Player_shape, (App->render->camera.x*-1) + mouse_x - 18, (App->render->camera.y*-1) + mouse_y - 29);
+
+			if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
+			{
+				App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
+				App->player->pos.y = (App->render->camera.y*-1) + mouse_y;
+				tp_counter--;
+				App->tp_mode_enabled = false;
+			}
+		}	
 	}
 }

@@ -22,7 +22,7 @@ GroundedEnemy::GroundedEnemy(fPoint data_pos) : position(data_pos)
 
 void GroundedEnemy::Move(float dt)
 {
-	if (accumulated_time >= 0.01f) //Don't do maths and paths every frame. (dt in secs)
+	if (1) //Introduce timer condition here
 	{
 		accumulated_time = 0.0f;
 
@@ -36,35 +36,33 @@ void GroundedEnemy::Move(float dt)
 		else
 		{
 			speed_y = 0.0f;
-		}
 
-		p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
-		p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
+			p2Point<int> pos_mapped = App->map->World_to_Map(iPoint(position.x, position.y));
+			p2Point<int> playerpos_mapped = App->map->World_to_Map(iPoint(App->player->pos.x, App->player->pos.y));
 
-		//Check Paths
-		if (!tile_to_go || *tile_to_go == pos_mapped)
-		{
-			if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 1) != -1)
+			//Check Paths
+			if (!tile_to_go)
 			{
-				tile_to_go = (iPoint*) App->pathfinding->GetLastPath()->At(1);
-			} 
-		}
-			
-		else 
-		{
-			iPoint tile_world = App->map->MapToWorld(tile_to_go->x, tile_to_go->y);
-			if (abs(tile_world.y - position.y) < 0.01)
-			{
-				position.x = tile_world.x;
-				position.y = tile_world.y;
+				if (App->pathfinding->CreatePath(pos_mapped, playerpos_mapped, 1) != -1)
+				{
+					tile_to_go = (iPoint*)App->pathfinding->GetLastPath()->At(1);
+				}
 			}
-				
 
-			position.x += (tile_world.x - position.x) * 2 * dt;
-			position.y += (tile_world.y - position.y) * 2 * dt;
-			
+			if(tile_to_go)
+			{
+				iPoint tile_world = App->map->MapToWorld(tile_to_go->x, tile_to_go->y);
+				if (abs(tile_world.y - position.y) < 0.0001)
+				{
+					position.x = tile_world.x;
+					position.y = tile_world.y;
+					tile_to_go = nullptr;
+				}
+
+				position.x += (tile_world.x - position.x) * 2 * dt;
+				position.y += (tile_world.y - position.y) * 2 * dt;
+			}
 		}
-	
 		rec.rec.x = position.x;
 		rec.rec.y = position.y;
 		if (App->player->player_col.Collides(rec) && !App->godmode)

@@ -94,7 +94,7 @@ j1Player::j1Player() : j1Module()
 	DoubleJump_GoingRight.PushBack({ 187, 414, 46, 68 });
 	DoubleJump_GoingRight.PushBack({ 247, 427, 46, 48 });
 	DoubleJump_GoingRight.PushBack({ 307, 435, 46, 46 });
-	DoubleJump_GoingRight.speed = 13.0f;
+	DoubleJump_GoingRight.speed = 20.0f;
 	DoubleJump_GoingRight.loop = false;
 
 	DoubleJump_GoingLeft.PushBack({ 666, 344, 46, 48 });
@@ -109,7 +109,7 @@ j1Player::j1Player() : j1Module()
 	DoubleJump_GoingLeft.PushBack({ 486, 414, 46, 68 });
 	DoubleJump_GoingLeft.PushBack({ 426, 427, 46, 48 });
 	DoubleJump_GoingLeft.PushBack({ 366, 435, 46, 46 });
-	DoubleJump_GoingLeft.speed = 13.0f;
+	DoubleJump_GoingLeft.speed = 20.0f;
 	DoubleJump_GoingLeft.loop = false;
 }
 
