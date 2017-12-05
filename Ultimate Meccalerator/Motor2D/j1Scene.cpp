@@ -208,7 +208,7 @@ void j1Scene::TpMode()
 	}
 }
 
-bool j1Scene::UI_Do(const UI_Elem* elem, Events event)
+bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 {
 	if (elem->type == UI_ElemType::BUTTON)
 	{
@@ -222,7 +222,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events event)
 			break;
 			case UI_ButtonType::PLAY:
 			{
-				if (event == Events::LEFT_CLICKED)
+				if (*event == Events::LEFT_CLICKED)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
 					App->RestartScene();

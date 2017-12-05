@@ -46,7 +46,7 @@
 	//-------UPDATES------------------
 
 	//-------USEFUL METHODS-----------
-	bool InteractuableElem::Do(float dt) {}
+	bool InteractuableElem::Do(float dt) { return true; }
 	//--------------------------------
 
 
@@ -268,7 +268,7 @@ bool Button::Do(float dt)
 	p2List_item<j1Module*>* listener = listeners.start;
 	while (listener)
 	{
-		if (listener->data->UI_Do(this, state) == false)
+		if (listener->data->UI_Do(this, &state) == false)
 		{
 			ret = false;
 		}

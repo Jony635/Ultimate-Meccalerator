@@ -9,7 +9,10 @@
 #include "p2SString.h"
 #include "PugiXml\src\pugixml.hpp"
 
+
 class j1App;
+class UI_Elem;
+enum Events;
 
 class j1Module
 {
@@ -69,7 +72,7 @@ public:
 		return true;
 	}
 
-	virtual bool UI_Do(const UI_Elem* elem, Events event) {}
+	virtual bool UI_Do(const UI_Elem* elem, Events* event) { return true; }
 
 public:
 

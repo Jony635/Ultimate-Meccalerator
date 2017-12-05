@@ -35,7 +35,7 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
-	bool UI_Do(const UI_Elem* elem, Events event) {}
+	bool UI_Do(const UI_Elem* elem, Events* event);
 
 public:
 	uint doublejumpsound = 0;
