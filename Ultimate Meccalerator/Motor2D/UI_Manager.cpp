@@ -125,7 +125,7 @@ const SDL_Texture* UI_Manager::GetAtlas() const
 	return atlas;
 }
 
-UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, const SDL_Rect& rec, UI_ButtonType btype, char* string, TTF_Font* font)
+UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, SDL_Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font)
 {
 	UI_Elem* elem = nullptr;
 	Label* label = nullptr;
@@ -148,7 +148,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, const SDL_Rect& 
 
 		//-----IMAGE-----------------------------------------------------------
 		case UI_ElemType::IMAGE:
-			elem = new Image(type, pos, rec);
+			elem = new Image(type, pos, atlasRec[0]);
 			break;
 	
 		//-----CHECKBOX--------------------------------------------------------
@@ -178,7 +178,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, const SDL_Rect& 
 						if (label)
 							UI_ElemList.add(label);
 					}
-					elem = new Button(type, pos, j1Rect(pos, 45, 53), btype, atlasRec, label); //This is just an example.
+					elem = new Button(type, pos, col, btype, atlasRec, label); //This is just an example.
 					label = nullptr;
 				}
 				break;
