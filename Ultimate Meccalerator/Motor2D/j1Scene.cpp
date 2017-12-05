@@ -33,46 +33,69 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
-	Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
+	if(!Tp_circle_texture)
+		Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
+	if(!Player_shape)
+		Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
+
 	tp_counter = 3;
 
-	if(App->actual_lvl==FIRST_LEVEL)
+	switch (App->actual_lvl)
 	{
-		pugi::xml_document doc;
-		App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());	
-		App->enemies->FillEnemiesData();
+		case Levels::MENU:
+		{
 
-		int w, h;
-		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
-		RELEASE_ARRAY(data);
+		}
+		break;
+		case Levels::FIRST_LEVEL:
+		{
+			pugi::xml_document doc;
+			App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
+			App->enemies->FillEnemiesData();
 
-		App->render->camera.x = 0;
-		App->render->fcamera.x = 0;
+			int w, h;
+			uchar* data = NULL;
+			if (App->map->CreateWalkabilityMap(w, h, &data))
+				App->pathfinding->SetMap(w, h, data);
+			RELEASE_ARRAY(data);
 
-		if(App->player->playerText==nullptr)
+			App->render->camera.x = 0;
+			App->render->fcamera.x = 0;
+
+			if (App->player->playerText == nullptr)
+				App->player->Start();
+		}
+		break;
+		case Levels::SECOND_LEVEL:
+		{
+			App->render->camera.x = 0;
+			App->render->fcamera.x = 0;
+			App->map->Load("Level_2_x2.tmx");
+
+			int w, h;
+			uchar* data = NULL;
+			if (App->map->CreateWalkabilityMap(w, h, &data))
+				App->pathfinding->SetMap(w, h, data);
+			RELEASE_ARRAY(data);
+
+			App->enemies->FillEnemiesData();
 			App->player->Start();
+		}
+		break;
 	}
-	else
-	{
-		App->render->camera.x = 0;
-		App->render->fcamera.x = 0;
-		App->map->Load("Level_2_x2.tmx");
+	return true;
+}
 
-		int w, h;
-		uchar* data = NULL;
-		if (App->map->CreateWalkabilityMap(w, h, &data))
-			App->pathfinding->SetMap(w, h, data);
-		RELEASE_ARRAY(data);
-
-		App->enemies->FillEnemiesData();
-		App->player->Start();
-	}
-	
-	App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, iPoint(1024 / 2, 768 / 2), { 485, 829, 328, 103 });
-	App->ui_manager->CreateUIElem(UI_ElemType::LABEL, iPoint(1024 / 2, 768 / 2), SDL_Rect(), NO_BUTTONTYPE, "Hello Surmanito", App->fonts->getFontbyName("OpenSans-GREATER"));
+// Called before quitting
+bool j1Scene::CleanUp()
+{
+	LOG("Freeing scene");
+	App->tex->UnLoad(Tp_circle_texture);
+	App->tex->UnLoad(Player_shape);
+	App->player->CleanUp();
+	App->map->CleanUp();
+	App->enemies->CleanUp();
+	App->ui_manager->CleanUp();
 	return true;
 }
 
@@ -152,19 +175,6 @@ bool j1Scene::PostUpdate()
 		ret = false;
 
 	return ret;
-}
-
-// Called before quitting
-bool j1Scene::CleanUp()
-{
-	LOG("Freeing scene");
-	App->tex->UnLoad(Tp_circle_texture);
-	App->tex->UnLoad(Player_shape);
-	App->player->CleanUp();
-	App->map->CleanUp();
-	App->enemies->CleanUp();
-
-	return true;
 }
 
 //Teleport Mode

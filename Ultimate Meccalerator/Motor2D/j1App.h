@@ -57,7 +57,8 @@ struct j1Rect
 
 enum Levels
 {
-	FIRST_LEVEL = 0,
+	MENU = 0,
+	FIRST_LEVEL,
 	SECOND_LEVEL
 };
 
