@@ -46,7 +46,7 @@
 	//-------UPDATES------------------
 
 	//-------USEFUL METHODS-----------
-	void InteractuableElem::Do(float dt) {}
+	bool InteractuableElem::Do(float dt) {}
 	//--------------------------------
 
 
@@ -105,10 +105,14 @@ bool UI_Manager::PreUpdate()
 
 bool UI_Manager::Update(float dt)
 {
+	bool ret = true;
 	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
 	while (elem)
 	{
-		elem->data->Update(dt);
+		if (elem->data->Update(dt) == false)
+		{
+			return false;
+		}
 		elem = elem->next;
 	}
 	return true;
@@ -170,7 +174,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 		{
 			if (string)
 			{
-				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font")); //This is just an example.
+				label = new Label(LABEL, iPoint(pos.x + 12, pos.y + 12), string, App->fonts->getFontbyName("generic_font")); //This is just an example.
 				if (label)
 					UI_ElemList.add(label);
 			}
@@ -233,13 +237,16 @@ bool InteractuableElem::CheckWithMouse(float dt)
 	}
 
 	if (state != Events::NO_EVENT)
-		Do(dt);
+		if (Do(dt) == false)
+			return false;
 
 	return true;
 }
 
-void Button::Do(float dt)
+bool Button::Do(float dt)
 {
+	bool ret = true;
+
 	if (state == Events::LEFT_CLICKED)
 	{
 		this->BlitRec = atlasRec[Button_State::CLICKED].rec;
@@ -261,11 +268,14 @@ void Button::Do(float dt)
 	p2List_item<j1Module*>* listener = listeners.start;
 	while (listener)
 	{
-		listener->data->UI_Do(this, state);
+		if (listener->data->UI_Do(this, state) == false)
+		{
+			ret = false;
+		}
 		listener = listener->next;
 	}
 
-
+	return ret;
 }
 
 bool Image::Update(float dt)
@@ -285,11 +295,14 @@ bool Label::Update(float dt)
 
 bool Button::Update(float dt)
 {
-	CheckWithMouse(dt);
+	if (CheckWithMouse(dt) == false)
+	{
+		return false;
+	}
 	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->BlitRec);
 }
 
-void CheckBox::Do(float dt)
+bool CheckBox::Do(float dt)
 {
-	
+	return true;
 }

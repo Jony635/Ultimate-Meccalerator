@@ -37,7 +37,7 @@ enum UI_ElemType
 enum UI_ButtonType
 {
 	NO_BUTTONTYPE = -1,
-	CONFIG,
+	PLAY,
 	EXIT
 };
 
@@ -86,7 +86,7 @@ public:
 
 	virtual bool Update(float dt);
 	bool CheckWithMouse(float dt);
-	virtual void Do(float dt);
+	virtual bool Do(float dt);
 };
 
 class Image : public NO_InteractuableElem
@@ -112,6 +112,7 @@ public:
 
 class Button : public InteractuableElem
 {
+	friend class j1Scene;
 private:
 	UI_ButtonType btype;
 	Label* text;
@@ -122,7 +123,7 @@ public:
 	Button(UI_ElemType type, iPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec = nullptr, Label* text = nullptr);
 	bool Update(float dt);
 	virtual ~Button();
-	void Do(float dt);
+	bool Do(float dt);
 };
 
 class CheckBox : public InteractuableElem
@@ -136,7 +137,7 @@ private:
 public: 
 	CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text = nullptr);
 	virtual ~CheckBox();
-	void Do(float dt);
+	bool Do(float dt);
 };
 
 //------------UI_MANAGER MODULE--------------------------------------

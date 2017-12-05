@@ -44,7 +44,9 @@ bool j1Scene::Start()
 	{
 		case Levels::MENU:
 		{
-
+			/*j1Rect atlasrec [Button_State::MAX_STATE] = { j1Rect(22,55,45,65), j1Rect(22,55,45,65), j1Rect(22,55,45,65)};
+			iPoint pos;
+			j1Rect col(pos, 23, 12);*/
 		}
 		break;
 		case Levels::FIRST_LEVEL:
@@ -203,5 +205,30 @@ void j1Scene::TpMode()
 				App->tp_mode_enabled = false;
 			}
 		}	
+	}
+}
+
+bool j1Scene::UI_Do(const UI_Elem* elem, Events event)
+{
+	if (elem->type == UI_ElemType::BUTTON)
+	{
+		Button* button = (Button*)elem;
+		switch (button->btype)
+		{
+			case UI_ButtonType::EXIT:
+			{
+				return false;
+			}
+			break;
+			case UI_ButtonType::PLAY:
+			{
+				if (event == Events::LEFT_CLICKED)
+				{
+					App->actual_lvl = Levels::FIRST_LEVEL;
+					App->RestartScene();
+				}
+			}
+			break;
+		}
 	}
 }

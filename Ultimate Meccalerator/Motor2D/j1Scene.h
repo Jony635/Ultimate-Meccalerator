@@ -35,6 +35,8 @@ public:
 	//Teleport mode
 	void TpMode();
 
+	bool UI_Do(const UI_Elem* elem, Events event);
+
 public:
 	SDL_Texture* Tp_circle_texture=nullptr;
 	SDL_Texture* Player_shape=nullptr;

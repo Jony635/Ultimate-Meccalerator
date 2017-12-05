@@ -69,7 +69,7 @@ public:
 		return true;
 	}
 
-	virtual void UI_Do(const UI_Elem* elem, Events event) {}
+	virtual bool UI_Do(const UI_Elem* elem, Events event) {}
 
 public:
 
