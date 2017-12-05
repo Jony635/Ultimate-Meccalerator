@@ -13,7 +13,7 @@ FlyingEnemy::FlyingEnemy(fPoint data_pos) : position(data_pos)
 	std_anim.PushBack({ 115,1,50,29 });
 	std_anim.PushBack({ 171,1,50,29 });
 	std_anim.PushBack({ 137,33,50,29 });
-	std_anim.speed = 0.5f;
+	std_anim.speed = 6.0f;
 
 	rec.rec.w = 50;
 	rec.rec.h = 29;
@@ -51,7 +51,7 @@ void FlyingEnemy::Move(float dt)
 		}
 		rec.rec.x = position.x;
 		rec.rec.y = position.y;
-		if (App->player->player_col.Collides(rec))
+		if (App->player->player_col.Collides(rec) && App->godmode)
 		{
 			App->player->dead = true;
 		}

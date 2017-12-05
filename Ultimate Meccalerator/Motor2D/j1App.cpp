@@ -196,7 +196,7 @@ void j1App::PrepareUpdate()
 	last_sec_frame_count++;
 
 	dt = dt_timer.ReadMs() / 1000;
-	LOG("dt is %lf ms", dt);
+	//LOG("dt is %lf ms", dt);
 
 	dt_timer.Start();
 	frame_time.Start();
@@ -230,8 +230,8 @@ void j1App::FinishUpdate()
 	
 
 	static char title[256];
-	sprintf_s(title, 256, "FPS: %i AverageFPS: %.2f Last_frame ms: %02u Cap_On: %s VSync_On: %s",
-		frames_on_last_update,avg_fps, last_frame_ms,GetBoolString(cap_on),GetBoolString(vsync_on));
+	sprintf_s(title, 256, "FPS: %i AverageFPS: %.2f Last_frame ms: %02u Cap_On: %s VSync_On: %s GodModeEnabled: %s",
+		frames_on_last_update,avg_fps, last_frame_ms,GetBoolString(cap_on),GetBoolString(vsync_on), GetBoolString(godmode));
 	App->win->SetTitle(title);
 
 	if (framerate_cap > 0)
@@ -242,7 +242,7 @@ void j1App::FinishUpdate()
 			j1PerfTimer Delay_Timer;
 			Delay_Timer.Start();
 			SDL_Delay(time_to_wait);
-			LOG("We wanted to wait %3.d and we waited %0.2f", time_to_wait, Delay_Timer.ReadMs());
+			//LOG("We wanted to wait %3.d and we waited %0.2f", time_to_wait, Delay_Timer.ReadMs());
 		}
 	}
 }
@@ -477,4 +477,9 @@ char* j1App::GetBoolString(const bool b) const
 		return "True";
 	else
 		return "False";
+}
+
+float j1App::getDt() const
+{
+	return dt;
 }

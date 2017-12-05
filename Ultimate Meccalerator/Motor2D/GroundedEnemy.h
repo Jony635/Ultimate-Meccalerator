@@ -14,6 +14,7 @@ class GroundedEnemy : public Enemy
 {
 private:
 	fPoint position;
+	iPoint* tile_to_go = nullptr;
 	Animation std_anim;
 	Animation* main_Anim;
 	
