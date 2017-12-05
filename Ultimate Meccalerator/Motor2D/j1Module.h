@@ -69,6 +69,8 @@ public:
 		return true;
 	}
 
+	virtual void UI_Do(const UI_Elem* elem, Events event) {}
+
 public:
 
 	p2SString	name;

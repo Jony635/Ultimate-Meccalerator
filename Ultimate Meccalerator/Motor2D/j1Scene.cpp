@@ -10,6 +10,7 @@
 #include "j1Scene.h"
 #include "j1Player.h"
 #include "j1Pathfinding.h"
+#include "UI_Manager.h"
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -34,7 +35,6 @@ bool j1Scene::Start()
 {
 	Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
 	Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
-
 	tp_counter = 3;
 
 	if(App->actual_lvl==FIRST_LEVEL)
@@ -71,6 +71,8 @@ bool j1Scene::Start()
 		App->player->Start();
 	}
 	
+	App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, iPoint(1024 / 2, 768 / 2), { 485, 829, 328, 103 });
+	App->ui_manager->CreateUIElem(UI_ElemType::LABEL, iPoint(1024 / 2, 768 / 2), SDL_Rect(), NO_BUTTONTYPE, "Hello Surmanito", App->fonts->getFontbyName("OpenSans-GREATER"));
 	return true;
 }
 

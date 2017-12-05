@@ -31,5 +31,11 @@
    <speed tiles_sec="4"/>
    <speed_jump tiles_sec="10"/>
   </player>
-
+  
+  <UI_Manager>
+    <atlas file="Resources/gui/atlas.png"/>
+  </UI_Manager>
+  
+  
+  
 </config>

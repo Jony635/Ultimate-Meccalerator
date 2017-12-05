@@ -180,3 +180,10 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 
 	return ret;
 }
+
+void j1Audio::UI_Do(const UI_Elem* elem, Events event)
+{
+
+
+
+}
