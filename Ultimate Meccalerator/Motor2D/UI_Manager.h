@@ -116,8 +116,11 @@ private:
 	UI_ButtonType btype;
 	Label* text;
 	j1Rect atlasRec[Button_State::MAX_STATE];
+
+	SDL_Rect BlitRec;
 public:
 	Button(UI_ElemType type, iPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec = nullptr, Label* text = nullptr);
+	bool Update(float dt);
 	virtual ~Button();
 	void Do(float dt);
 };
@@ -152,7 +155,7 @@ public:
 	bool CleanUp();
 
 public:
-	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, SDL_Rect* atlasRec = nullptr, const j1Rect& col = j1Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
+	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec = nullptr, const j1Rect& col = j1Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
 	const SDL_Texture* GetAtlas() const;
 private:
 	SDL_Texture* atlas = nullptr; //Texture that has everything

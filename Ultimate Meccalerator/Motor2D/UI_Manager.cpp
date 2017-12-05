@@ -17,7 +17,7 @@
 	InteractuableElem::InteractuableElem(UI_ElemType type, iPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
 	Label::Label(UI_ElemType type, iPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
 	Image::Image(UI_ElemType type, iPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
-	Button::Button(UI_ElemType type, iPoint position, j1Rect col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text) 
+	Button::Button(UI_ElemType type, iPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text) 
 	{
 		this->atlasRec[Button_State::DEFAULT] = atlasRec[Button_State::DEFAULT];
 		this->atlasRec[Button_State::MOUSE_ON] = atlasRec[Button_State::MOUSE_ON];
@@ -125,7 +125,7 @@ const SDL_Texture* UI_Manager::GetAtlas() const
 	return atlas;
 }
 
-UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, SDL_Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font)
+UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font)
 {
 	UI_Elem* elem = nullptr;
 	Label* label = nullptr;
@@ -148,11 +148,11 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, SDL_Rect* atlasR
 
 		//-----IMAGE-----------------------------------------------------------
 		case UI_ElemType::IMAGE:
-			elem = new Image(type, pos, atlasRec[0]);
+			elem = new Image(type, pos, atlasRec[0].rec);
 			break;
 	
 		//-----CHECKBOX--------------------------------------------------------
-		case UI_ElemType::CHECKBOX:
+		case UI_ElemType::CHECKBOX: //Non Updated Constructor, because of this won't be used for now
 		{
 			Label* label = nullptr;
 			if (string)
@@ -166,36 +166,17 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, SDL_Rect* atlasR
 		break;
 
 		//-----BUTTON----------------------------------------------------------
-		case UI_ElemType::BUTTON: //NOTE: EACH BUTTON MUST SET HERE HIS COLLIDER SIZE AND HIS LABEL POS
+		case UI_ElemType::BUTTON:
 		{
-			switch (btype)
+			if (string)
 			{
-				case UI_ButtonType::EXIT:
-				{
-					if (string)
-					{
-						label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font")); //This is just an example.
-						if (label)
-							UI_ElemList.add(label);
-					}
-					elem = new Button(type, pos, col, btype, atlasRec, label); //This is just an example.
-					label = nullptr;
-				}
-				break;
-				case UI_ButtonType::CONFIG:
-				{
-
-					if (string)
-					{
-						label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font")); //This is just an example.
-						if (label)
-							UI_ElemList.add(label);
-					}
-					elem = new Button(type, pos, j1Rect(pos, 23, 57), btype, j1Rect(), label); //This is just an example.
-				}
-				break;
+				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font")); //This is just an example.
+				if (label)
+					UI_ElemList.add(label);
 			}
-			InteractuableElem* button = (InteractuableElem*) elem;
+			elem = new Button(type, pos, col, btype, atlasRec, label); //This is just an example.
+
+			InteractuableElem* button = (InteractuableElem*)elem;
 			button->listeners.add(App->audio);
 		}
 		break;
@@ -261,20 +242,30 @@ void Button::Do(float dt)
 {
 	if (state == Events::LEFT_CLICKED)
 	{
-		this->atlasRec = j1Rect();
-
-		p2List_item<j1Module*>* listener = listeners.start;
-		while (listener)
-		{
-			listener->data->UI_Do(this, state);
-			listener = listener->next;
-		}
-
+		this->BlitRec = atlasRec[Button_State::CLICKED].rec;
 	}
 	else if (state == Events::LEFT_UNCLICKED)
 	{
-		this->atlasRec = j1Rect();
+		this->BlitRec = atlasRec[Button_State::DEFAULT].rec;
 	}
+	else if (state == Events::MOUSE_ENTER)
+	{
+		this->BlitRec = atlasRec[Button_State::MOUSE_ON].rec;
+	}
+	else if (state == Events::MOUSE_LEAVE)
+	{
+		this->BlitRec = atlasRec[Button_State::DEFAULT].rec;
+	}
+
+
+	p2List_item<j1Module*>* listener = listeners.start;
+	while (listener)
+	{
+		listener->data->UI_Do(this, state);
+		listener = listener->next;
+	}
+
+
 }
 
 bool Image::Update(float dt)
@@ -292,7 +283,11 @@ bool Label::Update(float dt)
 	return true;
 }
 
-
+bool Button::Update(float dt)
+{
+	CheckWithMouse(dt);
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->BlitRec);
+}
 
 void CheckBox::Do(float dt)
 {
