@@ -44,9 +44,9 @@ bool j1Scene::Start()
 	{
 		case Levels::MENU:
 		{
-			/*j1Rect atlasrec [Button_State::MAX_STATE] = { j1Rect(22,55,45,65), j1Rect(22,55,45,65), j1Rect(22,55,45,65)};
-			iPoint pos;
-			j1Rect col(pos, 23, 12);*/
+			j1Rect atlasrec [Button_State::MAX_STATE] = { j1Rect(22,55,45,65), j1Rect(22,55,45,65), j1Rect(22,55,45,65)};
+			iPoint pos = {0,0};
+			j1Rect col(pos, 23, 12);
 		}
 		break;
 		case Levels::FIRST_LEVEL:

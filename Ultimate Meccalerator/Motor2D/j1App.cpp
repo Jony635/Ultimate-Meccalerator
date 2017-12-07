@@ -146,6 +146,7 @@ bool j1App::Start()
 
 	while(item != NULL && ret == true)
 	{
+		if (item->data != player)
 		ret = item->data->Start();
 		item = item->next;
 	}

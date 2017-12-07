@@ -181,7 +181,7 @@ public:
 public:
 	uint32				framerate_cap;
 	bool				godmode = false;
-	Levels actual_lvl = Levels::FIRST_LEVEL;
+	Levels actual_lvl = Levels::MENU;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S
