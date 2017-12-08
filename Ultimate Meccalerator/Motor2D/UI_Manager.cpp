@@ -8,6 +8,10 @@
 #include "j1Input.h"
 #include "j1Audio.h"
 
+//------------DEFINES----------------------------------------------------------------
+#define BUTTON_RECT_W						190
+#define BUTTON_RECT_H						45
+#define PIXELS_DOWN_FOR_IDLE_ANIMATION		4
 
 //------------UI_ELEM HERITAGE METHODS-----------------------------------------------
 
@@ -70,7 +74,7 @@ bool UI_Manager::Awake(pugi::xml_node& uimnode)
 bool UI_Manager::Start()
 {
 	const char* string = atlas_file_name.GetString();
-	atlas = App->tex->Load(atlas_file_name.GetString());
+	atlas = App->tex->Load(string);
 
 	return true;
 }
@@ -162,8 +166,8 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 			if (string)
 			{
 				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font")); //This is just an example.
-				if (label)
-					UI_ElemList.add(label);
+				//if (label)
+				//	UI_ElemList.add(label);//Commented since find a solution for the ui_items array order
 			}
 			elem = new CheckBox(type, pos, j1Rect(pos, 23, 57), label);
 		}
@@ -173,10 +177,13 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 		case UI_ElemType::BUTTON:
 		{
 			if (string)
-			{
-				label = new Label(LABEL, iPoint(pos.x + 12, pos.y + 12), string, App->fonts->getFontbyName("generic_font")); //This is just an example.
-				if (label)
-					UI_ElemList.add(label);
+			{	
+				int string_w, string_h = 0;
+				TTF_SizeText(font, string, &string_w, &string_h);
+				iPoint label_position = iPoint(pos.x + (BUTTON_RECT_W / 2) - string_w / 2, pos.y + (BUTTON_RECT_H / 2) - string_h / 2);
+				label = new Label(LABEL,label_position, string,font);
+				//if (label)
+				//	UI_ElemList.add(label);//Commented since find a solution for the ui_items array order
 			}
 			elem = new Button(type, pos, col, btype, atlasRec, label); //This is just an example.
 
@@ -189,6 +196,8 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 	if (elem)
 	{
 		UI_ElemList.add(elem);
+		if (label)
+		UI_ElemList.add(label);//label added here because the order of blit
 		return elem;
 	}
 	else
@@ -205,12 +214,24 @@ bool InteractuableElem::CheckWithMouse(float dt)
 	App->input->GetMousePosition(mouse_x, mouse_y);
 
 
-	//Check Mouse Col with Collider
-	if (state != Events::MOUSE_ENTER && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	////Check Mouse Col with Collider
+	//if (state != Events::MOUSE_ENTER && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	//{
+	//	this->state = Events::MOUSE_ENTER;
+	//}
+	//else if (state == Events::MOUSE_ENTER && !this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	//{
+	//	this->state = Events::MOUSE_LEAVE;
+	//}
+
+	this->state = Events::MOUSE_LEAVE;
+
+	if (mouse_x < this->position.x + this->collider.rec.w && mouse_x > this->position.x &&
+		mouse_y < this->position.y + this->collider.rec.h && mouse_y > this->position.y)
 	{
 		this->state = Events::MOUSE_ENTER;
 	}
-	else if (state == Events::MOUSE_ENTER && !this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	else
 	{
 		this->state = Events::MOUSE_LEAVE;
 	}
@@ -218,7 +239,7 @@ bool InteractuableElem::CheckWithMouse(float dt)
 	//Check MouseButtons
 	if (state == Events::MOUSE_ENTER)
 	{
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
 			state = Events::LEFT_CLICKED;
 		}
@@ -226,7 +247,7 @@ bool InteractuableElem::CheckWithMouse(float dt)
 		{
 			state = Events::LEFT_UNCLICKED;
 		}
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		{
 			state = Events::RIGHT_CLICKED;
 		}
@@ -247,23 +268,31 @@ bool Button::Do(float dt)
 {
 	bool ret = true;
 
-	if (state == Events::LEFT_CLICKED)
+	switch (state)//Pls Jonathan, check out this switch
 	{
-		this->BlitRec = atlasRec[Button_State::CLICKED].rec;
-	}
-	else if (state == Events::LEFT_UNCLICKED)
-	{
-		this->BlitRec = atlasRec[Button_State::DEFAULT].rec;
-	}
-	else if (state == Events::MOUSE_ENTER)
-	{
+	case NO_EVENT:
+		break;
+	case MOUSE_ENTER:
 		this->BlitRec = atlasRec[Button_State::MOUSE_ON].rec;
-	}
-	else if (state == Events::MOUSE_LEAVE)
-	{
+		App->ui_manager->Button_Idle = false;
+		break;
+	case MOUSE_LEAVE:
 		this->BlitRec = atlasRec[Button_State::DEFAULT].rec;
+		App->ui_manager->Button_Idle = true;
+		break;
+	case LEFT_CLICKED:
+		this->BlitRec = atlasRec[Button_State::CLICKED].rec;
+		App->ui_manager->Button_Idle = false;
+		break;
+	case LEFT_UNCLICKED://I think we must delete this state, it's useless
+		break;
+	case RIGHT_CLICKED:
+		break;
+	case RIGHT_UNCLICKED://I think we must delete this state, it's useless
+		break;
+	default:
+		break;
 	}
-
 
 	p2List_item<j1Module*>* listener = listeners.start;
 	while (listener)
@@ -287,7 +316,12 @@ bool Image::Update(float dt)
 
 bool Label::Update(float dt)
 {
-	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 255,0,0, 255 }, this->font), this->position.x, this->position.y))
+	iPoint label_pos(this->position.x, this->position.y);
+
+	if (App->ui_manager->Button_Idle)
+		label_pos.y += PIXELS_DOWN_FOR_IDLE_ANIMATION;
+
+	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font), label_pos.x, label_pos.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
 	
 	return true;
@@ -299,6 +333,7 @@ bool Button::Update(float dt)
 	{
 		return false;
 	}
+	this->Do(dt);
 	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->BlitRec);
 }
 

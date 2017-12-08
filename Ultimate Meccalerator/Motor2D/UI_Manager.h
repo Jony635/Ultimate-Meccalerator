@@ -117,7 +117,7 @@ private:
 	UI_ButtonType btype;
 	Label* text;
 	j1Rect atlasRec[Button_State::MAX_STATE];
-
+public:
 	SDL_Rect BlitRec;
 public:
 	Button(UI_ElemType type, iPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec = nullptr, Label* text = nullptr);
@@ -162,6 +162,8 @@ private:
 	SDL_Texture* atlas = nullptr; //Texture that has everything
 	p2SString atlas_file_name;
 	p2List<UI_Elem*> UI_ElemList;
+public:
+	bool Button_Idle = true;
 };
 
 

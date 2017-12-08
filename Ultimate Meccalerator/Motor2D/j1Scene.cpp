@@ -44,9 +44,11 @@ bool j1Scene::Start()
 	{
 		case Levels::MENU:
 		{
-			j1Rect atlasrec [Button_State::MAX_STATE] = { j1Rect(22,55,45,65), j1Rect(22,55,45,65), j1Rect(22,55,45,65)};
-			iPoint pos = {0,0};
-			j1Rect col(pos, 23, 12);
+			j1Rect atlasrec [Button_State::MAX_STATE] = { j1Rect(190,0,190,49), j1Rect(190,49,190,49), j1Rect(0,192,190,49)};
+			iPoint pos = {100,100};
+			j1Rect col(pos, 190, 45);
+
+			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, { 100,100 }, &atlasrec[0], col, UI_ButtonType::PLAY, "play",App->fonts->getFontbyName("kenvector_future"));
 		}
 		break;
 		case Levels::FIRST_LEVEL:
@@ -119,6 +121,9 @@ bool j1Scene::PreUpdate()
 // Called each loop iteration
 bool j1Scene::Update(float dt)
 {
+	SDL_Rect testrect = { 15,15,23,23 };
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), 0, 0,&testrect);
+
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		App->actual_lvl = Levels::FIRST_LEVEL;
