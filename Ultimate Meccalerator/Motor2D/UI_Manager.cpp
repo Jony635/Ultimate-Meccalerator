@@ -7,6 +7,7 @@
 #include "j1Render.h"
 #include "j1Input.h"
 #include "j1Audio.h"
+#include "j1Scene.h"
 
 //------------DEFINES----------------------------------------------------------------
 #define BUTTON_RECT_W						190
@@ -189,6 +190,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 
 			InteractuableElem* button = (InteractuableElem*)elem;
 			button->listeners.add(App->audio);
+			button->listeners.add(App->scene);
 		}
 		break;
 	}
@@ -341,7 +343,8 @@ bool Button::Update(float dt)
 	{
 		return false;
 	}
-	this->Do(dt);
+	if(this)
+		this->Do(dt);
 	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->BlitRec);
 }
 

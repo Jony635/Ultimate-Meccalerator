@@ -39,6 +39,9 @@ enum UI_ButtonType
 	NO_BUTTONTYPE = -1,
 	PLAY,
 	CONTINUE,
+	HOW_TO_PLAY,
+	CREDITS,
+	SETTINGS,
 	EXIT
 };
 
