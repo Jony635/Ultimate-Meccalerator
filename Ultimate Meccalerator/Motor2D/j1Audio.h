@@ -41,6 +41,12 @@ public:
 	uint doublejumpsound = 0;
 	uint dieSound = 0;
 	uint accelsound = 0;
+	uint mouse_on = 0;
+	uint mouse_click = 0;
+
+	bool fx_mouse_on_heared = false;
+	bool fx_mouse_clicked_heared = false;
+
 private:
 	
 	_Mix_Music*			music;

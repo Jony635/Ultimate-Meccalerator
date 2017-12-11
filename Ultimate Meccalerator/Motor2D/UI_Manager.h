@@ -38,6 +38,7 @@ enum UI_ButtonType
 {
 	NO_BUTTONTYPE = -1,
 	PLAY,
+	CONTINUE,
 	EXIT
 };
 
@@ -113,6 +114,7 @@ public:
 class Button : public InteractuableElem
 {
 	friend class j1Scene;
+	friend class j1Audio;
 private:
 	UI_ButtonType btype;
 	Label* text;
@@ -163,7 +165,9 @@ private:
 	p2SString atlas_file_name;
 	p2List<UI_Elem*> UI_ElemList;
 public:
-	bool Button_Idle = true;
+	bool Button_Clicked = true;
+	Events last_event;
+	iPoint last_elem_pos = { 0,0 };
 };
 
 

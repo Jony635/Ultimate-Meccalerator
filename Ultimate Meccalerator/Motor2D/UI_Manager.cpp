@@ -11,7 +11,7 @@
 //------------DEFINES----------------------------------------------------------------
 #define BUTTON_RECT_W						190
 #define BUTTON_RECT_H						45
-#define PIXELS_DOWN_FOR_IDLE_ANIMATION		4
+#define PIXELS_DOWN_FOR_CLICKED_ANIMATION	4
 
 //------------UI_ELEM HERITAGE METHODS-----------------------------------------------
 
@@ -274,15 +274,23 @@ bool Button::Do(float dt)
 		break;
 	case MOUSE_ENTER:
 		this->BlitRec = atlasRec[Button_State::MOUSE_ON].rec;
-		App->ui_manager->Button_Idle = false;
+		App->ui_manager->Button_Clicked = false;
+		App->ui_manager->last_event = Events::MOUSE_ENTER;
 		break;
 	case MOUSE_LEAVE:
 		this->BlitRec = atlasRec[Button_State::DEFAULT].rec;
-		App->ui_manager->Button_Idle = true;
+		App->ui_manager->Button_Clicked = false;
+		if (!App->ui_manager->last_event == Events::MOUSE_LEAVE)
+		{
+			App->audio->fx_mouse_clicked_heared = false;//Doesn't matter if it's heared once (when clicked it will be a change of screen or something so it can't be heared twice from the menu)
+			//App->audio->fx_mouse_on_heared = false;
+		}
+		App->ui_manager->last_event = Events::MOUSE_LEAVE;
 		break;
 	case LEFT_CLICKED:
 		this->BlitRec = atlasRec[Button_State::CLICKED].rec;
-		App->ui_manager->Button_Idle = false;
+		App->ui_manager->Button_Clicked = true;
+		App->ui_manager->last_event = Events::LEFT_CLICKED;
 		break;
 	case LEFT_UNCLICKED://I think we must delete this state, it's useless
 		break;
@@ -318,8 +326,8 @@ bool Label::Update(float dt)
 {
 	iPoint label_pos(this->position.x, this->position.y);
 
-	if (App->ui_manager->Button_Idle)
-		label_pos.y += PIXELS_DOWN_FOR_IDLE_ANIMATION;
+	if (App->ui_manager->Button_Clicked)
+		label_pos.y += PIXELS_DOWN_FOR_CLICKED_ANIMATION;
 
 	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font), label_pos.x, label_pos.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
