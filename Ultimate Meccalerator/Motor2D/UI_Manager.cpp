@@ -113,7 +113,7 @@ bool UI_Manager::Update(float dt)
 {
 	bool ret = true;
 	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
-	while (elem)
+	while (elem && elem->data)
 	{
 		if (elem->data->Update(dt) == false)
 		{
@@ -220,21 +220,24 @@ bool InteractuableElem::CheckWithMouse(float dt)
 	}
 
 	//Check Mouse Col with Collider
-	if (state != Events::MOUSE_ENTER && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	if ((state == Events::MOUSE_ENTER || state == Events::LEFT_UNCLICKED) && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
 	{
-		this->state = Events::MOUSE_ENTER;
+		this->state = Events::MOUSE_CONTINUES;
 	}
-	else if (state == Events::MOUSE_ENTER && !this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	
+	else if (!this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
 	{
 		this->state = Events::MOUSE_LEAVE;
 	}
-	else if (state == Events::MOUSE_ENTER)
+
+	else if ((state==Events::MOUSE_LEAVE) && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
 	{
-		this->state == Events::MOUSE_CONTINUES;
+		this->state = Events::MOUSE_ENTER;
 	}
+	
 
 	//Check MouseButtons
-	if (state == Events::MOUSE_ENTER || state == Events::MOUSE_CONTINUES)
+	if (state == Events::MOUSE_ENTER || state == Events::MOUSE_CONTINUES || state == Events::LEFT_CLICKED || state == Events::LEFT_CONTINUES)
 	{
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
@@ -252,14 +255,14 @@ bool InteractuableElem::CheckWithMouse(float dt)
 		{
 			state = Events::LEFT_UNCLICKED;
 		}
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		/*if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		{
 			state = Events::RIGHT_CLICKED;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP)
 		{
 			state = Events::RIGHT_UNCLICKED;
-		}
+		}*/
 	}
 
 	if (state != Events::NO_EVENT)

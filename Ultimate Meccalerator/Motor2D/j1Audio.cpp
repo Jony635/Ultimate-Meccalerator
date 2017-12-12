@@ -186,10 +186,9 @@ bool j1Audio::UI_Do(const UI_Elem* elem, Events* event)
 {
 	if (elem->type == UI_ElemType::BUTTON)
 	{
-			if (*event == Events::MOUSE_ENTER && !fx_mouse_on_heared)
+			if (*event == Events::MOUSE_ENTER)
 			{
 				App->audio->PlayFx(App->audio->mouse_on);
-				fx_mouse_on_heared = true;
 			}
 			if (*event == Events::LEFT_CLICKED)
 			{

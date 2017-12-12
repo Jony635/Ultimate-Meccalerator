@@ -279,6 +279,14 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				}
 			}
 			break;
+			case UI_ButtonType::EXIT:
+			{
+				if (*event == Events::LEFT_CLICKED)
+				{
+					return false;
+				}
+			}
+			break;
 		}
 	}
 }
