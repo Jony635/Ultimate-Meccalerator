@@ -19,7 +19,9 @@ enum Events
 	NO_EVENT = -1,
 	MOUSE_ENTER,
 	MOUSE_LEAVE,
+	MOUSE_CONTINUES,
 	LEFT_CLICKED,
+	LEFT_CONTINUES,
 	LEFT_UNCLICKED,
 	RIGHT_CLICKED,
 	RIGHT_UNCLICKED
@@ -118,6 +120,7 @@ class Button : public InteractuableElem
 {
 	friend class j1Scene;
 	friend class j1Audio;
+	friend class InteractuableElem;
 private:
 	UI_ButtonType btype;
 	Label* text;
@@ -167,10 +170,6 @@ private:
 	SDL_Texture* atlas = nullptr; //Texture that has everything
 	p2SString atlas_file_name;
 	p2List<UI_Elem*> UI_ElemList;
-public:
-	bool Button_Clicked = true;
-	Events last_event;
-	iPoint last_elem_pos = { 0,0 };
 };
 
 

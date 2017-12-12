@@ -191,16 +191,15 @@ bool j1Audio::UI_Do(const UI_Elem* elem, Events* event)
 				App->audio->PlayFx(App->audio->mouse_on);
 				fx_mouse_on_heared = true;
 			}
-			if (*event == Events::LEFT_CLICKED && !fx_mouse_clicked_heared)
+			if (*event == Events::LEFT_CLICKED)
 			{
 				App->audio->PlayFx(App->audio->mouse_click);
-				fx_mouse_clicked_heared = true;
 			}
 	}
-	if (App->ui_manager->last_elem_pos != (iPoint)elem->position)
+	/*if (App->ui_manager->last_elem_pos != (iPoint)elem->position)
 	{
 		App->audio->fx_mouse_on_heared = false;
 	}
-	App->ui_manager->last_elem_pos = (iPoint)elem->position;
+	App->ui_manager->last_elem_pos = (iPoint)elem->position;*/
 	return true;
 }
