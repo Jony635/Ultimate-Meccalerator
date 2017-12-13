@@ -72,8 +72,6 @@ bool j1Render::Start()
 // Called each loop iteration
 bool j1Render::PreUpdate()
 {
-	
-	
 	SDL_RenderClear(renderer);
 	return true;
 }
@@ -94,7 +92,7 @@ bool j1Render::Update(float dt)
 		fcamera = fPoint(camera.x, camera.y);
 	}
 	else
-	CheckCameraPos(dt);//Put here condition for init player
+	CheckCameraPos(dt);
 
 	return true;
 }
