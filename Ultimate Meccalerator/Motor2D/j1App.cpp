@@ -294,8 +294,21 @@ bool j1App::DoUpdate()
 		if(pModule->active == false) {
 			continue;
 		}
-		if (item->data != player)//Eliminate this line after start improvements
-		ret = item->data->Update(dt);
+		
+		//----------------------------------------Change this
+		if (item->data != player)
+			ret = item->data->Update(dt);
+
+		////----------------------------------------Posible solution (have bugs)
+		//if (App->actual_lvl != Levels::MENU)
+		//{
+		//	if (item->data != player)
+		//		ret = item->data->Update(dt);
+		//}
+		//else
+		//	ret = item->data->Update(dt);
+		////----------------------------------------
+	
 	}
 
 	return ret;
