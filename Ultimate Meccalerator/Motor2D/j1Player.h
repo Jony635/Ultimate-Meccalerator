@@ -63,7 +63,6 @@ private:
 	uint jumps = 1;
 	bool grounded = true;
 	
-	
 	float standard_speed_x = 0;
 
 	float tiles_sec_jump;
@@ -84,23 +83,13 @@ private:
 	void CheckWin();
 	void CheckMovements(float dt);
 
-	
 	bool CheckDieCol(iPoint pos) const;
-
-	
 
 	void SetStartingPos();
 	float getAccelY(iPoint pos) const;
 	float getAccelX(iPoint pos) const;
 	uint getDownYCol(iPoint pos) const;
 
-
-
-
 	int dieCounter = 0;
 };
-
-
-
-
 #endif

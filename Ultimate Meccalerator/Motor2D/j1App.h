@@ -85,7 +85,7 @@ public:
 	bool CleanUp();
 
 	// Add a new module to handle
-	void AddModule(j1Module* module);
+	void AddModule(j1Module* module, bool active = true);
 
 	// Exposing some properties for reading
 	int GetArgc() const;
