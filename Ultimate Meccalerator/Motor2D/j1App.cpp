@@ -295,10 +295,7 @@ bool j1App::DoUpdate()
 		{
 			continue;
 		}
-		
 		ret = item->data->Update(dt);
-	}
-
 	return ret;
 }
 

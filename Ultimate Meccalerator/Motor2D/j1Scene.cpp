@@ -67,16 +67,16 @@ bool j1Scene::Start()
 			j1Rect logo_rect = { 457,2,91,105 };
 
 			//---------------------------------------------Buttons Positions--------------------------------
-			iPoint play_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,300};
-			iPoint continue_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,359};
-			iPoint htp_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,418 };
-			iPoint credits_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,477 };
-			iPoint exit_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,536 };
-			iPoint settings_pos = { 20,654 };
+			iPoint play_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,340};
+			iPoint continue_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,399};
+			iPoint htp_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,458 };
+			iPoint credits_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,517 };
+			iPoint exit_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,576 };
+			iPoint settings_pos = { 20,694 };
 
 			//--------------------------------------------Image Positions-----------------------------------
-			iPoint title_pos = { SCREEN_MIDDLE_X_FOR_TITLE,20 };
-			iPoint logo_pos = { 913,598+20 };
+			iPoint title_pos = { SCREEN_MIDDLE_X_FOR_TITLE,60 };
+			iPoint logo_pos = { 913,598+60 };
 
 			//---------------------------------------------Buttons Colliders--------------------------------
 			j1Rect play_col(play_pos, atlasrec[Button_State::DEFAULT].rec.w, atlasrec[Button_State::DEFAULT].rec.h);
