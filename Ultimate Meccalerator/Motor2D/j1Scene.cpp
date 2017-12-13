@@ -272,7 +272,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 			break;
 			case UI_ButtonType::PLAY:
 			{
-				if (*event == Events::LEFT_CLICKED)
+				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
 					App->RestartScene();
@@ -281,7 +281,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 			break;
 			case UI_ButtonType::EXIT:
 			{
-				if (*event == Events::LEFT_CLICKED)
+				if (*event == Events::LEFT_UNCLICKED)
 				{
 					return false;
 				}
