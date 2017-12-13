@@ -88,8 +88,13 @@ bool j1Render::Update(float dt)
 		fcamera = fPoint(camera.x, camera.y);
 		Blit(defwinText, 0, 0);
 	}
-
-	CheckCameraPos(dt);
+	else if (App->actual_lvl == Levels::MENU)
+	{
+		camera.x = camera.y = 0;
+		fcamera = fPoint(camera.x, camera.y);
+	}
+	else
+	CheckCameraPos(dt);//Put here condition for init player
 
 	return true;
 }

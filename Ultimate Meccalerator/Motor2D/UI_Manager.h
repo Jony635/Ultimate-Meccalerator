@@ -19,7 +19,9 @@ enum Events
 	NO_EVENT = -1,
 	MOUSE_ENTER,
 	MOUSE_LEAVE,
+	MOUSE_CONTINUES,
 	LEFT_CLICKED,
+	LEFT_CONTINUES,
 	LEFT_UNCLICKED,
 	RIGHT_CLICKED,
 	RIGHT_UNCLICKED
@@ -38,6 +40,10 @@ enum UI_ButtonType
 {
 	NO_BUTTONTYPE = -1,
 	PLAY,
+	CONTINUE,
+	HOW_TO_PLAY,
+	CREDITS,
+	SETTINGS,
 	EXIT
 };
 
@@ -113,11 +119,13 @@ public:
 class Button : public InteractuableElem
 {
 	friend class j1Scene;
+	friend class j1Audio;
+	friend class InteractuableElem;
 private:
 	UI_ButtonType btype;
 	Label* text;
 	j1Rect atlasRec[Button_State::MAX_STATE];
-
+public:
 	SDL_Rect BlitRec;
 public:
 	Button(UI_ElemType type, iPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec = nullptr, Label* text = nullptr);

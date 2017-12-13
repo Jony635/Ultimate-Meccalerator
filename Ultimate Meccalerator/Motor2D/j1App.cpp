@@ -146,6 +146,7 @@ bool j1App::Start()
 
 	while(item != NULL && ret == true)
 	{
+		if (item->data != player)//Eliminate this line after start improvements
 		ret = item->data->Start();
 		item = item->next;
 	}
@@ -271,6 +272,7 @@ bool j1App::PreUpdate()
 			continue;
 		}
 
+		if (item->data != player)//Eliminate this line after start improvements
 		ret = item->data->PreUpdate();
 	}
 
@@ -292,7 +294,7 @@ bool j1App::DoUpdate()
 		if(pModule->active == false) {
 			continue;
 		}
-
+		if (item->data != player)//Eliminate this line after start improvements
 		ret = item->data->Update(dt);
 	}
 
@@ -315,7 +317,7 @@ bool j1App::PostUpdate()
 		if(pModule->active == false) {
 			continue;
 		}
-
+		if (item->data != player)//Eliminate this line after start improvements
 		ret = item->data->PostUpdate();
 	}
 
