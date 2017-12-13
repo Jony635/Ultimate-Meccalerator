@@ -287,15 +287,16 @@ bool j1App::DoUpdate()
 	item = modules.start;
 	j1Module* pModule = NULL;
 
-	for(item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.start; item != NULL && ret == true; item = item->next)
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) 
+		if (pModule->active == false)
 		{
 			continue;
 		}
 		ret = item->data->Update(dt);
+	}
 	return ret;
 }
 
