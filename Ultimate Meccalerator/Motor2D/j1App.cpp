@@ -60,9 +60,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(fonts);
 	AddModule(map);
 	AddModule(scene);
-	AddModule(player);
+	AddModule(player, false);
 	AddModule(pathfinding);
-	AddModule(enemies);
+	AddModule(enemies, false);
 	AddModule(ui_manager);
 
 	// render last to swap buffer
@@ -84,9 +84,10 @@ j1App::~j1App()
 	modules.clear();
 }
 
-void j1App::AddModule(j1Module* module)
+void j1App::AddModule(j1Module* module, bool active)
 {
-	module->Init();
+	if(active)
+		module->Init();
 	modules.add(module);
 }
 
@@ -146,8 +147,8 @@ bool j1App::Start()
 
 	while(item != NULL && ret == true)
 	{
-		if (item->data != player)//Eliminate this line after start improvements
-		ret = item->data->Start();
+		if(item->data->active)
+			ret = item->data->Start();
 		item = item->next;
 	}
 
@@ -268,11 +269,10 @@ bool j1App::PreUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false) 
+		{
 			continue;
 		}
-
-		if (item->data != player)//Eliminate this line after start improvements
 		ret = item->data->PreUpdate();
 	}
 
@@ -291,26 +291,11 @@ bool j1App::DoUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false) 
+		{
 			continue;
 		}
-		
-		//----------------------------------------Change this
-		if (item->data != player)
-			ret = item->data->Update(dt);
-
-		////----------------------------------------Posible solution (have bugs)
-		//if (App->actual_lvl != Levels::MENU)
-		//{
-		//	if (item->data != player)
-		//		ret = item->data->Update(dt);
-		//}
-		//else
-		//	ret = item->data->Update(dt);
-		////----------------------------------------
-	
-	}
-
+		ret = item->data->Update(dt);
 	return ret;
 }
 
@@ -327,10 +312,11 @@ bool j1App::PostUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false) 
+		{
 			continue;
 		}
-		if (item->data != player)//Eliminate this line after start improvements
+		
 		ret = item->data->PostUpdate();
 	}
 

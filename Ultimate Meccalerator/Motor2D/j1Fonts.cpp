@@ -32,10 +32,9 @@ bool j1Fonts::Awake(pugi::xml_node& conf)
 	{
 		const char* path = conf.child("default_font").attribute("file").as_string(DEFAULT_FONT);
 		int size = conf.child("default_font").attribute("size").as_int(DEFAULT_FONT_SIZE);
-		default = Load(path, "OpenSans-Regular", size);
+		//default = Load(path, "OpenSans-Regular", size);
 
 		//Load all Fonts
-		Load("Resources/fonts/open_sans/OpenSans-Regular.ttf", "OpenSans-GREATER", 50);
 		Load("Resources/gui/fonts/kenvector_future.ttf", "kenvector_future", 20);
 	}
 

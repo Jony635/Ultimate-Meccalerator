@@ -42,8 +42,7 @@ bool j1Scene::Start()
 		Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
 
 	tp_counter = 3;
-	App->ui_manager->Start();
-
+	
 	pugi::xml_document doc;
 	App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
 
@@ -103,6 +102,9 @@ bool j1Scene::Start()
 		break;
 		case Levels::FIRST_LEVEL:
 		{
+			App->player->Activate();
+			App->enemies->Activate();
+
 			App->enemies->FillEnemiesData();
 
 			int w, h;
@@ -113,13 +115,11 @@ bool j1Scene::Start()
 
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
-
-			if (App->player->playerText == nullptr)
-				App->player->Start();
 		}
 		break;
 		case Levels::SECOND_LEVEL:
 		{
+			App->enemies->Activate();
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
 			App->map->Load("Level_2_x2.tmx");
@@ -131,7 +131,7 @@ bool j1Scene::Start()
 			RELEASE_ARRAY(data);
 
 			App->enemies->FillEnemiesData();
-			App->player->Start();
+			App->player->Activate();
 		}
 		break;
 	}
@@ -143,11 +143,12 @@ bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
 	App->tex->UnLoad(Tp_circle_texture);
+	Tp_circle_texture = nullptr;
 	App->tex->UnLoad(Player_shape);
-	App->player->CleanUp();
-	App->map->CleanUp();
-	App->enemies->CleanUp();
-	App->ui_manager->CleanUp();
+	Player_shape = nullptr;
+	App->player->DeActivate();
+	App->enemies->DeActivate();
+	App->ui_manager->Reset();
 	return true;
 }
 
@@ -202,18 +203,17 @@ bool j1Scene::Update(float dt)
 			App->framerate_cap = 30;
 	}
 		
-
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && tp_counter>0)
 		App->tp_mode_enabled = true;
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_UP)
 		App->tp_mode_enabled = false;
-
-	App->map->Draw();
+	
+	if(App->map)
+		App->map->Draw();
 	
 	if (App->tp_mode_enabled)
 		TpMode();
-	
 
 	return true;
 }
