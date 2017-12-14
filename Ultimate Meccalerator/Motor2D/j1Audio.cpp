@@ -4,7 +4,7 @@
 #include "p2List.h"
 #include "j1App.h"
 #include "j1FileSystem.h"
-
+#include "j1Scene.h"
 
 #include "SDL/include/SDL.h"
 #include "SDL_mixer\include\SDL_mixer.h"
@@ -54,7 +54,8 @@ bool j1Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
-	App->audio->PlayMusic("Resources/audio/music/BSO.wav");
+	//App->audio->PlayMusic("Resources/audio/music/BSO.wav");//Must do this in the scene, no?
+	
 	doublejumpsound=LoadFx("Resources/audio/fx/double_jump_sound_effect.ogg");
 	dieSound = LoadFx("Resources/audio/fx/die_sound_effect.ogg");
 	accelsound = LoadFx("Resources/audio/fx/acceleration_sound_effect.ogg");
@@ -183,7 +184,21 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 
 bool j1Audio::UI_Do(const UI_Elem* elem, Events* event)
 {
-
-
+	if (elem->type == UI_ElemType::BUTTON)
+	{
+			if (*event == Events::MOUSE_ENTER)
+			{
+				App->audio->PlayFx(App->audio->mouse_on);
+			}
+			if (*event == Events::LEFT_CLICKED)
+			{
+				App->audio->PlayFx(App->audio->mouse_click);
+			}
+	}
+	/*if (App->ui_manager->last_elem_pos != (iPoint)elem->position)
+	{
+		App->audio->fx_mouse_on_heared = false;
+	}
+	App->ui_manager->last_elem_pos = (iPoint)elem->position;*/
 	return true;
 }

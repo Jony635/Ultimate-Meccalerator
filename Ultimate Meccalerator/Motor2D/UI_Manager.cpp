@@ -7,7 +7,12 @@
 #include "j1Render.h"
 #include "j1Input.h"
 #include "j1Audio.h"
+#include "j1Scene.h"
 
+//------------DEFINES----------------------------------------------------------------
+#define BUTTON_RECT_W						190
+#define BUTTON_RECT_H						45
+#define PIXELS_DOWN_FOR_CLICKED_ANIMATION	4
 
 //------------UI_ELEM HERITAGE METHODS-----------------------------------------------
 
@@ -22,6 +27,7 @@
 		this->atlasRec[Button_State::DEFAULT] = atlasRec[Button_State::DEFAULT];
 		this->atlasRec[Button_State::MOUSE_ON] = atlasRec[Button_State::MOUSE_ON];
 		this->atlasRec[Button_State::CLICKED] = atlasRec[Button_State::CLICKED];
+		this->state = Events::MOUSE_LEAVE;
 	}
 	CheckBox::CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text) : InteractuableElem(type, position, col), text(text){}
 	//--------------------------------
@@ -70,7 +76,7 @@ bool UI_Manager::Awake(pugi::xml_node& uimnode)
 bool UI_Manager::Start()
 {
 	const char* string = atlas_file_name.GetString();
-	atlas = App->tex->Load(atlas_file_name.GetString());
+	atlas = App->tex->Load(string);
 
 	return true;
 }
@@ -107,7 +113,7 @@ bool UI_Manager::Update(float dt)
 {
 	bool ret = true;
 	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
-	while (elem)
+	while (elem && elem->data)
 	{
 		if (elem->data->Update(dt) == false)
 		{
@@ -161,7 +167,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 			Label* label = nullptr;
 			if (string)
 			{
-				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font")); //This is just an example.
+				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font"));
 				if (label)
 					UI_ElemList.add(label);
 			}
@@ -173,15 +179,17 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 		case UI_ElemType::BUTTON:
 		{
 			if (string)
-			{
-				label = new Label(LABEL, iPoint(pos.x + 12, pos.y + 12), string, App->fonts->getFontbyName("generic_font")); //This is just an example.
-				if (label)
-					UI_ElemList.add(label);
+			{	
+				int string_w, string_h = 0;
+				TTF_SizeText(font, string, &string_w, &string_h);
+				iPoint label_position = iPoint(pos.x + (BUTTON_RECT_W / 2) - string_w / 2, pos.y + (BUTTON_RECT_H / 2) - string_h / 2);
+				label = new Label(LABEL,label_position, string,font);
 			}
-			elem = new Button(type, pos, col, btype, atlasRec, label); //This is just an example.
+			elem = new Button(type, pos, col, btype, atlasRec, label); 
 
 			InteractuableElem* button = (InteractuableElem*)elem;
 			button->listeners.add(App->audio);
+			button->listeners.add(App->scene);
 		}
 		break;
 	}
@@ -204,36 +212,57 @@ bool InteractuableElem::CheckWithMouse(float dt)
 	int mouse_x, mouse_y;
 	App->input->GetMousePosition(mouse_x, mouse_y);
 
+	//Reset label pos if button was pressed
+	if (this->state == Events::LEFT_CLICKED || this->state == Events::LEFT_CONTINUES)
+	{
+		Button* button = (Button*)this;
+		button->text->position.y -= PIXELS_DOWN_FOR_CLICKED_ANIMATION;
+	}
 
 	//Check Mouse Col with Collider
-	if (state != Events::MOUSE_ENTER && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	if ((state == Events::MOUSE_ENTER || state == Events::LEFT_UNCLICKED) && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
 	{
-		this->state = Events::MOUSE_ENTER;
+		this->state = Events::MOUSE_CONTINUES;
 	}
-	else if (state == Events::MOUSE_ENTER && !this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	
+	else if (!this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
 	{
 		this->state = Events::MOUSE_LEAVE;
 	}
 
+	else if ((state==Events::MOUSE_LEAVE) && this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	{
+		this->state = Events::MOUSE_ENTER;
+	}
+	
+
 	//Check MouseButtons
-	if (state == Events::MOUSE_ENTER)
+	if (state == Events::MOUSE_ENTER || state == Events::MOUSE_CONTINUES || state == Events::LEFT_CLICKED || state == Events::LEFT_CONTINUES)
 	{
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
 			state = Events::LEFT_CLICKED;
+			Button* button = (Button*)this;
+			button->text->position.y += PIXELS_DOWN_FOR_CLICKED_ANIMATION;
+		}
+		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+		{
+			state = Events::LEFT_CONTINUES;
+			Button* button = (Button*)this;
+			button->text->position.y += PIXELS_DOWN_FOR_CLICKED_ANIMATION;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP)
 		{
 			state = Events::LEFT_UNCLICKED;
 		}
-		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
+		/*if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 		{
 			state = Events::RIGHT_CLICKED;
 		}
 		else if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_UP)
 		{
 			state = Events::RIGHT_UNCLICKED;
-		}
+		}*/
 	}
 
 	if (state != Events::NO_EVENT)
@@ -247,26 +276,31 @@ bool Button::Do(float dt)
 {
 	bool ret = true;
 
-	if (state == Events::LEFT_CLICKED)
+	switch (state)
 	{
-		this->BlitRec = atlasRec[Button_State::CLICKED].rec;
-	}
-	else if (state == Events::LEFT_UNCLICKED)
-	{
-		this->BlitRec = atlasRec[Button_State::DEFAULT].rec;
-	}
-	else if (state == Events::MOUSE_ENTER)
-	{
+	case MOUSE_ENTER:
+	case MOUSE_CONTINUES:
 		this->BlitRec = atlasRec[Button_State::MOUSE_ON].rec;
-	}
-	else if (state == Events::MOUSE_LEAVE)
-	{
+		break;
+	case MOUSE_LEAVE:
+	case NO_EVENT:
+	case LEFT_UNCLICKED:
 		this->BlitRec = atlasRec[Button_State::DEFAULT].rec;
+		break;
+	case LEFT_CLICKED:
+	case LEFT_CONTINUES:
+		this->BlitRec = atlasRec[Button_State::CLICKED].rec;
+		break;
+	case RIGHT_CLICKED:
+		break;
+	case RIGHT_UNCLICKED:
+		break;
+	default:
+		break;
 	}
-
 
 	p2List_item<j1Module*>* listener = listeners.start;
-	while (listener)
+	while (listener && (state != Events::MOUSE_LEAVE))
 	{
 		if (listener->data->UI_Do(this, &state) == false)
 		{
@@ -287,7 +321,12 @@ bool Image::Update(float dt)
 
 bool Label::Update(float dt)
 {
-	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 255,0,0, 255 }, this->font), this->position.x, this->position.y))
+	/*iPoint label_pos(this->position.x, this->position.y);
+
+	if (App->ui_manager->Button_Clicked)
+		label_pos.y += PIXELS_DOWN_FOR_CLICKED_ANIMATION;*/
+
+	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font), this->position.x, this->position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
 	
 	return true;
@@ -299,7 +338,15 @@ bool Button::Update(float dt)
 	{
 		return false;
 	}
+
 	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->BlitRec);
+
+	/*if(this)
+		this->Do(dt);*/
+
+	if (this->text)
+		this->text->Update(dt);
+	
 }
 
 bool CheckBox::Do(float dt)

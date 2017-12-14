@@ -85,7 +85,7 @@ public:
 	bool CleanUp();
 
 	// Add a new module to handle
-	void AddModule(j1Module* module);
+	void AddModule(j1Module* module, bool active = true);
 
 	// Exposing some properties for reading
 	int GetArgc() const;
@@ -181,7 +181,7 @@ public:
 public:
 	uint32				framerate_cap;
 	bool				godmode = false;
-	Levels actual_lvl = Levels::FIRST_LEVEL;
+	Levels actual_lvl = Levels::MENU;
 };
 
 extern j1App* App; // No student is asking me about that ... odd :-S

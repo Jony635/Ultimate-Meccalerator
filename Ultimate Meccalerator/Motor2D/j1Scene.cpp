@@ -12,6 +12,9 @@
 #include "j1Pathfinding.h"
 #include "UI_Manager.h"
 
+#define SCREEN_MIDDLE_X_FOR_BUTTON 1024/2-190/2//window.w/2-button.w/2
+#define SCREEN_MIDDLE_X_FOR_TITLE 1024/2-870/2//window.w/2-button.w/2
+
 j1Scene::j1Scene() : j1Module()
 {
 	name.create("scene");
@@ -39,20 +42,69 @@ bool j1Scene::Start()
 		Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
 
 	tp_counter = 3;
+	
+	pugi::xml_document doc;
+	App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
 
 	switch (App->actual_lvl)
 	{
 		case Levels::MENU:
 		{
-			/*j1Rect atlasrec [Button_State::MAX_STATE] = { j1Rect(22,55,45,65), j1Rect(22,55,45,65), j1Rect(22,55,45,65)};
-			iPoint pos;
-			j1Rect col(pos, 23, 12);*/
+			//----------------------------------------------Load background-----------------------
+			App->render->camera.x = 0;
+			App->render->fcamera.x = 0;
+			App->map->Load("Menu_background.tmx");
+
+			//----------------------------------------------Load fx-------------------------------
+			App->audio->mouse_on = App->audio->LoadFx("Resources/gui/bonus/click1.ogg");
+			App->audio->mouse_click = App->audio->LoadFx("Resources/gui/bonus/rollover1.ogg");
+			
+			//---------------------------------------------Buttons Rect---------------------------
+			j1Rect atlasrec[Button_State::MAX_STATE] = { j1Rect(0,192,190,49), j1Rect(190,49,190,49), j1Rect(190,0,190,49) };
+			
+			//---------------------------------------------Images Rect----------------------------
+			j1Rect title_rect = { 0,266,870,165 };
+			j1Rect logo_rect = { 457,2,91,105 };
+
+			//---------------------------------------------Buttons Positions--------------------------------
+			iPoint play_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,340};
+			iPoint continue_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,399};
+			iPoint htp_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,458 };
+			iPoint credits_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,517 };
+			iPoint exit_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,576 };
+			iPoint settings_pos = { 20,694 };
+
+			//--------------------------------------------Image Positions-----------------------------------
+			iPoint title_pos = { SCREEN_MIDDLE_X_FOR_TITLE,60 };
+			iPoint logo_pos = { 913,598+60 };
+
+			//---------------------------------------------Buttons Colliders--------------------------------
+			j1Rect play_col(play_pos, atlasrec[Button_State::DEFAULT].rec.w, atlasrec[Button_State::DEFAULT].rec.h);
+			j1Rect continue_col(continue_pos, atlasrec[Button_State::DEFAULT].rec.w, atlasrec[Button_State::DEFAULT].rec.h);
+			j1Rect htp_col(htp_pos, atlasrec[Button_State::DEFAULT].rec.w, atlasrec[Button_State::DEFAULT].rec.h);
+			j1Rect credits_col(credits_pos, atlasrec[Button_State::DEFAULT].rec.w, atlasrec[Button_State::DEFAULT].rec.h);
+			j1Rect exit_col(exit_pos, atlasrec[Button_State::DEFAULT].rec.w, atlasrec[Button_State::DEFAULT].rec.h);
+			j1Rect settings_col(settings_pos, atlasrec[Button_State::DEFAULT].rec.w, atlasrec[Button_State::DEFAULT].rec.h);
+
+			//---------------------------------------------Buttons------------------------------------------
+			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, play_pos, &atlasrec[0], play_col, UI_ButtonType::PLAY, "play",App->fonts->getFontbyName("kenvector_future"));
+			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, continue_pos, &atlasrec[0], continue_col, UI_ButtonType::CONTINUE, "continue", App->fonts->getFontbyName("kenvector_future"));
+			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, htp_pos, &atlasrec[0], htp_col, UI_ButtonType::HOW_TO_PLAY, "how to play", App->fonts->getFontbyName("kenvector_future"));
+			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, credits_pos, &atlasrec[0], credits_col, UI_ButtonType::CREDITS, "credits", App->fonts->getFontbyName("kenvector_future"));
+			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, exit_pos, &atlasrec[0], exit_col, UI_ButtonType::EXIT, "quit", App->fonts->getFontbyName("kenvector_future"));
+			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, settings_pos, &atlasrec[0], settings_col, UI_ButtonType::SETTINGS, "settings", App->fonts->getFontbyName("kenvector_future"));
+
+			//---------------------------------------------Images-------------------------------------------
+			App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, title_pos, &title_rect);
+			App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, logo_pos, &logo_rect);
+
 		}
 		break;
 		case Levels::FIRST_LEVEL:
 		{
-			pugi::xml_document doc;
-			App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
+			App->player->Activate();
+			App->enemies->Activate();
+
 			App->enemies->FillEnemiesData();
 
 			int w, h;
@@ -63,13 +115,11 @@ bool j1Scene::Start()
 
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
-
-			if (App->player->playerText == nullptr)
-				App->player->Start();
 		}
 		break;
 		case Levels::SECOND_LEVEL:
 		{
+			App->enemies->Activate();
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
 			App->map->Load("Level_2_x2.tmx");
@@ -81,7 +131,7 @@ bool j1Scene::Start()
 			RELEASE_ARRAY(data);
 
 			App->enemies->FillEnemiesData();
-			App->player->Start();
+			App->player->Activate();
 		}
 		break;
 	}
@@ -93,11 +143,12 @@ bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
 	App->tex->UnLoad(Tp_circle_texture);
+	Tp_circle_texture = nullptr;
 	App->tex->UnLoad(Player_shape);
-	App->player->CleanUp();
-	App->map->CleanUp();
-	App->enemies->CleanUp();
-	App->ui_manager->CleanUp();
+	Player_shape = nullptr;
+	App->player->DeActivate();
+	App->enemies->DeActivate();
+	App->ui_manager->Reset();
 	return true;
 }
 
@@ -152,18 +203,17 @@ bool j1Scene::Update(float dt)
 			App->framerate_cap = 30;
 	}
 		
-
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && tp_counter>0)
 		App->tp_mode_enabled = true;
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_UP)
 		App->tp_mode_enabled = false;
-
-	App->map->Draw();
+	
+	if(App->map)
+		App->map->Draw();
 	
 	if (App->tp_mode_enabled)
 		TpMode();
-	
 
 	return true;
 }
@@ -215,17 +265,25 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 		Button* button = (Button*)elem;
 		switch (button->btype)
 		{
-			case UI_ButtonType::EXIT:
+			case UI_ButtonType::NO_BUTTONTYPE:
 			{
 				return false;
 			}
 			break;
 			case UI_ButtonType::PLAY:
 			{
-				if (*event == Events::LEFT_CLICKED)
+				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
 					App->RestartScene();
+				}
+			}
+			break;
+			case UI_ButtonType::EXIT:
+			{
+				if (*event == Events::LEFT_UNCLICKED)
+				{
+					return false;
 				}
 			}
 			break;

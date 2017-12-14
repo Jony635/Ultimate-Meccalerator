@@ -60,9 +60,9 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(fonts);
 	AddModule(map);
 	AddModule(scene);
-	AddModule(player);
+	AddModule(player, false);
 	AddModule(pathfinding);
-	AddModule(enemies);
+	AddModule(enemies, false);
 	AddModule(ui_manager);
 
 	// render last to swap buffer
@@ -84,9 +84,10 @@ j1App::~j1App()
 	modules.clear();
 }
 
-void j1App::AddModule(j1Module* module)
+void j1App::AddModule(j1Module* module, bool active)
 {
-	module->Init();
+	if(active)
+		module->Init();
 	modules.add(module);
 }
 
@@ -146,7 +147,8 @@ bool j1App::Start()
 
 	while(item != NULL && ret == true)
 	{
-		ret = item->data->Start();
+		if(item->data->active)
+			ret = item->data->Start();
 		item = item->next;
 	}
 
@@ -267,10 +269,10 @@ bool j1App::PreUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false) 
+		{
 			continue;
 		}
-
 		ret = item->data->PreUpdate();
 	}
 
@@ -285,17 +287,16 @@ bool j1App::DoUpdate()
 	item = modules.start;
 	j1Module* pModule = NULL;
 
-	for(item = modules.start; item != NULL && ret == true; item = item->next)
+	for (item = modules.start; item != NULL && ret == true; item = item->next)
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if (pModule->active == false)
+		{
 			continue;
 		}
-
 		ret = item->data->Update(dt);
 	}
-
 	return ret;
 }
 
@@ -312,10 +313,11 @@ bool j1App::PostUpdate()
 	{
 		pModule = item->data;
 
-		if(pModule->active == false) {
+		if(pModule->active == false) 
+		{
 			continue;
 		}
-
+		
 		ret = item->data->PostUpdate();
 	}
 

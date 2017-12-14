@@ -72,8 +72,6 @@ bool j1Render::Start()
 // Called each loop iteration
 bool j1Render::PreUpdate()
 {
-	
-	
 	SDL_RenderClear(renderer);
 	return true;
 }
@@ -88,7 +86,12 @@ bool j1Render::Update(float dt)
 		fcamera = fPoint(camera.x, camera.y);
 		Blit(defwinText, 0, 0);
 	}
-
+	else if (App->actual_lvl == Levels::MENU)
+	{
+		camera.x = camera.y = 0;
+		fcamera = fPoint(camera.x, camera.y);
+	}
+	else
 	CheckCameraPos(dt);
 
 	return true;
