@@ -116,7 +116,6 @@ bool UI_Manager::PreUpdate()
 
 bool UI_Manager::Update(float dt)
 {
-
 	MoveElems(dt);
 
 	bool ret = true;
@@ -137,12 +136,20 @@ void UI_Manager::MoveElems(float dt)
 	p2List_item<Mobile_Elem*>* mobile_elem = UI_MobileElemList.start;
 	while (mobile_elem)
 	{
-		fPoint distance = mobile_elem->data->distance;
-		UI_Elem* elem = mobile_elem->data->elem;
+		fPoint* distance = &mobile_elem->data->distance;	//Distance left to move
+		UI_Elem* elem = mobile_elem->data->elem;		
+		float* time = &mobile_elem->data->time;				//Time left to move
 
-		//elem->Move();
+		fPoint dpos((distance->x * dt) / *time, (distance->y * dt) / *time);
+		elem->Move(dpos);
+
+		*distance -= dpos;	//Update de amount of pixels left to move
+		*time -= dt;		//Update de amount of time left to move
 
 		mobile_elem = mobile_elem->next;
+		
+		if (*time <= 0)
+			UI_MobileElemList.del(mobile_elem->prev); //Remove Elems from the list when finished the movement
 	}
 }
 
@@ -238,15 +245,11 @@ void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem)
 		p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
 		while (elem_it)
 		{
-			Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, distance);
+			Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
 			UI_MobileElemList.add(mobile_elem);
 			elem_it = elem_it->next;
 		}
 	}
-
-
-
-
 }		
 
 void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* elem) 

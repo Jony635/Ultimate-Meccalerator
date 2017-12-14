@@ -60,8 +60,9 @@ struct Mobile_Elem
 {
 	UI_Elem* elem = nullptr;
 	fPoint distance;
+	float time;
 
-	Mobile_Elem(UI_Elem* elem, fPoint distance) : elem(elem), distance(distance) {}
+	Mobile_Elem(UI_Elem* elem, float time, fPoint distance) : elem(elem), time(time), distance(distance) {}
 };
 
 //------------UI_ELEM HERITAGE-----------------------------------------------
