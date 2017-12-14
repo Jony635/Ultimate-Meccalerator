@@ -13,23 +13,24 @@
 #define BUTTON_RECT_W						190
 #define BUTTON_RECT_H						45
 #define PIXELS_DOWN_FOR_CLICKED_ANIMATION	4
+//-----------------------------------------------------------------------------------
 
 //------------UI_ELEM HERITAGE METHODS-----------------------------------------------
 
 	//-------CONSTRUCTORS-------------
-	UI_Elem::UI_Elem(UI_ElemType type, iPoint position) : type(type), position(position) {}
-	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, iPoint position) : UI_Elem(type, position) {}
-	InteractuableElem::InteractuableElem(UI_ElemType type, iPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
-	Label::Label(UI_ElemType type, iPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
-	Image::Image(UI_ElemType type, iPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
-	Button::Button(UI_ElemType type, iPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text) 
+	UI_Elem::UI_Elem(UI_ElemType type, fPoint position) : type(type), position(position) {}
+	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
+	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
+	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
+	Image::Image(UI_ElemType type, fPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
+	Button::Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text)
 	{
 		this->atlasRec[Button_State::DEFAULT] = atlasRec[Button_State::DEFAULT];
 		this->atlasRec[Button_State::MOUSE_ON] = atlasRec[Button_State::MOUSE_ON];
 		this->atlasRec[Button_State::CLICKED] = atlasRec[Button_State::CLICKED];
 		this->state = Events::MOUSE_LEAVE;
 	}
-	CheckBox::CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text) : InteractuableElem(type, position, col), text(text){}
+	CheckBox::CheckBox(UI_ElemType type, fPoint position, j1Rect col, Label* text) : InteractuableElem(type, position, col), text(text){}
 	//--------------------------------
 
 	//-------DESTRUCTORS--------------
@@ -49,10 +50,14 @@
 	bool UI_Elem::Update(float dt) { return true;}
 	bool NO_InteractuableElem::Update(float dt) { return true; }
 	bool InteractuableElem::Update(float dt) { return true; }
-	//-------UPDATES------------------
+	//--------------------------------
 
 	//-------USEFUL METHODS-----------
 	bool InteractuableElem::Do(float dt) { return true; }
+	void UI_Elem::Move(fPoint distance)
+	{
+		this->position += distance;
+	}
 	//--------------------------------
 
 
@@ -111,6 +116,9 @@ bool UI_Manager::PreUpdate()
 
 bool UI_Manager::Update(float dt)
 {
+
+	MoveElems(dt);
+
 	bool ret = true;
 	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
 	while (elem && elem->data)
@@ -124,18 +132,31 @@ bool UI_Manager::Update(float dt)
 	return true;
 }
 
+void UI_Manager::MoveElems(float dt)
+{
+	p2List_item<Mobile_Elem*>* mobile_elem = UI_MobileElemList.start;
+	while (mobile_elem)
+	{
+		fPoint distance = mobile_elem->data->distance;
+		UI_Elem* elem = mobile_elem->data->elem;
+
+		//elem->Move();
+
+		mobile_elem = mobile_elem->next;
+	}
+}
+
 bool UI_Manager::PostUpdate()
 {
 	return true;
 }
 
-// const getter for atlas
 const SDL_Texture* UI_Manager::GetAtlas() const
 {
 	return atlas;
 }
 
-UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font)
+UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font)
 {
 	UI_Elem* elem = nullptr;
 	Label* label = nullptr;
@@ -182,7 +203,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 			{	
 				int string_w, string_h = 0;
 				TTF_SizeText(font, string, &string_w, &string_h);
-				iPoint label_position = iPoint(pos.x + (BUTTON_RECT_W / 2) - string_w / 2, pos.y + (BUTTON_RECT_H / 2) - string_h / 2);
+				fPoint label_position = fPoint(pos.x + (BUTTON_RECT_W / 2) - string_w / 2, pos.y + (BUTTON_RECT_H / 2) - string_h / 2);
 				label = new Label(LABEL,label_position, string,font);
 			}
 			elem = new Button(type, pos, col, btype, atlasRec, label); 
@@ -204,6 +225,38 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec
 		LOG("ERROR: UNVALID_ELEM. Creating UI_Elem failed");
 	}
 }
+
+
+void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem) 
+{
+	if (elem)
+	{
+
+	}
+	else
+	{
+		p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
+		while (elem_it)
+		{
+			Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, distance);
+			UI_MobileElemList.add(mobile_elem);
+			elem_it = elem_it->next;
+		}
+	}
+
+
+
+
+}		
+
+void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* elem) 
+{
+
+
+}
+
+
+
 
 //------------UI_ELEM METHODS--------------------------------------------------------
 
