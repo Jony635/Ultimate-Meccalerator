@@ -39,7 +39,7 @@ struct j1Rect
 		rec.w = w;
 		rec.h = h;
 	}
-	j1Rect(iPoint pos, int w, int h)
+	j1Rect(fPoint pos, int w, int h)
 	{
 		rec.x = pos.x;
 		rec.y = pos.y;

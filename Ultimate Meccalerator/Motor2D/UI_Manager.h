@@ -55,24 +55,33 @@ enum Button_State
 	MAX_STATE
 };
 
+//------------STRUCTS--------------------------------------------------------
+struct Mobile_Elem
+{
+	UI_Elem* elem = nullptr;
+	fPoint distance;
+
+	Mobile_Elem(UI_Elem* elem, fPoint distance) : elem(elem), distance(distance) {}
+};
+
 //------------UI_ELEM HERITAGE-----------------------------------------------
 
 class UI_Elem
 {
 public:
-	iPoint position;
+	fPoint position;
 	UI_ElemType type;
 public:
-	UI_Elem(UI_ElemType type, iPoint position);
+	UI_Elem(UI_ElemType type, fPoint position);
 	virtual ~UI_Elem();
 	virtual bool Update(float dt);
-	
+	virtual void Move(fPoint distance);
 };
 
 class NO_InteractuableElem : public UI_Elem
 {
 public:
-	NO_InteractuableElem(UI_ElemType type, iPoint position);
+	NO_InteractuableElem(UI_ElemType type, fPoint position);
 	virtual ~NO_InteractuableElem();
 	virtual bool Update(float dt);
 };
@@ -87,7 +96,7 @@ protected:
 	p2List<j1Module*> listeners;
 
 public:
-	InteractuableElem(UI_ElemType type, iPoint position, j1Rect col);
+	InteractuableElem(UI_ElemType type, fPoint position, j1Rect col);
 	virtual ~InteractuableElem();
 
 	virtual bool Update(float dt);
@@ -100,7 +109,7 @@ class Image : public NO_InteractuableElem
 private:
 	SDL_Rect rec;
 public:
-	Image(UI_ElemType type, iPoint position, SDL_Rect rec);
+	Image(UI_ElemType type, fPoint position, SDL_Rect rec);
 	virtual ~Image();
 	bool Update(float dt);
 };
@@ -111,7 +120,7 @@ private:
 	p2SString string;
 	TTF_Font* font = nullptr;
 public:
-	Label(UI_ElemType type, iPoint position, char* string, TTF_Font* font);
+	Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font);
 	virtual ~Label();
 	bool Update(float dt);
 };
@@ -128,7 +137,7 @@ private:
 public:
 	SDL_Rect BlitRec;
 public:
-	Button(UI_ElemType type, iPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec = nullptr, Label* text = nullptr);
+	Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec = nullptr, Label* text = nullptr);
 	bool Update(float dt);
 	virtual ~Button();
 	bool Do(float dt);
@@ -143,7 +152,7 @@ private:
 	SDL_Rect recFalse;
 	SDL_Rect* actualRec;
 public: 
-	CheckBox(UI_ElemType type, iPoint position, j1Rect col, Label* text = nullptr);
+	CheckBox(UI_ElemType type, fPoint position, j1Rect col, Label* text = nullptr);
 	virtual ~CheckBox();
 	bool Do(float dt);
 };
@@ -164,12 +173,16 @@ public:
 	bool CleanUp();
 
 public:
-	UI_Elem* CreateUIElem(UI_ElemType type, iPoint pos, j1Rect* atlasRec = nullptr, const j1Rect& col = j1Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
+	UI_Elem* CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec = nullptr, const j1Rect& col = j1Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
 	const SDL_Texture* GetAtlas() const;
+	void Move(const fPoint& distance, float secs, const UI_Elem* elem = nullptr);			//if nullptr it moves all UI_Elems, else only moves an specific one
+	void Move_to(const iPoint& destination, float secs, const UI_Elem* elem = nullptr);	//if nullptr it moves all UI_Elems, else only moves an specific one
+	void MoveElems(float dt);
 private:
 	SDL_Texture* atlas = nullptr; //Texture that has everything
 	p2SString atlas_file_name;
 	p2List<UI_Elem*> UI_ElemList;
+	p2List<Mobile_Elem*> UI_MobileElemList;
 };
 
 
