@@ -54,7 +54,7 @@ bool j1Audio::Awake(pugi::xml_node& config)
 		ret = true;
 	}
 
-	//App->audio->PlayMusic("Resources/audio/music/BSO.wav");//Must do this in the scene, no?
+	//App->audio->PlayMusic("Resources/audio/music/BSO.ogg");//Must do this in the scene, no?
 	
 	doublejumpsound=LoadFx("Resources/audio/fx/double_jump_sound_effect.ogg");
 	dieSound = LoadFx("Resources/audio/fx/die_sound_effect.ogg");

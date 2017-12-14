@@ -33,7 +33,7 @@
   </player>
   
   <UI_Manager>
-    <atlas file="Resources/gui/Sprites/yellowSheet.png"/>
+    <atlas file="Resources/gui/Sprites/atlas.png"/>
   </UI_Manager>
   
   
