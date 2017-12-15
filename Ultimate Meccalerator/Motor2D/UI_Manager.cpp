@@ -21,7 +21,7 @@
 	UI_Elem::UI_Elem(UI_ElemType type, fPoint position) : type(type), position(position) {}
 	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
 	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
-	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
+	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font, SDL_Texture* label_texture) : NO_InteractuableElem(type, position), string(string), font(font),label_texture(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font)) {}
 	Image::Image(UI_ElemType type, fPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
 	Button::Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text)
 	{
@@ -156,7 +156,7 @@ const SDL_Texture* UI_Manager::GetAtlas() const
 	return atlas;
 }
 
-UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font)
+UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font,SDL_Texture* label_texture)
 {
 	UI_Elem* elem = nullptr;
 	Label* label = nullptr;
@@ -166,7 +166,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 		case UI_ElemType::LABEL:
 			if (string)
 			{
-				elem = new Label(type, pos, string, (font) ? font : App->fonts->default);
+				elem = new Label(type, pos, string, (font) ? font : App->fonts->default,label_texture);
 			}
 			else
 			{
@@ -188,7 +188,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 			Label* label = nullptr;
 			if (string)
 			{
-				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font"));
+				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font"),label_texture);
 				if (label)
 					UI_ElemList.add(label);
 			}
@@ -204,7 +204,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 				int string_w, string_h = 0;
 				TTF_SizeText(font, string, &string_w, &string_h);
 				fPoint label_position = fPoint(pos.x + (BUTTON_RECT_W / 2) - string_w / 2, pos.y + (BUTTON_RECT_H / 2) - string_h / 2);
-				label = new Label(LABEL,label_position, string,font);
+				label = new Label(LABEL,label_position, string,font,label_texture);
 			}
 			elem = new Button(type, pos, col, btype, atlasRec, label); 
 
@@ -379,7 +379,7 @@ bool Label::Update(float dt)
 	if (App->ui_manager->Button_Clicked)
 		label_pos.y += PIXELS_DOWN_FOR_CLICKED_ANIMATION;*/
 
-	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font), this->position.x, this->position.y))
+	if (!App->render->Blit(this->label_texture, this->position.x, this->position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
 	
 	return true;
