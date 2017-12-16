@@ -272,8 +272,7 @@ void j1Scene::TpMode()
 		mouse_y >(App->render->camera.y) + App->player->pos.y - Tp_circle_rect.h /2 + PLAYER_H / 2 &&
 		mouse_y < (App->render->camera.y) + App->player->pos.y + Tp_circle_rect.h /2 + PLAYER_H / 2)
 	{
-		//why this if Jony?
-		//if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
+		if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
 		{
 			App->render->Blit(App->player->playerText,
 				(App->render->camera.x*-1) + mouse_x - PLAYER_W / 2, 
