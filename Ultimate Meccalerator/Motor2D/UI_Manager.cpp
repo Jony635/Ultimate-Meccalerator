@@ -253,6 +253,16 @@ void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem)
 			{
 				Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
 				UI_MobileElemList.add(mobile_elem);
+
+				if (elem_it->data->type == UI_ElemType::BUTTON)
+				{
+					Button* button = (Button*)elem_it->data;
+					if (button->text)
+					{
+						Mobile_Elem* mobile_elem2 = new Mobile_Elem(button->text, secs, distance);
+						UI_MobileElemList.add(mobile_elem2);
+					}
+				}
 				break;
 			}
 
@@ -261,6 +271,16 @@ void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem)
 
 		Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
 		UI_MobileElemList.add(mobile_elem);
+
+		if (elem_it->data->type == UI_ElemType::BUTTON)
+		{
+			Button* button = (Button*)elem_it->data;
+			if (button->text)
+			{
+				Mobile_Elem* mobile_elem2 = new Mobile_Elem(button->text, secs, distance);
+				UI_MobileElemList.add(mobile_elem2);
+			}
+		}
 		
 
 		elem_it = elem_it->next;
@@ -447,6 +467,9 @@ bool Button::Update(float dt)
 
 	if (this->text)
 		this->text->Update(dt);
+
+	this->collider.rec.x = this->position.x;
+	this->collider.rec.y = this->position.y;
 }
 
 bool CheckBox::Do(float dt)
