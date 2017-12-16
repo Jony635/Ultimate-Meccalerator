@@ -333,7 +333,7 @@ bool j1App::CleanUp()
 
 	while(item != NULL && ret == true)
 	{
-		ret = item->data->CleanUp();
+		ret = item->data->DeActivate();
 		item = item->prev;
 	}
 
@@ -475,11 +475,7 @@ bool j1App::SavegameNow() const
 	return ret;
 }
 
-void j1App::RestartScene() const
-{
-	App->scene->CleanUp();
-	App->scene->Start();
-}
+
 
 char* j1App::GetBoolString(const bool b) const
 {
