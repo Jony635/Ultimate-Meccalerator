@@ -66,10 +66,12 @@ void Entity::Draw() {}
 
 Gear::Gear(fPoint pos, j1Rect collider) : Entity(pos, collider) {}
 Gear::~Gear() {}
+
 bool Gear::Update(float dt)
 {
 	return true;
 }
+
 void Gear::Draw()
 {
 	if (enabled)
