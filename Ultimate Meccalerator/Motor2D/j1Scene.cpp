@@ -14,6 +14,14 @@
 
 #define SCREEN_MIDDLE_X_FOR_BUTTON 1024/2-190/2//window.w/2-button.w/2
 #define SCREEN_MIDDLE_X_FOR_TITLE 1024/2-870/2//window.w/2-button.w/2
+#define PLAYER_H 58
+#define PLAYER_W 36
+#define TP_CIRCLE_RECT_DEFAULT {825,12,368,368}
+#define TP_CIRCLE_RECT_WHITE {885,72,249,249}
+#define TP_CIRCLE_RECT_RED {826,13,366,366}
+#define TP_CIRCLE_RECT_YELLOW {853,40,312,312}
+#define TP_CIRCLE_RECT_BLUE {868,55,281,281}
+#define PLAYER_SHAPE_RECT {827,393,36,58}
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -36,11 +44,6 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	if(!Tp_circle_texture)
-		Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
-	if(!Player_shape)
-		Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
-
 	tp_counter = 3;
 	
 	pugi::xml_document doc;
@@ -143,10 +146,6 @@ bool j1Scene::Start()
 bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
-	App->tex->UnLoad(Tp_circle_texture);
-	Tp_circle_texture = nullptr;
-	App->tex->UnLoad(Player_shape);
-	Player_shape = nullptr;
 	App->player->DeActivate();
 	App->enemies->DeActivate();
 	App->ui_manager->Reset();
@@ -235,18 +234,50 @@ void j1Scene::TpMode()
 {
 	//LOG("Tp paused mode");
 	int mouse_x, mouse_y;
-	
-	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29);
+	SDL_Rect Tp_circle_rect = TP_CIRCLE_RECT_DEFAULT;
+	SDL_Rect Player_shape_rect = PLAYER_SHAPE_RECT;
 
-	if (mouse_x > (App->render->camera.x) + App->player->pos.x - 114 + 18 &&
-		mouse_x < (App->render->camera.x) + App->player->pos.x + 114 + 18 &&
-		mouse_y >(App->render->camera.y) + App->player->pos.y - 114 + 29 &&
-		mouse_y < (App->render->camera.y) + App->player->pos.y + 114 + 29 )
+	//Improve this
+{
+	//It depends from the player texture-----------------------------------
+	int texture_case = 1;
+	switch (texture_case)//change numbers for enum states
+	{
+	case 1://white
+		Tp_circle_rect = TP_CIRCLE_RECT_WHITE;
+		break;
+	case 2://red
+		Tp_circle_rect = TP_CIRCLE_RECT_RED;
+		break;
+	case 3://yellow
+		Tp_circle_rect = TP_CIRCLE_RECT_YELLOW;
+		break;
+	case 4://blue
+		Tp_circle_rect = TP_CIRCLE_RECT_BLUE;
+		break;
+	default:
+		break;
+	}
+	//Test for now-------------------------------------------------------
+}
+
+	App->input->GetMousePosition(mouse_x, mouse_y);
+	App->render->Blit(App->player->playerText, 
+		App->player->pos.x - Tp_circle_rect.w /2 + PLAYER_W/2,
+		App->player->pos.y - Tp_circle_rect.h / 2 + PLAYER_H / 2,
+		&Tp_circle_rect);
+
+	if (mouse_x > (App->render->camera.x) + App->player->pos.x - Tp_circle_rect.w/2 + PLAYER_W / 2 &&
+		mouse_x < (App->render->camera.x) + App->player->pos.x + Tp_circle_rect.w /2 + PLAYER_W / 2 &&
+		mouse_y >(App->render->camera.y) + App->player->pos.y - Tp_circle_rect.h /2 + PLAYER_H / 2 &&
+		mouse_y < (App->render->camera.y) + App->player->pos.y + Tp_circle_rect.h /2 + PLAYER_H / 2)
 	{
 		if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
 		{
-			App->render->Blit(Player_shape, (App->render->camera.x*-1) + mouse_x - 18, (App->render->camera.y*-1) + mouse_y - 29);
+			App->render->Blit(App->player->playerText,
+				(App->render->camera.x*-1) + mouse_x - PLAYER_W / 2, 
+				(App->render->camera.y*-1) + mouse_y - PLAYER_H / 2,
+				&Player_shape_rect);
 
 			if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
 			{
