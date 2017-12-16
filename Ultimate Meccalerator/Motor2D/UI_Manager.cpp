@@ -22,7 +22,7 @@
 	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
 	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
 	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
-	Image::Image(UI_ElemType type, fPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
+	Image::Image(UI_ElemType type, fPoint position, j1Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
 	Button::Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text)
 	{
 		this->atlasRec[Button_State::DEFAULT] = atlasRec[Button_State::DEFAULT];
@@ -186,7 +186,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 
 		//-----IMAGE-----------------------------------------------------------
 		case UI_ElemType::IMAGE:
-			elem = new Image(type, pos, atlasRec[0].rec);
+			elem = new Image(type, pos, atlasRec[0]);
 			break;
 	
 		//-----CHECKBOX--------------------------------------------------------
@@ -258,7 +258,40 @@ void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* e
 
 }
 
+UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype = NO_BUTTONTYPE, j1Rect* rect = nullptr) const
+{
+	p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
+	while (elem_it)
+	{
+		if (elem_it->data->type != elemtype)
+			continue;
 
+		switch (elemtype)
+		{
+			case UI_ElemType::BUTTON:
+				Button* button = (Button*) elem_it;
+
+				if (button->btype != btype)
+					continue;
+
+				return elem_it->data;
+				break;
+
+			case UI_ElemType::IMAGE:
+				Image * image = (Image*)elem_it;
+
+				if (image->rec != *rect)
+					continue;
+
+				return elem_it->data;
+				break;
+		}
+
+		elem_it = elem_it->next;
+	}
+
+	return nullptr;
+}
 
 
 //------------UI_ELEM METHODS--------------------------------------------------------
@@ -370,7 +403,7 @@ bool Button::Do(float dt)
 
 bool Image::Update(float dt)
 {
-	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->rec);
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->rec.rec);
 
 	return true;
 }
