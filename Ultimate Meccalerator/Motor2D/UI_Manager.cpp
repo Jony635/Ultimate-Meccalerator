@@ -104,6 +104,14 @@ bool UI_Manager::CleanUp()
 	}
 	UI_ElemList.clear();
 
+	//Cleaning UI_MobileElem List
+	p2List_item<Mobile_Elem*>* elem_ui = UI_MobileElemList.start;
+	while (elem_ui)
+	{
+		RELEASE(elem_ui->data);
+		elem_ui = elem_ui->next;
+	}
+	UI_ElemList.clear();
 
 	return true;
 }
@@ -236,20 +244,28 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 
 void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem) 
 {
-	if (elem)
+	p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
+	while (elem_it)
 	{
-
-	}
-	else
-	{
-		p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
-		while (elem_it)
+		if (elem)
 		{
-			Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
-			UI_MobileElemList.add(mobile_elem);
-			elem_it = elem_it->next;
+			if (elem == elem_it->data)
+			{
+				Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
+				UI_MobileElemList.add(mobile_elem);
+				break;
+			}
+
+			else continue;
 		}
+
+		Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
+		UI_MobileElemList.add(mobile_elem);
+		
+
+		elem_it = elem_it->next;
 	}
+	
 }		
 
 void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* elem) 
