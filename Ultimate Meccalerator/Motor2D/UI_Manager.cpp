@@ -21,7 +21,7 @@
 	UI_Elem::UI_Elem(UI_ElemType type, fPoint position) : type(type), position(position) {}
 	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
 	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
-	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font, SDL_Texture* label_texture) : NO_InteractuableElem(type, position), string(string), font(font),label_texture(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font)) {}
+	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
 	Image::Image(UI_ElemType type, fPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
 	Button::Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text)
 	{
@@ -156,7 +156,7 @@ const SDL_Texture* UI_Manager::GetAtlas() const
 	return atlas;
 }
 
-UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font,SDL_Texture* label_texture)
+UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec, const j1Rect& col, UI_ButtonType btype, char* string, TTF_Font* font)
 {
 	UI_Elem* elem = nullptr;
 	Label* label = nullptr;
@@ -204,7 +204,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 				int string_w, string_h = 0;
 				TTF_SizeText(font, string, &string_w, &string_h);
 				fPoint label_position = fPoint(pos.x + (BUTTON_RECT_W / 2) - string_w / 2, pos.y + (BUTTON_RECT_H / 2) - string_h / 2);
-				label = new Label(LABEL,label_position, string,font,label_texture);
+				label = new Label(LABEL, label_position, string, font);
 			}
 			elem = new Button(type, pos, col, btype, atlasRec, label); 
 
@@ -374,14 +374,11 @@ bool Image::Update(float dt)
 
 bool Label::Update(float dt)
 {
-	/*iPoint label_pos(this->position.x, this->position.y);
-
-	if (App->ui_manager->Button_Clicked)
-		label_pos.y += PIXELS_DOWN_FOR_CLICKED_ANIMATION;*/
-
-	if (!App->render->Blit(this->label_texture, this->position.x, this->position.y))
+	SDL_Texture* string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
+	if (!App->render->Blit(string_texturized, this->position.x, this->position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
-	
+	delete string_texturized;
+
 	return true;
 }
 
@@ -394,12 +391,8 @@ bool Button::Update(float dt)
 
 	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->BlitRec);
 
-	/*if(this)
-		this->Do(dt);*/
-
 	if (this->text)
 		this->text->Update(dt);
-	
 }
 
 bool CheckBox::Do(float dt)

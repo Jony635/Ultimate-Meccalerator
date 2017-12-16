@@ -119,9 +119,8 @@ class Label : public NO_InteractuableElem
 private:
 	p2SString string;
 	TTF_Font* font = nullptr;
-	SDL_Texture* label_texture = nullptr;
 public:
-	Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font, SDL_Texture* label_texture);
+	Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font);
 	virtual ~Label();
 	bool Update(float dt);
 };
@@ -174,7 +173,7 @@ public:
 	bool CleanUp();
 
 public:
-	UI_Elem* CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec = nullptr, const j1Rect& col = j1Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr, SDL_Texture* label_texture = nullptr);
+	UI_Elem* CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec = nullptr, const j1Rect& col = j1Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
 	const SDL_Texture* GetAtlas() const;
 	void Move(const fPoint& distance, float secs, const UI_Elem* elem = nullptr);			//if nullptr it moves all UI_Elems, else only moves an specific one
 	void Move_to(const iPoint& destination, float secs, const UI_Elem* elem = nullptr);	//if nullptr it moves all UI_Elems, else only moves an specific one
