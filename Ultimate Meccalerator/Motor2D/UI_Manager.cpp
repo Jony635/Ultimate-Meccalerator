@@ -105,11 +105,11 @@ bool UI_Manager::CleanUp()
 	UI_ElemList.clear();
 
 	//Cleaning UI_MobileElem List
-	p2List_item<Mobile_Elem*>* elem_ui = UI_MobileElemList.start;
-	while (elem_ui)
+	p2List_item<Mobile_Elem*>* elem_ui2 = UI_MobileElemList.start;
+	while (elem_ui2)
 	{
-		RELEASE(elem_ui->data);
-		elem_ui = elem_ui->next;
+		RELEASE(elem_ui2->data);
+		elem_ui2 = elem_ui2->next;
 	}
 	UI_ElemList.clear();
 
@@ -181,7 +181,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 		case UI_ElemType::LABEL:
 			if (string)
 			{
-				elem = new Label(type, pos, string, (font) ? font : App->fonts->default,label_texture);
+				elem = new Label(type, pos, string, (font) ? font : App->fonts->default);
 			}
 			else
 			{
@@ -203,7 +203,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 			Label* label = nullptr;
 			if (string)
 			{
-				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font"),label_texture);
+				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font"));
 				if (label)
 					UI_ElemList.add(label);
 			}
@@ -274,7 +274,7 @@ void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* e
 
 }
 
-UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype = NO_BUTTONTYPE, j1Rect* rect = nullptr) const
+UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype, j1Rect* rect) const
 {
 	p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
 	while (elem_it)
@@ -285,12 +285,14 @@ UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype = NO_B
 		switch (elemtype)
 		{
 			case UI_ElemType::BUTTON:
-				Button* button = (Button*) elem_it;
+			{
+				Button* button = (Button*)elem_it;
 
 				if (button->btype != btype)
 					continue;
 
 				return elem_it->data;
+			}
 				break;
 
 			case UI_ElemType::IMAGE:
@@ -429,7 +431,7 @@ bool Label::Update(float dt)
 	SDL_Texture* string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
 	if (!App->render->Blit(string_texturized, this->position.x, this->position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
-	delete string_texturized;
+	SDL_DestroyTexture(string_texturized);
 
 	return true;
 }
