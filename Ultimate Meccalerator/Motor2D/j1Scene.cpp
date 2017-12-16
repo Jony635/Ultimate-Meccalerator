@@ -248,7 +248,7 @@ void j1Scene::TpMode()
 		{
 			App->render->Blit(Player_shape, (App->render->camera.x*-1) + mouse_x - 18, (App->render->camera.y*-1) + mouse_y - 29);
 
-			if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 			{
 				App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
 				App->player->pos.y = (App->render->camera.y*-1) + mouse_y;

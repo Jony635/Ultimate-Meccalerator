@@ -18,6 +18,7 @@
 #include "j1Enemies.h"
 #include "j1Fonts.h"
 #include "UI_Manager.h"
+#include "j1Entities.h"
 
 #include "Brofiler\Brofiler.h"
 
@@ -49,6 +50,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	enemies = new j1Enemies();
 	fonts = new j1Fonts();
 	ui_manager = new UI_Manager();
+	entities_manager = new EntityManager();
 
 	// Ordered for awake / Start / Update
 	// Reverse order of CleanUp
@@ -63,6 +65,7 @@ j1App::j1App(int argc, char* args[]) : argc(argc), args(args)
 	AddModule(player, false);
 	AddModule(pathfinding);
 	AddModule(enemies, false);
+	AddModule(entities_manager, false);
 	AddModule(ui_manager);
 
 	// render last to swap buffer
@@ -129,10 +132,9 @@ bool j1App::Awake()
 			item = item->next;
 		}
 	}
+
 	save_game.create("save_game.xml");
 	load_game.create("save_game.xml");
-
-	
 
 
 	return ret;
