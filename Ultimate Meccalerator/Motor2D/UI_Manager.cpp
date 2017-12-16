@@ -377,11 +377,6 @@ bool Image::Update(float dt)
 
 bool Label::Update(float dt)
 {
-	/*iPoint label_pos(this->position.x, this->position.y);
-
-	if (App->ui_manager->Button_Clicked)
-		label_pos.y += PIXELS_DOWN_FOR_CLICKED_ANIMATION;*/
-
 	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font), this->position.x, this->position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
 	
@@ -396,9 +391,6 @@ bool Button::Update(float dt)
 	}
 
 	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->BlitRec);
-
-	/*if(this)
-		this->Do(dt);*/
 
 	if (this->text)
 		this->text->Update(dt);
