@@ -32,13 +32,9 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	//Teleport mode
-	void TpMode();
-
 	bool UI_Do(const UI_Elem* elem, Events* event);
 
 public:
-	int tp_counter = 0;
 	float Gravity = 9.8 / 60;
 };
 
