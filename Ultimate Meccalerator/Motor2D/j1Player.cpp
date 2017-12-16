@@ -145,7 +145,7 @@ bool j1Player::Start()
 	}
 	speed_x = standard_speed_x;
 	if(playerText==nullptr)
-	playerText = App->tex->Load("Resources/textures/Player_SpriteSheet.png");
+	playerText = App->tex->Load("Resources/textures/White_Player_SpriteSheet.png");
 
 	return true;
 }

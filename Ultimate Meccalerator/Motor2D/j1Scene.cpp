@@ -98,6 +98,7 @@ bool j1Scene::Start()
 			App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, title_pos, &title_rect);
 			App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, logo_pos, &logo_rect);
 
+
 		}
 		break;
 		case Levels::FIRST_LEVEL:
@@ -276,6 +277,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
 					App->RestartScene();
+					App->ui_manager->CleanUp();
 				}
 			}
 			break;

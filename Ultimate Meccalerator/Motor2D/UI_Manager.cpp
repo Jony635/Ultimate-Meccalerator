@@ -181,7 +181,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 		case UI_ElemType::LABEL:
 			if (string)
 			{
-				elem = new Label(type, pos, string, (font) ? font : App->fonts->default);
+				elem = new Label(type, pos, string, (font) ? font : App->fonts->default,label_texture);
 			}
 			else
 			{
@@ -203,7 +203,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 			Label* label = nullptr;
 			if (string)
 			{
-				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font"));
+				label = new Label(LABEL, pos, string, App->fonts->getFontbyName("generic_font"),label_texture);
 				if (label)
 					UI_ElemList.add(label);
 			}
@@ -219,7 +219,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 				int string_w, string_h = 0;
 				TTF_SizeText(font, string, &string_w, &string_h);
 				fPoint label_position = fPoint(pos.x + (BUTTON_RECT_W / 2) - string_w / 2, pos.y + (BUTTON_RECT_H / 2) - string_h / 2);
-				label = new Label(LABEL,label_position, string,font);
+				label = new Label(LABEL, label_position, string, font);
 			}
 			elem = new Button(type, pos, col, btype, atlasRec, label); 
 
@@ -426,9 +426,11 @@ bool Image::Update(float dt)
 
 bool Label::Update(float dt)
 {
-	if (!App->render->Blit(App->fonts->Print(this->string.GetString(), { 102,0,0, 255 }, this->font), this->position.x, this->position.y))
+	SDL_Texture* string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
+	if (!App->render->Blit(string_texturized, this->position.x, this->position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
-	
+	delete string_texturized;
+
 	return true;
 }
 
@@ -443,7 +445,6 @@ bool Button::Update(float dt)
 
 	if (this->text)
 		this->text->Update(dt);
-	
 }
 
 bool CheckBox::Do(float dt)
