@@ -8,7 +8,6 @@
 
 struct SDL_Texture;
 
-
 class j1Player : public j1Module
 {
 
@@ -42,19 +41,22 @@ public:
 		
 	bool Save(pugi::xml_node&) const;
 
+	//Teleport mode
+	void TpMode();
+
 public:
 
-	j1Rect player_col;
-
-	fPoint pos;
+	int tp_counter = 0;
 	float speed_x;
-	bool win = false;
-	mutable bool diesoundplayed = false;
 	float speed_y = 0;
-	SDL_Texture* playerText = nullptr;
+	bool win = false;
 	bool dead = false;
-
 	bool CheckCol(iPoint pos) const;
+	mutable bool diesoundplayed = false;
+	j1Rect player_col;
+	fPoint pos;
+	SDL_Texture* playerText = nullptr;
+	SDL_Rect Tp_circle_rect;
 
 private:
 	

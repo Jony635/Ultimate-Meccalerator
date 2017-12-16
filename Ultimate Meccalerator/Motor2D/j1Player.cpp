@@ -7,6 +7,15 @@
 #include "j1Audio.h"
 #include "Brofiler\Brofiler.h"
 
+#define PLAYER_H 58
+#define PLAYER_W 36
+#define TP_CIRCLE_RECT_DEFAULT {825,12,368,368}
+#define TP_CIRCLE_RECT_WHITE {885,72,249,249}
+#define TP_CIRCLE_RECT_RED {826,13,366,366}
+#define TP_CIRCLE_RECT_YELLOW {853,40,312,312}
+#define TP_CIRCLE_RECT_BLUE {868,55,281,281}
+#define PLAYER_SHAPE_RECT {827,393,36,58}
+
 
 j1Player::j1Player() : j1Module()
 {
@@ -127,16 +136,24 @@ bool j1Player::Awake(pugi::xml_node& playernode)
 
 bool j1Player::Start()
 {
+	playerText = App->tex->Load("Resources/textures/White_Player_SpriteSheet.png");
+
+	Tp_circle_rect = TP_CIRCLE_RECT_WHITE;
+
 	DieGoingRight.Reset();
 	current_anim = &IdleRight;
+
 	dieCounter = 0;
 	dead = false;
+
 	SetStartingPos();
 	pos = Startingpos;
+
 	player_col.rec.x = pos.x;
 	player_col.rec.y = pos.y;
 	player_col.rec.w = 32;
 	player_col.rec.h = 48;
+	
 	if(!alreadyLoaded)
 	{
 		speed_x = (speed_x * App->map->data.tile_width) / 60;
@@ -144,8 +161,7 @@ bool j1Player::Start()
 		alreadyLoaded = true;
 	}
 	speed_x = standard_speed_x;
-	if(playerText==nullptr)
-	playerText = App->tex->Load("Resources/textures/White_Player_SpriteSheet.png");
+
 
 	return true;
 }
@@ -172,7 +188,7 @@ bool j1Player::Update(float dt)
 			diesoundplayed = true;
 		}
 		dead = true;
-		App->scene->tp_counter = 3;
+		tp_counter = 3;
 	}
 	
 	if (!dead)
@@ -191,6 +207,10 @@ bool j1Player::Update(float dt)
 
 	player_col.rec.x = (int)pos.x;
 	player_col.rec.y = (int)pos.y;
+
+	if (App->tp_mode_enabled)
+	TpMode();
+
 	return true;
 }
 
@@ -539,4 +559,40 @@ bool j1Player::CheckCol(iPoint pos) const
 		}
 	}
 	return false;
+}
+
+//Teleport Mode
+void j1Player::TpMode()
+{
+	//LOG("Tp paused mode");
+	int mouse_x, mouse_y;
+	SDL_Rect Player_shape_rect = PLAYER_SHAPE_RECT;
+
+	App->input->GetMousePosition(mouse_x, mouse_y);
+	App->render->Blit(App->player->playerText,
+		App->player->pos.x - Tp_circle_rect.w / 2 + PLAYER_W / 2,
+		App->player->pos.y - Tp_circle_rect.h / 2 + PLAYER_H / 2,
+		&Tp_circle_rect);
+
+	if (mouse_x > (App->render->camera.x) + App->player->pos.x - Tp_circle_rect.w / 2 + PLAYER_W / 2 &&
+		mouse_x < (App->render->camera.x) + App->player->pos.x + Tp_circle_rect.w / 2 + PLAYER_W / 2 &&
+		mouse_y >(App->render->camera.y) + App->player->pos.y - Tp_circle_rect.h / 2 + PLAYER_H / 2 &&
+		mouse_y < (App->render->camera.y) + App->player->pos.y + Tp_circle_rect.h / 2 + PLAYER_H / 2)
+	{
+		if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
+		{
+			App->render->Blit(App->player->playerText,
+				(App->render->camera.x*-1) + mouse_x - PLAYER_W / 2,
+				(App->render->camera.y*-1) + mouse_y - PLAYER_H / 2,
+				&Player_shape_rect);
+
+			if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
+			{
+				App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
+				App->player->pos.y = (App->render->camera.y*-1) + mouse_y;
+				tp_counter--;
+				App->tp_mode_enabled = false;
+			}
+		}
+	}
 }

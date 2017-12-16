@@ -36,12 +36,7 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	if(!Tp_circle_texture)
-		Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
-	if(!Player_shape)
-		Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
-
-	tp_counter = 3;
+	App->player->tp_counter = 3;
 	
 	pugi::xml_document doc;
 	App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
@@ -143,10 +138,6 @@ bool j1Scene::Start()
 bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
-	App->tex->UnLoad(Tp_circle_texture);
-	Tp_circle_texture = nullptr;
-	App->tex->UnLoad(Player_shape);
-	Player_shape = nullptr;
 	App->player->DeActivate();
 	App->enemies->DeActivate();
 	App->ui_manager->Reset();
@@ -204,7 +195,7 @@ bool j1Scene::Update(float dt)
 			App->framerate_cap = 30;
 	}
 		
-	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && tp_counter>0)
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && App->player->tp_counter>0)
 		App->tp_mode_enabled = true;
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_UP)
@@ -212,9 +203,6 @@ bool j1Scene::Update(float dt)
 	
 	if(App->map)
 		App->map->Draw();
-	
-	if (App->tp_mode_enabled)
-		TpMode();
 
 	return true;
 }
@@ -228,35 +216,6 @@ bool j1Scene::PostUpdate()
 		ret = false;
 
 	return ret;
-}
-
-//Teleport Mode
-void j1Scene::TpMode()
-{
-	//LOG("Tp paused mode");
-	int mouse_x, mouse_y;
-	
-	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29);
-
-	if (mouse_x > (App->render->camera.x) + App->player->pos.x - 114 + 18 &&
-		mouse_x < (App->render->camera.x) + App->player->pos.x + 114 + 18 &&
-		mouse_y >(App->render->camera.y) + App->player->pos.y - 114 + 29 &&
-		mouse_y < (App->render->camera.y) + App->player->pos.y + 114 + 29 )
-	{
-		if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
-		{
-			App->render->Blit(Player_shape, (App->render->camera.x*-1) + mouse_x - 18, (App->render->camera.y*-1) + mouse_y - 29);
-
-			if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
-			{
-				App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
-				App->player->pos.y = (App->render->camera.y*-1) + mouse_y;
-				tp_counter--;
-				App->tp_mode_enabled = false;
-			}
-		}	
-	}
 }
 
 bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
