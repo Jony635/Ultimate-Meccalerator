@@ -53,6 +53,14 @@ struct j1Rect
 		rec.w = 0;
 		rec.h = 0;
 	}
+
+	bool operator != (j1Rect rec2)
+	{
+		return	!(rec.x == rec2.rec.x &&
+				rec.y == rec2.rec.y &&
+				rec.w == rec2.rec.w	&&
+				rec.h == rec2.rec.h);
+	}
 };
 
 enum Levels

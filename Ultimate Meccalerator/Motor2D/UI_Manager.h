@@ -60,8 +60,9 @@ struct Mobile_Elem
 {
 	UI_Elem* elem = nullptr;
 	fPoint distance;
+	float time;
 
-	Mobile_Elem(UI_Elem* elem, fPoint distance) : elem(elem), distance(distance) {}
+	Mobile_Elem(UI_Elem* elem, float time, fPoint distance) : elem(elem), time(time), distance(distance) {}
 };
 
 //------------UI_ELEM HERITAGE-----------------------------------------------
@@ -106,10 +107,11 @@ public:
 
 class Image : public NO_InteractuableElem
 {
+	friend class UI_Manager;
 private:
-	SDL_Rect rec;
+	j1Rect rec;
 public:
-	Image(UI_ElemType type, fPoint position, SDL_Rect rec);
+	Image(UI_ElemType type, fPoint position, j1Rect rec);
 	virtual ~Image();
 	bool Update(float dt);
 };
@@ -130,6 +132,7 @@ class Button : public InteractuableElem
 	friend class j1Scene;
 	friend class j1Audio;
 	friend class InteractuableElem;
+	friend class UI_Manager;
 private:
 	UI_ButtonType btype;
 	Label* text;
@@ -175,9 +178,13 @@ public:
 public:
 	UI_Elem* CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec = nullptr, const j1Rect& col = j1Rect(), UI_ButtonType btype = NO_BUTTONTYPE, char* string = nullptr, TTF_Font* font = nullptr);
 	const SDL_Texture* GetAtlas() const;
+
 	void Move(const fPoint& distance, float secs, const UI_Elem* elem = nullptr);			//if nullptr it moves all UI_Elems, else only moves an specific one
 	void Move_to(const iPoint& destination, float secs, const UI_Elem* elem = nullptr);	//if nullptr it moves all UI_Elems, else only moves an specific one
 	void MoveElems(float dt);
+
+	UI_Elem* SearchElem(UI_ElemType elemtype, UI_ButtonType btype = NO_BUTTONTYPE, j1Rect* rect = nullptr) const;
+
 private:
 	SDL_Texture* atlas = nullptr; //Texture that has everything
 	p2SString atlas_file_name;

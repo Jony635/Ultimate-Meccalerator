@@ -22,7 +22,7 @@
 	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
 	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
 	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
-	Image::Image(UI_ElemType type, fPoint position, SDL_Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
+	Image::Image(UI_ElemType type, fPoint position, j1Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
 	Button::Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text)
 	{
 		this->atlasRec[Button_State::DEFAULT] = atlasRec[Button_State::DEFAULT];
@@ -104,6 +104,14 @@ bool UI_Manager::CleanUp()
 	}
 	UI_ElemList.clear();
 
+	//Cleaning UI_MobileElem List
+	p2List_item<Mobile_Elem*>* elem_ui = UI_MobileElemList.start;
+	while (elem_ui)
+	{
+		RELEASE(elem_ui->data);
+		elem_ui = elem_ui->next;
+	}
+	UI_ElemList.clear();
 
 	return true;
 }
@@ -116,7 +124,6 @@ bool UI_Manager::PreUpdate()
 
 bool UI_Manager::Update(float dt)
 {
-
 	MoveElems(dt);
 
 	bool ret = true;
@@ -137,12 +144,20 @@ void UI_Manager::MoveElems(float dt)
 	p2List_item<Mobile_Elem*>* mobile_elem = UI_MobileElemList.start;
 	while (mobile_elem)
 	{
-		fPoint distance = mobile_elem->data->distance;
-		UI_Elem* elem = mobile_elem->data->elem;
+		fPoint* distance = &mobile_elem->data->distance;	//Distance left to move
+		UI_Elem* elem = mobile_elem->data->elem;		
+		float* time = &mobile_elem->data->time;				//Time left to move
 
-		//elem->Move();
+		fPoint dpos((distance->x * dt) / *time, (distance->y * dt) / *time);
+		elem->Move(dpos);
+
+		*distance -= dpos;	//Update de amount of pixels left to move
+		*time -= dt;		//Update de amount of time left to move
 
 		mobile_elem = mobile_elem->next;
+		
+		if (*time <= 0)
+			UI_MobileElemList.del(mobile_elem->prev); //Remove Elems from the list when finished the movement
 	}
 }
 
@@ -179,7 +194,7 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 
 		//-----IMAGE-----------------------------------------------------------
 		case UI_ElemType::IMAGE:
-			elem = new Image(type, pos, atlasRec[0].rec);
+			elem = new Image(type, pos, atlasRec[0]);
 			break;
 	
 		//-----CHECKBOX--------------------------------------------------------
@@ -229,24 +244,28 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 
 void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem) 
 {
-	if (elem)
+	p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
+	while (elem_it)
 	{
-
-	}
-	else
-	{
-		p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
-		while (elem_it)
+		if (elem)
 		{
-			Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, distance);
-			UI_MobileElemList.add(mobile_elem);
-			elem_it = elem_it->next;
+			if (elem == elem_it->data)
+			{
+				Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
+				UI_MobileElemList.add(mobile_elem);
+				break;
+			}
+
+			else continue;
 		}
+
+		Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
+		UI_MobileElemList.add(mobile_elem);
+		
+
+		elem_it = elem_it->next;
 	}
-
-
-
-
+	
 }		
 
 void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* elem) 
@@ -255,7 +274,40 @@ void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* e
 
 }
 
+UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype = NO_BUTTONTYPE, j1Rect* rect = nullptr) const
+{
+	p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
+	while (elem_it)
+	{
+		if (elem_it->data->type != elemtype)
+			continue;
 
+		switch (elemtype)
+		{
+			case UI_ElemType::BUTTON:
+				Button* button = (Button*) elem_it;
+
+				if (button->btype != btype)
+					continue;
+
+				return elem_it->data;
+				break;
+
+			case UI_ElemType::IMAGE:
+				Image * image = (Image*)elem_it;
+
+				if (image->rec != *rect)
+					continue;
+
+				return elem_it->data;
+				break;
+		}
+
+		elem_it = elem_it->next;
+	}
+
+	return nullptr;
+}
 
 
 //------------UI_ELEM METHODS--------------------------------------------------------
@@ -367,7 +419,7 @@ bool Button::Do(float dt)
 
 bool Image::Update(float dt)
 {
-	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->rec);
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->rec.rec);
 
 	return true;
 }
