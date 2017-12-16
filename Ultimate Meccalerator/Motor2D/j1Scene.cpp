@@ -36,6 +36,10 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
+	App->ui_manager->Activate();
+	App->map->Activate();
+	App->pathfinding->Activate();
+
 	App->player->tp_counter = 3;
 	
 	pugi::xml_document doc;
@@ -49,10 +53,6 @@ bool j1Scene::Start()
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
 			App->map->Load("Menu_background.tmx");
-
-			//----------------------------------------------Load fx-------------------------------
-			App->audio->mouse_on = App->audio->LoadFx("Resources/gui/bonus/click1.ogg");
-			App->audio->mouse_click = App->audio->LoadFx("Resources/gui/bonus/rollover1.ogg");
 			
 			//---------------------------------------------Buttons Rect---------------------------
 			j1Rect atlasrec[Button_State::MAX_STATE] = { j1Rect(0,192,190,49), j1Rect(190,49,190,49), j1Rect(190,0,190,49) };
@@ -98,6 +98,9 @@ bool j1Scene::Start()
 		break;
 		case Levels::FIRST_LEVEL:
 		{
+			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
+
+			
 			App->player->Activate();
 			App->enemies->Activate();
 
@@ -115,6 +118,8 @@ bool j1Scene::Start()
 		break;
 		case Levels::SECOND_LEVEL:
 		{
+			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
+
 			App->enemies->Activate();
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
@@ -140,7 +145,9 @@ bool j1Scene::CleanUp()
 	LOG("Freeing scene");
 	App->player->DeActivate();
 	App->enemies->DeActivate();
-	App->ui_manager->Reset();
+	App->ui_manager->DeActivate();
+	App->map->DeActivate();
+	App->pathfinding->DeActivate();
 	return true;
 }
 
@@ -165,17 +172,17 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		App->actual_lvl = Levels::FIRST_LEVEL;
-		App->RestartScene();
+		App->scene->Reset();
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 	{
-		App->RestartScene();
+		App->scene->Reset();
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
 		App->actual_lvl = Levels::SECOND_LEVEL;
-		App->RestartScene();
+		App->scene->Reset();
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN )
@@ -203,6 +210,10 @@ bool j1Scene::Update(float dt)
 	
 	if(App->map)
 		App->map->Draw();
+
+	//-------------------------------debug die
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		App->player->dead = true;
 
 	return true;
 }
@@ -235,8 +246,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
-					App->RestartScene();
-					App->ui_manager->CleanUp();
+					App->scene->Reset();
 				}
 			}
 			break;

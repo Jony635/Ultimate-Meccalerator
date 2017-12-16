@@ -6,6 +6,7 @@
 #include "j1Scene.h"
 #include "j1Audio.h"
 #include "Brofiler\Brofiler.h"
+#include "j1Scene.h"
 
 #define PLAYER_H 58
 #define PLAYER_W 36
@@ -166,6 +167,16 @@ bool j1Player::Start()
 	return true;
 }
 
+bool j1Player::CleanUp()
+{
+	if (playerText != nullptr)
+	{
+		App->tex->UnLoad(playerText);
+		playerText = nullptr;
+	}
+	return true;
+}
+
 bool j1Player::PreUpdate()
 {
 	
@@ -203,13 +214,13 @@ bool j1Player::Update(float dt)
 	}
 
 	if(!App->tp_mode_enabled)
-	CheckFalls(dt);
+		CheckFalls(dt);
 
 	player_col.rec.x = (int)pos.x;
 	player_col.rec.y = (int)pos.y;
 
 	if (App->tp_mode_enabled)
-	TpMode();
+		TpMode();
 
 	return true;
 }
@@ -228,23 +239,13 @@ bool j1Player::PostUpdate()
 		if (dieCounter > 120)
 		{
 			current_anim->Reset();
-			App->RestartScene();
+			App->scene->Reset();
 		}
 		else
 		{
 			App->render->Blit(playerText, pos.x, pos.y, &current_anim->frames[current_anim->last_frame - 1]);
 			dieCounter = dieCounter + 1;
 		}
-	}
-	return true;
-}
-
-bool j1Player::CleanUp()
-{
-	if (playerText != nullptr)
-	{
-		App->tex->UnLoad(playerText);
-		playerText = nullptr;
 	}
 	return true;
 }
@@ -453,12 +454,11 @@ void j1Player::CheckWin()
 		{
 			App->actual_lvl = Levels::SECOND_LEVEL;
 			win = false;
-			App->RestartScene();
-			
+			App->scene->Reset();
 		}
 		else
 		{
-			App->scene->CleanUp();
+			App->scene->DeActivate();
 			App->render->defWin = true;
 		}
 	}
@@ -586,7 +586,7 @@ void j1Player::TpMode()
 				(App->render->camera.y*-1) + mouse_y - PLAYER_H / 2,
 				&Player_shape_rect);
 
-			if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 			{
 				App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
 				App->player->pos.y = (App->render->camera.y*-1) + mouse_y;

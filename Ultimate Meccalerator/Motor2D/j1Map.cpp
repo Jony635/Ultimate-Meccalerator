@@ -9,6 +9,7 @@
 #include "j1Player.h"
 #include "j1FileSystem.h"
 #include "Brofiler\Brofiler.h"
+#include "j1Scene.h"
 
 j1Map::j1Map() : j1Module(), map_loaded(false)
 {
@@ -559,7 +560,7 @@ bool j1Map::Load(pugi::xml_node& mapnode)
 		layer->data->pos.x = layernode.attribute("x").as_float();
 	}
 	App->actual_lvl=(Levels)mapnode.child("ActualLvl").attribute("name").as_int();
-	App->RestartScene();
+	App->scene->Reset();
 	return true;
 }
 
