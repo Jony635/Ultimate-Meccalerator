@@ -42,7 +42,13 @@
 	{
 		this->string.Clear();
 	}
-	Button::~Button() {}
+	Button::~Button() 
+	{
+		if (this->text)
+		{
+			App->ui_manager->UI_ElemList.del(App->ui_manager->UI_ElemList.At(App->ui_manager->UI_ElemList.find(this->text)));
+		}
+	}
 	CheckBox::~CheckBox() {}
 	//--------------------------------
 

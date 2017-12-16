@@ -586,7 +586,7 @@ void j1Player::TpMode()
 				(App->render->camera.y*-1) + mouse_y - PLAYER_H / 2,
 				&Player_shape_rect);
 
-			if (App->input->GetMouseButtonDown(RI_MOUSE_LEFT_BUTTON_DOWN) == KEY_DOWN)
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
 			{
 				App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
 				App->player->pos.y = (App->render->camera.y*-1) + mouse_y;
