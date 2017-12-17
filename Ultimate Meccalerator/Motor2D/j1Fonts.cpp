@@ -36,6 +36,8 @@ bool j1Fonts::Awake(pugi::xml_node& conf)
 
 		//Load all Fonts
 		default = Load("Resources/gui/fonts/kenvector_future.ttf", "kenvector_future", 20);
+		Load("Resources/gui/fonts/zorque.ttf", "zorque", 30);
+		Load("Resources/gui/fonts/zorque.ttf", "zorque_mini", 20);
 	}
 
 	return ret;
@@ -81,7 +83,7 @@ TTF_Font* const j1Fonts::Load(const char* path, char* name, int size)
 SDL_Texture* j1Fonts::Print(const char* text, SDL_Color color, _TTF_Font* font)
 {
 	SDL_Texture* ret = NULL;
-	SDL_Surface* surface = TTF_RenderText_Blended_Wrapped((font) ? font : default, text, color, 200);
+	SDL_Surface* surface = TTF_RenderText_Blended_Wrapped((font) ? font : default, text, color, 800);
 
 	if(surface == NULL)
 	{

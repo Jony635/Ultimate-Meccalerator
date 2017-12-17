@@ -37,7 +37,7 @@
 		this->gearPos.x = (this->collider.rec.x + this->collider.rec.w) / 2 + 100;
 		
 		p2SString value ("%.f", this->percent_value);
-		this->percent = new Label(LABEL, { (float)collider.rec.x + collider.rec.w + 100, (float)collider.rec.y + 20 }, value, App->fonts->getFontbyName("kenvector_future"));
+		this->percent = new Label(LABEL, { (float)collider.rec.x + collider.rec.w + 100, (float)collider.rec.y + 20 }, value, App->fonts->getFontbyName("zorque"));
 		value.Clear();
 	}
 	//--------------------------------
@@ -254,12 +254,11 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 			button->listeners.add(App->scene);
 		}
 		break;
-
 		case UI_ElemType::SLIDEBAR:
 		{
 			if (string)
 			{
-				fPoint label_position = fPoint((col.rec.x + col.rec.w) / 2 + 40, col.rec.y - 100);
+				fPoint label_position = fPoint((col.rec.x + col.rec.w) / 2 + 40, col.rec.y - 50);
 				label = new Label(LABEL, label_position, string, font);
 			}
 			elem = new SlideBar(type, pos, col, *atlasRec, label);
@@ -489,7 +488,12 @@ bool Image::Update(float dt)
 
 bool Label::Update(float dt)
 {
-	SDL_Texture* string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
+	SDL_Texture* string_texturized;
+	if (this->font == App->fonts->getFontbyName("zorque") || this->font == App->fonts->getFontbyName("zorque_mini"))
+		string_texturized = App->fonts->Print(this->string.GetString(), { 255, 255, 255, 255 }, this->font);
+	else
+		string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
+	
 	if (!App->render->Blit(string_texturized, this->position.x, this->position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
 	SDL_DestroyTexture(string_texturized);

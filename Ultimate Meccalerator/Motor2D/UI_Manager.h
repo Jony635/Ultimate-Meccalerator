@@ -45,6 +45,7 @@ enum UI_ButtonType
 	HOW_TO_PLAY,
 	CREDITS,
 	SETTINGS,
+	BACK,
 	EXIT
 };
 
