@@ -134,7 +134,7 @@ bool j1App::Awake()
 	}
 
 	save_game.create("save_game.xml");
-	load_game.create("save_game.xml");
+	load_game.create("save/save_game.xml");
 
 
 	return ret;
@@ -329,6 +329,8 @@ bool j1App::PostUpdate()
 // Called before quitting
 bool j1App::CleanUp()
 {
+	fs->FreeFile((char*)save_game.GetString());
+
 	bool ret = true;
 	p2List_item<j1Module*>* item;
 	item = modules.end;

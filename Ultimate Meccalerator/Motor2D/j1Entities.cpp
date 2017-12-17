@@ -1,6 +1,7 @@
 #include "j1Entities.h"
 #include "j1Render.h"
-
+#include "j1Player.h"
+#include "j1Textures.h"
 
 //------------ENTITY_MANAGER METHODS-----------------------------------------------------
 
@@ -15,11 +16,27 @@ bool EntityManager:: Awake(pugi::xml_node& entitiesnode)
 
 bool EntityManager::Start()
 {
+	//TODO: Fill the path here:
+	//collectible_objects_texture = App->tex->Load("");
 	return true;
 }
 
 bool EntityManager::CleanUp()
 {
+	//Freeing Textures
+	App->tex->UnLoad(collectible_objects_texture);
+	collectible_objects_texture = nullptr;
+
+	//Freeing Entity List
+	p2List_item<Entity*>* entity_it = EntitiesList.start;
+	while (entity_it)
+	{
+		RELEASE(entity_it->data);
+		entity_it = entity_it->next;
+	}
+	EntitiesList.clear();
+
+
 	return true;
 }
 
@@ -52,11 +69,20 @@ Entity* EntityManager::CreateEntity(EntityType type, fPoint pos)
 	return entity;
 }
 
-const SDL_Texture* EntityManager::getEntitiesAtlas() const
+const SDL_Texture* EntityManager::getCollectibleObjectsTex() const
 {
-	return entities_Atlas;
+	return collectible_objects_texture;
 }
 
+const SDL_Texture* EntityManager::getEnemiesTex() const
+{
+	return enemies_texture;
+}
+
+const SDL_Texture* EntityManager::getPlayerTex() const
+{
+	return player_texture;
+}
 
 //------------ENTITIES METHODS-----------------------------------------------------
 Entity::Entity(fPoint pos, j1Rect collider) : pos(pos), collider(collider) {}
@@ -69,11 +95,16 @@ Gear::~Gear() {}
 
 bool Gear::Update(float dt)
 {
+	if (this->collider.Collides(App->player->player_col))
+	{
+		//TODO: Set player to the new Tier.
+		//TODO: Delete Gear from the list.
+	}
 	return true;
 }
 
 void Gear::Draw()
 {
 	if (enabled)
-		App->render->Blit((SDL_Texture*)App->entities_manager->getEntitiesAtlas(), this->pos.x, this->pos.y, &(SDL_Rect)j1Rect(0,0,0,0).rec );
+		App->render->Blit((SDL_Texture*)App->entities_manager->getCollectibleObjectsTex(), this->pos.x, this->pos.y, &(SDL_Rect)j1Rect(0,0,0,0).rec );
 }

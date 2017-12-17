@@ -165,11 +165,12 @@ private:
 
 	p2SString			title;
 	p2SString			organization;
+	p2SString			load_game;
+	mutable p2SString	save_game;
 
 	mutable bool		want_to_save;
 	bool				want_to_load;
-	p2SString			load_game;
-	mutable p2SString	save_game;
+	
 
 	j1Timer				last_sec_frame_time;
 	uint32				prev_last_sec_frame_count = 0;

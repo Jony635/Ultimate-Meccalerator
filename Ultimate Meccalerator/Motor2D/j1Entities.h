@@ -61,13 +61,17 @@ public:
 	
 public:
 	Entity* CreateEntity(EntityType type, fPoint pos);
-	const SDL_Texture* getEntitiesAtlas() const;
+	const SDL_Texture* getCollectibleObjectsTex() const;
+	const SDL_Texture* getEnemiesTex() const;
+	const SDL_Texture* getPlayerTex() const;
 
 public:
 	
 
 private:
-	SDL_Texture * entities_Atlas = nullptr;
+	SDL_Texture* collectible_objects_texture = nullptr;
+	SDL_Texture* enemies_texture = nullptr;
+	SDL_Texture* player_texture = nullptr;
 	p2List<Entity*> EntitiesList;
 
 };
