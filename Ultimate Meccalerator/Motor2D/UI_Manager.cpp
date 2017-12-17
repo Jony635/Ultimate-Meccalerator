@@ -134,7 +134,7 @@ bool UI_Manager::Update(float dt)
 
 	bool ret = true;
 	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
-	while (elem && elem->data)
+	while (elem!=nullptr && elem->data != nullptr)
 	{
 		if (elem->data->Update(dt) == false)
 		{
