@@ -55,6 +55,8 @@ bool j1Scene::Start()
 	{
 		case Levels::MENU:
 		{
+			App->audio->PlayMusic("Resources/audio/music/MenuBSO.mp3");
+
 			App->player->lifes = 3;
 
 			//----------------------------------------------Load background-----------------------
@@ -91,7 +93,7 @@ bool j1Scene::Start()
 
 			//---------------------------------------------Buttons------------------------------------------
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, play_pos, &atlasrec[0], play_col, UI_ButtonType::PLAY, "play",App->fonts->getFontbyName("kenvector_future"));
-			if(!App->fs->IsFileEmpty("saves/save_game.xml"))
+			if(!App->fs->IsFileEmpty("save/save_game.xml"))
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, continue_pos, &atlasrec[0], continue_col, UI_ButtonType::CONTINUE, "continue", App->fonts->getFontbyName("kenvector_future"));
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, htp_pos, &atlasrec[0], htp_col, UI_ButtonType::HOW_TO_PLAY, "how to play", App->fonts->getFontbyName("kenvector_future"));
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, credits_pos, &atlasrec[0], credits_col, UI_ButtonType::CREDITS, "credits", App->fonts->getFontbyName("kenvector_future"));
@@ -400,7 +402,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 			break;
 			case UI_ButtonType::EXIT:
 			{
-				if (*event == Events::LEFT_UNCLICKED)
+				if (*event == Events::LEFT_UNCLICKED)           
 				{
 					return false;
 				}

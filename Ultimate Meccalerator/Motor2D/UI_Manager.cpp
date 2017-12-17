@@ -41,7 +41,11 @@
 	{
 		this->gearPos.y = this->position.y-2;
 		this->gearPos.x = (this->collider.rec.x + this->collider.rec.w) / 2 + 100;
-		
+		if(title->string=="Music Volume")
+			this->percent_value = App->scene->musicvolume;
+		if(title->string == "FX Volume")
+			this->percent_value = App->scene->fxvolume;
+
 		p2SString value ("%.f", this->percent_value);
 		this->percent = new Label(LABEL, { (float)collider.rec.x + collider.rec.w + 100, (float)collider.rec.y + 20 }, value, App->fonts->getFontbyName("zorque"));
 		value.Clear();
@@ -591,6 +595,10 @@ void SlideBar::UpdateValue(float dt)
 			this->percent_value = (mouse_x-this->collider.rec.x) * 100 / (this->collider.rec.w);
 			this->gearPos.x = this->collider.rec.x + (this->percent_value*this->collider.rec.w / 100);
 			this->percent->getString()->create("%.f", percent_value);
+			if (this->title->string == "Music Volume")
+				App->scene->musicvolume = percent_value;
+			else
+				App->scene->fxvolume = percent_value;
 			Do(dt);
 		}
 	}

@@ -63,6 +63,8 @@ public:
 	bool reset = true;
 	int time = 0;
 	Label* label_time = nullptr;
+	float musicvolume = 50.0f;
+	float fxvolume = 50.0f;
 
 	int bar_colour = upgrate_bar::EMPTY;
 
