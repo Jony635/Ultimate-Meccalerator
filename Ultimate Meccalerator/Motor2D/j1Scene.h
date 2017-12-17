@@ -72,7 +72,7 @@ public:
 	j1Rect upgrade_lvl_yellow_rect = { 1109,13,75,527 };
 	j1Rect upgrade_lvl_red_rect = { 1203,13,75,527 };
 
-	j1Rect actual_bar_upgrade = upgrade_lvl_empty_rect;//this will be changed depending from the upgrade lvl
+	j1Rect* actual_bar_upgrade = &upgrade_lvl_empty_rect;//this will be changed depending from the upgrade lvl
 
 };
 

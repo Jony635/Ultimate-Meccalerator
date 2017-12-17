@@ -108,6 +108,7 @@ public:
 
 class Image : public NO_InteractuableElem
 {
+	friend class j1Scene;
 	friend class UI_Manager;
 private:
 	j1Rect rec;

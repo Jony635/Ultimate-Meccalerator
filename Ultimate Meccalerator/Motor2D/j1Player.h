@@ -6,6 +6,16 @@
 #include "p2Point.h"
 #include "Animation.h"
 
+#define PLAYER_H 58
+#define PLAYER_W 36
+#define TP_CIRCLE_RECT_DEFAULT {825,12,368,368}
+#define TP_CIRCLE_RECT_WHITE {885,72,249,249}
+#define TP_CIRCLE_RECT_RED {826,13,366,366}
+#define TP_CIRCLE_RECT_YELLOW {853,40,312,312}
+#define TP_CIRCLE_RECT_BLUE {868,55,281,281}
+#define PLAYER_SHAPE_RECT {827,393,36,58}
+
+
 struct SDL_Texture;
 
 class j1Player : public j1Module
@@ -45,7 +55,7 @@ public:
 	void TpMode();
 
 public:
-
+	int lifes = 3;
 	int tp_counter = 0;
 	float speed_x;
 	float speed_y = 0;
@@ -55,7 +65,11 @@ public:
 	mutable bool diesoundplayed = false;
 	j1Rect player_col;
 	fPoint pos;
-	SDL_Texture* playerText = nullptr;
+	SDL_Texture** playerText = nullptr;
+	SDL_Texture* playerWhite = nullptr;
+	SDL_Texture* playerBlue = nullptr;
+	SDL_Texture* playerYellow = nullptr;
+	SDL_Texture* playerRed = nullptr;
 	SDL_Rect Tp_circle_rect;
 
 private:
