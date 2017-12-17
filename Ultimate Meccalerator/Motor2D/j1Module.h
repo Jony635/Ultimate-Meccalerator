@@ -35,12 +35,12 @@ public:
 		}
 	}
 
-	void DeActivate()
+	bool DeActivate()
 	{
 		if (active)
 		{
 			active = false;
-			CleanUp();
+			return CleanUp();
 		}
 	}
 

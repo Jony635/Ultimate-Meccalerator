@@ -36,12 +36,11 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
-	if(!Tp_circle_texture)
-		Tp_circle_texture = App->tex->Load("Resources/textures/Tp_Circle.png");
-	if(!Player_shape)
-		Player_shape = App->tex->Load("Resources/textures/Player_shape.png");
+	App->ui_manager->Activate();
+	App->map->Activate();
+	App->pathfinding->Activate();
 
-	tp_counter = 3;
+	App->player->tp_counter = 3;
 	
 	pugi::xml_document doc;
 	App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
@@ -54,10 +53,6 @@ bool j1Scene::Start()
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
 			App->map->Load("Menu_background.tmx");
-
-			//----------------------------------------------Load fx-------------------------------
-			App->audio->mouse_on = App->audio->LoadFx("Resources/gui/bonus/click1.ogg");
-			App->audio->mouse_click = App->audio->LoadFx("Resources/gui/bonus/rollover1.ogg");
 			
 			//---------------------------------------------Buttons Rect---------------------------
 			j1Rect atlasrec[Button_State::MAX_STATE] = { j1Rect(0,192,190,49), j1Rect(190,49,190,49), j1Rect(190,0,190,49) };
@@ -103,6 +98,9 @@ bool j1Scene::Start()
 		break;
 		case Levels::FIRST_LEVEL:
 		{
+			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
+
+			
 			App->player->Activate();
 			App->enemies->Activate();
 
@@ -120,6 +118,8 @@ bool j1Scene::Start()
 		break;
 		case Levels::SECOND_LEVEL:
 		{
+			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
+
 			App->enemies->Activate();
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
@@ -143,13 +143,11 @@ bool j1Scene::Start()
 bool j1Scene::CleanUp()
 {
 	LOG("Freeing scene");
-	App->tex->UnLoad(Tp_circle_texture);
-	Tp_circle_texture = nullptr;
-	App->tex->UnLoad(Player_shape);
-	Player_shape = nullptr;
 	App->player->DeActivate();
 	App->enemies->DeActivate();
-	App->ui_manager->Reset();
+	App->ui_manager->DeActivate();
+	App->map->DeActivate();
+	App->pathfinding->DeActivate();
 	return true;
 }
 
@@ -174,17 +172,17 @@ bool j1Scene::Update(float dt)
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
 		App->actual_lvl = Levels::FIRST_LEVEL;
-		App->RestartScene();
+		App->scene->Reset();
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 	{
-		App->RestartScene();
+		App->scene->Reset();
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 	{
 		App->actual_lvl = Levels::SECOND_LEVEL;
-		App->RestartScene();
+		App->scene->Reset();
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN )
@@ -204,7 +202,7 @@ bool j1Scene::Update(float dt)
 			App->framerate_cap = 30;
 	}
 		
-	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && tp_counter>0)
+	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_DOWN && App->player->tp_counter>0)
 		App->tp_mode_enabled = true;
 
 	if (App->input->GetKey(SDL_SCANCODE_TAB) == KEY_UP)
@@ -212,9 +210,10 @@ bool j1Scene::Update(float dt)
 	
 	if(App->map)
 		App->map->Draw();
-	
-	if (App->tp_mode_enabled)
-		TpMode();
+
+	//-------------------------------debug die
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		App->player->dead = true;
 
 	return true;
 }
@@ -228,35 +227,6 @@ bool j1Scene::PostUpdate()
 		ret = false;
 
 	return ret;
-}
-
-//Teleport Mode
-void j1Scene::TpMode()
-{
-	//LOG("Tp paused mode");
-	int mouse_x, mouse_y;
-	
-	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(Tp_circle_texture, App->player->pos.x-114+18, App->player->pos.y-114+29);
-
-	if (mouse_x > (App->render->camera.x) + App->player->pos.x - 114 + 18 &&
-		mouse_x < (App->render->camera.x) + App->player->pos.x + 114 + 18 &&
-		mouse_y >(App->render->camera.y) + App->player->pos.y - 114 + 29 &&
-		mouse_y < (App->render->camera.y) + App->player->pos.y + 114 + 29 )
-	{
-		if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
-		{
-			App->render->Blit(Player_shape, (App->render->camera.x*-1) + mouse_x - 18, (App->render->camera.y*-1) + mouse_y - 29);
-
-			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN)
-			{
-				App->player->pos.x = (App->render->camera.x*-1) + mouse_x;
-				App->player->pos.y = (App->render->camera.y*-1) + mouse_y;
-				tp_counter--;
-				App->tp_mode_enabled = false;
-			}
-		}	
-	}
 }
 
 bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
@@ -276,8 +246,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
-					App->RestartScene();
-					App->ui_manager->CleanUp();
+					App->scene->Reset();
 				}
 			}
 			break;

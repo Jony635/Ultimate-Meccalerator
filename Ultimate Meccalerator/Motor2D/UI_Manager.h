@@ -164,6 +164,7 @@ public:
 
 class UI_Manager : public j1Module
 {
+	friend class Button;
 public:
 	UI_Manager();
 	virtual ~UI_Manager();
