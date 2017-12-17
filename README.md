@@ -58,6 +58,9 @@ F6:Load saved state
 
 F9:Active debug layer
 
+## Flan Studio staff
+![Image not avaiable](https://github.com/Jony635/Ultimate-Meccalerator/blob/master/Web/FlanStudio.png?raw=true)
+
 ## LICENSE
 
 This is free and unencumbered software released into the public domain.
