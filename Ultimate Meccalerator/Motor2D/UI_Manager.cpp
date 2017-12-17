@@ -8,12 +8,13 @@
 #include "j1Input.h"
 #include "j1Audio.h"
 #include "j1Scene.h"
+#include "j1Player.h"
 
 //------------DEFINES----------------------------------------------------------------
 #define BUTTON_RECT_W						190
 #define BUTTON_RECT_H						45
 #define PIXELS_DOWN_FOR_CLICKED_ANIMATION	4
-//-----------------------------------------------------------------------------------
+
 
 //------------UI_ELEM HERITAGE METHODS-----------------------------------------------
 
@@ -21,7 +22,10 @@
 	UI_Elem::UI_Elem(UI_ElemType type, fPoint position) : type(type), position(position) {}
 	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
 	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
-	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position), string(string), font(font) {}
+	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position),font(font) 
+	{
+		this->string.create(string);
+	}
 	Image::Image(UI_ElemType type, fPoint position, j1Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
 	Button::Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text)
 	{
@@ -142,6 +146,11 @@ bool UI_Manager::Update(float dt)
 		}
 		elem = elem->next;
 	}
+
+	//------------------------------Updating UI Scene-------
+	if(App->actual_lvl != Levels::MENU)
+		App->scene->Update_UI(App->scene->bar_colour, 3, App->player->tp_counter, 0);
+
 	return true;
 }
 
@@ -168,7 +177,7 @@ void UI_Manager::MoveElems(float dt)
 }
 
 bool UI_Manager::PostUpdate()
-{
+{	
 	return true;
 }
 
@@ -271,8 +280,11 @@ void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem)
 				}
 				break;
 			}
-
-			else continue;
+			else
+			{
+				elem_it = elem_it->next;
+				continue;
+			}
 		}
 
 		Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
@@ -300,14 +312,16 @@ void UI_Manager::Move_to(const iPoint& destination, float secs, const UI_Elem* e
 
 }
 
-UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype, j1Rect* rect) const
+UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype, j1Rect* rect,char* string) const
 {
 	p2List_item<UI_Elem*>* elem_it = UI_ElemList.start;
 	while (elem_it)
 	{
 		if (elem_it->data->type != elemtype)
+		{
+			elem_it = elem_it->next;
 			continue;
-
+		}
 		switch (elemtype)
 		{
 			case UI_ElemType::BUTTON:
@@ -315,22 +329,41 @@ UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype, j1Rec
 				Button* button = (Button*)elem_it;
 
 				if (button->btype != btype)
+				{
+					elem_it = elem_it->next;
 					continue;
-
+				}
 				return elem_it->data;
 			}
 				break;
 
 			case UI_ElemType::IMAGE:
+			{
 				Image * image = (Image*)elem_it;
 
 				if (image->rec != *rect)
+				{
+					elem_it = elem_it->next;
 					continue;
+				}
+				return elem_it->data;
+			}
+				break;
+
+			case UI_ElemType::LABEL:
+			{
+				Label* label = (Label*)elem_it->data;
+
+				if (label->string != string)
+				{
+					elem_it = elem_it->next;
+					continue;
+				}
 
 				return elem_it->data;
+			}
 				break;
 		}
-
 		elem_it = elem_it->next;
 	}
 
@@ -447,15 +480,20 @@ bool Button::Do(float dt)
 
 bool Image::Update(float dt)
 {
-	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->rec.rec);
+	world_position.y = -App->render->fcamera.y + this->position.y;
+	world_position.x = -App->render->fcamera.x + this->position.x;
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), world_position.x, world_position.y, &this->rec.rec);
 
 	return true;
 }
 
 bool Label::Update(float dt)
 {
+	world_position.y = -App->render->fcamera.y + this->position.y;
+	world_position.x = -App->render->fcamera.x + this->position.x;
+
 	SDL_Texture* string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
-	if (!App->render->Blit(string_texturized, this->position.x, this->position.y))
+	if (!App->render->Blit(string_texturized, world_position.x, world_position.y))
 		LOG("Error Printing Label: %s", this->string.GetString());
 	SDL_DestroyTexture(string_texturized);
 
@@ -482,3 +520,4 @@ bool CheckBox::Do(float dt)
 {
 	return true;
 }
+
