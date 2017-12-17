@@ -7,7 +7,7 @@ Along this journey the meccanic boy will face a lot of dangers like acid, spikes
 To cross the stage, the player will be helped by some sections that gives acceleration and allows to reach other platforms.
 The acceleration sections can also become harmful.
 
-## GET OUR LATEST RELEASE (HERE)[]
+## GET OUR LATEST RELEASE [HERE](https://github.com/Jony635/Ultimate-Meccalerator/files/1566106/RELEASE_Ultimate_Meccalerator_v1.5.zip)
 
 ## AUTHORS
 
@@ -18,7 +18,7 @@ Jonathan Molina and Oriol de Dios, members of FlanStudio, are the authors of thi
 	-kenvector_future Made by Kenney
 
 -Sprites from: https://www.gameart2d.com/free-sci-fi-platformer-tileset.html and https://mobilegamegraphics.com/product/monster-heroes-free-assets/
-	-Monster Heroes – Free Assets
+	-Monster Heroes â€“ Free Assets
 	-FREE SCI-FI PLATFORMER TILESET
 -Music from: https://www.youtube.com/watch?v=6ukEy6FOxZE&list=PLfP6i5T0-DkIMLNRwmJpRBs4PJvxfgwBg
 	-[No Copyright Music] Artificial.Music - Herbal Tea [Lo-fi]
@@ -58,7 +58,7 @@ F6:Load saved state
 
 F9:Active debug layer
 
-## REPOSITORY (LINK)[]
+## REPOSITORY [LINK](https://github.com/Jony635/Ultimate-Meccalerator)
 
 
 
