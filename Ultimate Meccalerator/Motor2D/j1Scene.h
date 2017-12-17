@@ -32,7 +32,10 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+public:
+
 	bool UI_Do(const UI_Elem* elem, Events* event);
+	void LoadCollectibleObjects();
 
 public:
 	float Gravity = 9.8 / 60;

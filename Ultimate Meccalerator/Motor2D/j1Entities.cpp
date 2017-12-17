@@ -16,8 +16,7 @@ bool EntityManager:: Awake(pugi::xml_node& entitiesnode)
 
 bool EntityManager::Start()
 {
-	//TODO: Fill the path here:
-	//collectible_objects_texture = App->tex->Load("");
+	collectible_objects_texture = App->tex->Load("Resources/gui/Sprites/collectible_objects.png");
 	return true;
 }
 
@@ -47,11 +46,23 @@ bool EntityManager::PreUpdate()
 
 bool EntityManager::Update(float dt)
 {
+	p2List_item<Entity*>* entity_it = EntitiesList.start;
+	while (entity_it)
+	{
+		entity_it->data->Update(dt);
+		entity_it = entity_it->next;
+	}
 	return true;
 }
 
 bool EntityManager::PostUpdate()
 {
+	p2List_item<Entity*>* entity_it = EntitiesList.start;
+	while (entity_it)
+	{
+		entity_it->data->Draw();
+		entity_it = entity_it->next;
+	}
 	return true;
 }
 
@@ -61,13 +72,20 @@ Entity* EntityManager::CreateEntity(EntityType type, fPoint pos)
 	switch (type)
 	{
 		case EntityType::GEAR:
-			entity = new Entity(pos, j1Rect(pos, 50, 50));
+			entity = new Gear(pos, j1Rect(pos, 50, 50));
 			entity->type = GEAR;
 			EntitiesList.add(entity);
 		break;
 	}
 	return entity;
 }
+
+void EntityManager::DestroyEntity(p2List_item<Entity*>* entity)
+{
+	RELEASE(entity->data);
+	EntitiesList.del(entity);
+}
+
 
 const SDL_Texture* EntityManager::getCollectibleObjectsTex() const
 {
@@ -97,14 +115,15 @@ bool Gear::Update(float dt)
 {
 	if (this->collider.Collides(App->player->player_col))
 	{
-		//TODO: Set player to the new Tier.
-		//TODO: Delete Gear from the list.
+		p2List<Entity*>* EntitiesList = &App->entities_manager->EntitiesList;
+		App->entities_manager->DestroyEntity(EntitiesList->At(EntitiesList->find(this)));
 	}
 	return true;
 }
 
 void Gear::Draw()
 {
-	if (enabled)
-		App->render->Blit((SDL_Texture*)App->entities_manager->getCollectibleObjectsTex(), this->pos.x, this->pos.y, &(SDL_Rect)j1Rect(0,0,0,0).rec );
+	App->render->Blit((SDL_Texture*)App->entities_manager->getCollectibleObjectsTex(), this->pos.x, this->pos.y);
 }
+//TODO: Set player to the new Tier.
+//TODO: Delete Gear from the list.
