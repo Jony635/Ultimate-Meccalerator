@@ -33,7 +33,8 @@ enum UI_ElemType
 	IMAGE,
 	LABEL,
 	BUTTON,
-	CHECKBOX
+	CHECKBOX,
+	SLIDEBAR
 };
 
 enum UI_ButtonType
@@ -101,7 +102,6 @@ public:
 	virtual ~InteractuableElem();
 
 	virtual bool Update(float dt);
-	bool CheckWithMouse(float dt);
 	virtual bool Do(float dt);
 };
 
@@ -118,13 +118,15 @@ public:
 
 class Label : public NO_InteractuableElem
 {
+	friend class SlideBar;
 private:
 	p2SString string;
 	TTF_Font* font = nullptr;
 public:
-	Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font);
+	Label(UI_ElemType type, fPoint position, p2SString string, TTF_Font* font);
 	virtual ~Label();
 	bool Update(float dt);
+	p2SString* getString();
 };
 
 class Button : public InteractuableElem
@@ -144,6 +146,7 @@ public:
 	bool Update(float dt);
 	virtual ~Button();
 	bool Do(float dt);
+	bool CheckWithMouse(float dt);
 };
 
 class CheckBox : public InteractuableElem
@@ -158,6 +161,28 @@ public:
 	CheckBox(UI_ElemType type, fPoint position, j1Rect col, Label* text = nullptr);
 	virtual ~CheckBox();
 	bool Do(float dt);
+};
+
+class SlideBar : public InteractuableElem
+{
+	friend class j1Scene;
+	friend class j1Audio;
+	friend class InteractuableElem;
+	friend class UI_Manager;
+private:
+	float percent_value = 50;
+	Label* title;
+	Label* percent;
+	j1Rect atlasRec;
+	//j1Rect gearAtlasRec;
+	fPoint gearPos;
+public:
+	SlideBar(UI_ElemType type, fPoint position, const j1Rect& col, j1Rect atlasRec, Label* title = nullptr);
+	virtual ~SlideBar();
+	bool Update(float dt);
+	//bool Do(float dt);
+	void UpdateValue();
+
 };
 
 //------------UI_MANAGER MODULE--------------------------------------
