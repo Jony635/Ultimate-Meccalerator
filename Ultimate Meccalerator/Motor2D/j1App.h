@@ -190,6 +190,7 @@ private:
 
 public:
 	bool				tp_mode_enabled = false;
+	j1Timer				gameON;
 
 public:
 	uint32				framerate_cap;
