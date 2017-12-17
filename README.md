@@ -7,6 +7,7 @@ Along this journey the meccanic boy will face a lot of dangers like acid, spikes
 To cross the stage, the player will be helped by some sections that gives acceleration and allows to reach other platforms.
 The acceleration sections can also become harmful.
 
+## GET OUR LATEST RELEASE (HERE)[]
 
 ## AUTHORS
 
@@ -32,7 +33,10 @@ Jonathan Molina and Oriol de Dios, members of FlanStudio, are the authors of thi
 - D to go right
 - SPACEBAR to jump
 - SPACEBAR (AGAIN) to double jump (it only works if you have jumped once before from the floor)
+
+INNOVATION:
 - TAB to pause the game and make a teleport (you only have 3)
+File System fully implemented in a .FStudio file
 
 WIN: Reach the end of the levels and cross the final door
 
@@ -53,6 +57,10 @@ F5:Save current state (Disabled when you're not grounded)
 F6:Load saved state
 
 F9:Active debug layer
+
+## REPOSITORY (LINK)[]
+
+
 
 ## LICENSE
 
