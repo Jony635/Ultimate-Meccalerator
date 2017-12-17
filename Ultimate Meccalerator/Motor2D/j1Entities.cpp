@@ -2,6 +2,7 @@
 #include "j1Render.h"
 #include "j1Player.h"
 #include "j1Textures.h"
+#include "j1Scene.h"
 
 //------------ENTITY_MANAGER METHODS-----------------------------------------------------
 
@@ -117,7 +118,10 @@ bool Gear::Update(float dt)
 	{
 		p2List<Entity*>* EntitiesList = &App->entities_manager->EntitiesList;
 		App->entities_manager->DestroyEntity(EntitiesList->At(EntitiesList->find(this)));
-
+		if (App->scene->bar_colour <3)//Nice try ;)
+		{
+  			App->scene->bar_colour += 1;
+		}
 	}
 	return true;
 }

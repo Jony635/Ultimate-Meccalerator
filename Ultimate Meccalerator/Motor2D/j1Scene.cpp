@@ -43,6 +43,8 @@ bool j1Scene::Awake()
 // Called before the first frame
 bool j1Scene::Start()
 {
+	bar_colour = 0;
+
 	App->ui_manager->Activate();
 	App->map->Activate();
 	App->pathfinding->Activate();
@@ -53,6 +55,8 @@ bool j1Scene::Start()
 	{
 		case Levels::MENU:
 		{
+			App->player->lifes = 3;
+
 			//----------------------------------------------Load background-----------------------
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
@@ -442,7 +446,7 @@ void j1Scene::CreateIngameUI()
 	fPoint lifes_pos = { MARGIN,MARGIN};
 	fPoint timer_pos = { MARGIN,SCREEN_H - label_square_rect.rec.h - MARGIN};
 	fPoint tp_pos = { SCREEN_W - label_square_rect.rec.w - MARGIN,MARGIN};
-	fPoint upgrade_bar_pos = { SCREEN_W - actual_bar_upgrade.rec.w - MARGIN, 150.0f };
+	fPoint upgrade_bar_pos = { SCREEN_W - actual_bar_upgrade->rec.w - MARGIN, 150.0f };
 
 	//------------------------------------Labels positions--------------------------------
 	fPoint lifes_label_pos = { lifes_pos.x + LABEL_X_MARGIN,lifes_pos.y + LABEL_Y_MARGIN };
@@ -461,7 +465,7 @@ void j1Scene::CreateIngameUI()
 	App->ui_manager->CreateUIElem(UI_ElemType::LABEL, tp_label_pos, NULL, label_square_rect, UI_ButtonType::NO_BUTTONTYPE, "tp", App->fonts->getFontbyName("kenvector_future"));
 
 	//------------------------------------Images------------------------------------------
-	App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, upgrade_bar_pos, &actual_bar_upgrade);
+	//App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, upgrade_bar_pos, actual_bar_upgrade);
 }
 
 void j1Scene::Update_upgrade_bar(int upgrade_lvl)
@@ -469,21 +473,30 @@ void j1Scene::Update_upgrade_bar(int upgrade_lvl)
 	switch (upgrade_lvl)
 	{
 	case EMPTY:
-		actual_bar_upgrade = upgrade_lvl_empty_rect;
+		actual_bar_upgrade = &upgrade_lvl_empty_rect;
+		App->player->Tp_circle_rect = TP_CIRCLE_RECT_DEFAULT;
+		App->player->playerText = &App->player->playerWhite;
 		break;
 	case BLUE:
-		actual_bar_upgrade = upgrade_lvl_blue_rect;
+		actual_bar_upgrade = &upgrade_lvl_blue_rect;
+		App->player->Tp_circle_rect = TP_CIRCLE_RECT_BLUE;
+		App->player->playerText = &App->player->playerBlue;
 		break;
 	case YELLOW:
-		actual_bar_upgrade = upgrade_lvl_yellow_rect;
+		actual_bar_upgrade = &upgrade_lvl_yellow_rect;
+		App->player->Tp_circle_rect = TP_CIRCLE_RECT_YELLOW;
+		App->player->playerText = &App->player->playerYellow;
 		break;
 	case RED:
-		actual_bar_upgrade = upgrade_lvl_red_rect;
+		actual_bar_upgrade = &upgrade_lvl_red_rect;
+		App->player->Tp_circle_rect = TP_CIRCLE_RECT_RED;
+		App->player->playerText = &App->player->playerRed;
 		break;
 	default:
 		break;
 	}
 	bar_colour = upgrade_lvl;
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), SCREEN_W - actual_bar_upgrade->rec.w - MARGIN - App->render->camera.x, 150.0f - App->render->camera.y,&actual_bar_upgrade->rec);
 }
 void j1Scene::Update_lifes(int lifes)
 {

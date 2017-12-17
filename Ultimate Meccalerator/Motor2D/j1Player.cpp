@@ -8,16 +8,6 @@
 #include "Brofiler\Brofiler.h"
 #include "j1Scene.h"
 
-#define PLAYER_H 58
-#define PLAYER_W 36
-#define TP_CIRCLE_RECT_DEFAULT {825,12,368,368}
-#define TP_CIRCLE_RECT_WHITE {885,72,249,249}
-#define TP_CIRCLE_RECT_RED {826,13,366,366}
-#define TP_CIRCLE_RECT_YELLOW {853,40,312,312}
-#define TP_CIRCLE_RECT_BLUE {868,55,281,281}
-#define PLAYER_SHAPE_RECT {827,393,36,58}
-
-
 j1Player::j1Player() : j1Module()
 {
 	name.create("player");
@@ -137,7 +127,10 @@ bool j1Player::Awake(pugi::xml_node& playernode)
 
 bool j1Player::Start()
 {
-	playerText = App->tex->Load("Resources/textures/White_Player_SpriteSheet.png");
+	playerWhite = App->tex->Load("Resources/textures/White_Player_SpriteSheet.png");
+	playerBlue = App->tex->Load("Resources/textures/Blue_Player_SpriteSheet.png");
+	playerYellow = App->tex->Load("Resources/textures/Yellow_Player_SpriteSheet.png");
+	playerRed = App->tex->Load("Resources/textures/Red_Player_SpriteSheet.png");
 
 	Tp_circle_rect = TP_CIRCLE_RECT_WHITE;
 
@@ -169,11 +162,11 @@ bool j1Player::Start()
 
 bool j1Player::CleanUp()
 {
-	if (playerText != nullptr)
-	{
-		App->tex->UnLoad(playerText);
-		playerText = nullptr;
-	}
+	App->tex->UnLoad(playerWhite);
+	App->tex->UnLoad(playerBlue);
+	App->tex->UnLoad(playerYellow);
+	App->tex->UnLoad(playerBlue);
+	
 	return true;
 }
 
@@ -196,6 +189,7 @@ bool j1Player::Update(float dt)
 		if (!diesoundplayed)
 		{
 			App->audio->PlayFx(App->audio->dieSound);
+			lifes -= 1;
 			diesoundplayed = true;
 		}
 		dead = true;
@@ -231,7 +225,7 @@ bool j1Player::PostUpdate()
 	
 	if (current_anim != &DieGoingRight || !current_anim->Finished())
 	{
-		App->render->Blit(playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
+		App->render->Blit(*playerText, pos.x, pos.y, &current_anim->GetCurrentFrame());
 	}
 
 	else
@@ -239,11 +233,15 @@ bool j1Player::PostUpdate()
 		if (dieCounter > 120)
 		{
 			current_anim->Reset();
+			if (lifes <= 0)
+			{
+				App->actual_lvl = Levels::MENU;
+			}
 			App->scene->Reset();
 		}
 		else
 		{
-			App->render->Blit(playerText, pos.x, pos.y, &current_anim->frames[current_anim->last_frame - 1]);
+			App->render->Blit(*playerText, pos.x, pos.y, &current_anim->frames[current_anim->last_frame - 1]);
 			dieCounter = dieCounter + 1;
 		}
 	}
@@ -569,7 +567,7 @@ void j1Player::TpMode()
 	SDL_Rect Player_shape_rect = PLAYER_SHAPE_RECT;
 
 	App->input->GetMousePosition(mouse_x, mouse_y);
-	App->render->Blit(App->player->playerText,
+	App->render->Blit(*App->player->playerText,
 		App->player->pos.x - Tp_circle_rect.w / 2 + PLAYER_W / 2,
 		App->player->pos.y - Tp_circle_rect.h / 2 + PLAYER_H / 2,
 		&Tp_circle_rect);
@@ -581,7 +579,7 @@ void j1Player::TpMode()
 	{
 		if (App->player->CheckCol(iPoint((App->render->camera.x*-1) + mouse_x, (App->render->camera.y*-1) + mouse_y)) == false)
 		{
-			App->render->Blit(App->player->playerText,
+			App->render->Blit(*App->player->playerText,
 				(App->render->camera.x*-1) + mouse_x - PLAYER_W / 2,
 				(App->render->camera.y*-1) + mouse_y - PLAYER_H / 2,
 				&Player_shape_rect);

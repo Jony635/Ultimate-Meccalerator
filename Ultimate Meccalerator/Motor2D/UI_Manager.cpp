@@ -169,7 +169,7 @@ bool UI_Manager::Update(float dt)
 	}
 	//------------------------------Updating UI Scene-------
 	if(App->actual_lvl == Levels::FIRST_LEVEL || App->actual_lvl == Levels::SECOND_LEVEL)
-		App->scene->Update_UI(App->scene->bar_colour, 3, App->player->tp_counter, 0);
+		App->scene->Update_UI(App->scene->bar_colour, App->player->lifes, App->player->tp_counter, 0);
 
 	MoveElems(dt); //Maybe bugged for conflicts
 
