@@ -96,6 +96,22 @@ bool j1Scene::Start()
 
 		}
 		break;
+		case Levels::SETTINGS_SCREEN:
+		{
+			//----------------------------------------------Load background-----------------------
+			App->render->camera.x = 0;
+			App->render->fcamera.x = 0;
+
+			App->map->Load("Menu_background.tmx");
+			fPoint title_pos = { SCREEN_MIDDLE_X_FOR_TITLE,60 };
+			j1Rect title_rect = { 0,266,870,165 };
+
+			App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, title_pos, &title_rect);
+
+			App->ui_manager->CreateUIElem(UI_ElemType::SLIDEBAR, { 200, 500 }, &j1Rect(41, 464, 559, 68), j1Rect(200+25, 500, 559-100, 68), NO_BUTTONTYPE, "Music Volume", App->fonts->getFontbyName("kenvector_future"));
+			App->ui_manager->CreateUIElem(UI_ElemType::SLIDEBAR, { 200, 700 }, &j1Rect(41, 464, 559, 68), j1Rect(200 + 25, 700, 559 - 100, 68), NO_BUTTONTYPE, "FX Volume", App->fonts->getFontbyName("kenvector_future"));
+		}
+		break;
 		case Levels::FIRST_LEVEL:
 		{
 			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
@@ -246,6 +262,15 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
+					App->scene->Reset();
+				}
+			}
+			break;
+			case UI_ButtonType::SETTINGS:
+			{
+				if (*event == Events::LEFT_UNCLICKED)
+				{
+					App->actual_lvl = Levels::SETTINGS_SCREEN;
 					App->scene->Reset();
 				}
 			}

@@ -35,7 +35,7 @@ bool j1Fonts::Awake(pugi::xml_node& conf)
 		//default = Load(path, "OpenSans-Regular", size);
 
 		//Load all Fonts
-		Load("Resources/gui/fonts/kenvector_future.ttf", "kenvector_future", 20);
+		default = Load("Resources/gui/fonts/kenvector_future.ttf", "kenvector_future", 20);
 	}
 
 	return ret;
