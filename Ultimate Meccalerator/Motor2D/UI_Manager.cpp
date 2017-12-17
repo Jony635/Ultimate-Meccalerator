@@ -23,9 +23,9 @@
 	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
 	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
 
-	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position),font(font) 
+	Label::Label(UI_ElemType type, fPoint position, p2SString string, TTF_Font* font) : NO_InteractuableElem(type, position),font(font)
 	{
-		this->string.create(string);
+		this->string.create(string.GetString());
 	}
 
 	Image::Image(UI_ElemType type, fPoint position, j1Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
@@ -168,7 +168,7 @@ bool UI_Manager::Update(float dt)
 		elem = elem->next;
 	}
 	//------------------------------Updating UI Scene-------
-	if(App->actual_lvl != Levels::MENU)
+	if(App->actual_lvl == Levels::FIRST_LEVEL || App->actual_lvl == Levels::SECOND_LEVEL)
 		App->scene->Update_UI(App->scene->bar_colour, 3, App->player->tp_counter, 0);
 
 	MoveElems(dt); //Maybe bugged for conflicts
@@ -561,6 +561,8 @@ bool Button::Update(float dt)
 
 	this->collider.rec.x = this->position.x;
 	this->collider.rec.y = this->position.y;
+
+	return true;
 }
 
 bool SlideBar::Update(float dt)

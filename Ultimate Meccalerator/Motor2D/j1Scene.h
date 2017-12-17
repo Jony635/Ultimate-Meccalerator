@@ -55,13 +55,12 @@ public:
 	void Update_UI(int upgrade_lvl, int lifes, int tp_left, int time);
 
 public:
-
-	bool UI_Do(const UI_Elem* elem, Events* event);
 	void LoadCollectibleObjects();
 
 
 public:
 	float Gravity = 9.8 / 60;
+	bool reset = true;
 	int time = 0;
 	Label* label_time = nullptr;
 

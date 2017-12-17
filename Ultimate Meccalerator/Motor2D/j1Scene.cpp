@@ -12,6 +12,7 @@
 #include "j1Pathfinding.h"
 #include "UI_Manager.h"
 #include "j1Entities.h"
+#include "j1FileSystem.h"
 
 #define SCREEN_W 1024.0f
 #define SCREEN_H 768.0f
@@ -65,8 +66,8 @@ bool j1Scene::Start()
 			j1Rect logo_rect = { 457,2,91,105 };
 
 			//---------------------------------------------Buttons Positions--------------------------------
-			fPoint play_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,340};
-			fPoint continue_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,399};
+			fPoint play_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,399};
+			fPoint continue_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,340};
 			fPoint htp_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,458 };
 			fPoint credits_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,517 };
 			fPoint exit_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,576 };
@@ -86,6 +87,7 @@ bool j1Scene::Start()
 
 			//---------------------------------------------Buttons------------------------------------------
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, play_pos, &atlasrec[0], play_col, UI_ButtonType::PLAY, "play",App->fonts->getFontbyName("kenvector_future"));
+			if(!App->fs->IsFileEmpty("saves/save_game.xml"))
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, continue_pos, &atlasrec[0], continue_col, UI_ButtonType::CONTINUE, "continue", App->fonts->getFontbyName("kenvector_future"));
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, htp_pos, &atlasrec[0], htp_col, UI_ButtonType::HOW_TO_PLAY, "how to play", App->fonts->getFontbyName("kenvector_future"));
 			App->ui_manager->CreateUIElem(UI_ElemType::BUTTON, credits_pos, &atlasrec[0], credits_col, UI_ButtonType::CREDITS, "credits", App->fonts->getFontbyName("kenvector_future"));
@@ -202,10 +204,12 @@ bool j1Scene::Start()
 		break;
 		case Levels::FIRST_LEVEL:
 		{
+			App->map->Activate();
+			App->map->Load("Level_1_x2.tmx");
 			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
-			App->player->Activate();
 			App->enemies->Activate();
 			App->entities_manager->Activate();
+			App->player->Activate();
 
 			App->enemies->FillEnemiesData();
 			LoadCollectibleObjects();
@@ -349,6 +353,12 @@ bool j1Scene::PostUpdate()
 	if(App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
+	if (reset)
+	{
+		this->Reset();
+		reset = false;
+	}
+
 	return ret;
 }
 
@@ -369,7 +379,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::FIRST_LEVEL;
-					App->scene->Reset();
+					App->scene->reset = true;
 				}
 			}
 			break;
@@ -378,7 +388,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::SETTINGS_SCREEN;
-					App->scene->Reset();
+					App->scene->reset = true;
 				}
 			}
 			break;
@@ -395,7 +405,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::MENU;
-					App->scene->Reset();
+					App->scene->reset = true;
 				}
 			}
 			break;
@@ -404,7 +414,7 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::CREDITS_SCREEN;
-					App->scene->Reset();
+					App->scene->reset = true;
 				}
 			}
 			break;
@@ -413,12 +423,14 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				if (*event == Events::LEFT_UNCLICKED)
 				{
 					App->actual_lvl = Levels::HOW_TO_PLAY_SCREEN;
-					App->scene->Reset();
+					App->scene->reset = true;
 				}
 			}
 			break;
 		}
 	}
+
+	return true;
 }
 
 void j1Scene::CreateIngameUI()

@@ -146,7 +146,7 @@ class Button : public InteractuableElem
 	friend class UI_Manager;
 private:
 	UI_ButtonType btype;
-	Label* text;
+	Label* text=nullptr;
 	j1Rect atlasRec[Button_State::MAX_STATE];
 public:
 	SDL_Rect BlitRec;

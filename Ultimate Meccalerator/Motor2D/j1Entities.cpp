@@ -117,6 +117,7 @@ bool Gear::Update(float dt)
 	{
 		p2List<Entity*>* EntitiesList = &App->entities_manager->EntitiesList;
 		App->entities_manager->DestroyEntity(EntitiesList->At(EntitiesList->find(this)));
+
 	}
 	return true;
 }
@@ -125,5 +126,3 @@ void Gear::Draw()
 {
 	App->render->Blit((SDL_Texture*)App->entities_manager->getCollectibleObjectsTex(), this->pos.x, this->pos.y);
 }
-//TODO: Set player to the new Tier.
-//TODO: Delete Gear from the list.
