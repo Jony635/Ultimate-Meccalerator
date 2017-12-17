@@ -42,9 +42,6 @@ bool j1Scene::Start()
 	App->pathfinding->Activate();
 
 	App->player->tp_counter = 3;
-	
-	pugi::xml_document doc;
-	App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
 
 	switch (App->actual_lvl)
 	{
@@ -116,7 +113,8 @@ bool j1Scene::Start()
 		case Levels::FIRST_LEVEL:
 		{
 			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
-
+			pugi::xml_document doc;
+			App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
 			
 			App->player->Activate();
 			App->enemies->Activate();
@@ -138,13 +136,21 @@ bool j1Scene::Start()
 		case Levels::SECOND_LEVEL:
 		{
 			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
+			App->map->Load("Level_2_x2.tmx");
 
+			App->player->Activate();
 			App->enemies->Activate();
 			App->entities_manager->Activate();
+			App->map->Activate();
+			App->ui_manager->Activate();
+			App->pathfinding->Activate();
+
+			App->enemies->FillEnemiesData();
+			LoadCollectibleObjects();
 
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
-			App->map->Load("Level_2_x2.tmx");
+
 
 			int w, h;
 			uchar* data = NULL;
@@ -152,10 +158,8 @@ bool j1Scene::Start()
 				App->pathfinding->SetMap(w, h, data);
 			RELEASE_ARRAY(data);
 
-			App->enemies->FillEnemiesData();
-			LoadCollectibleObjects();
+			
 
-			App->player->Activate();
 		}
 		break;
 	}
