@@ -25,7 +25,7 @@ class j1PathFinding;
 class j1Enemies;
 class j1Fonts;
 class UI_Manager;
-
+class EntityManager;
 
 
 struct j1Rect
@@ -66,6 +66,9 @@ struct j1Rect
 enum Levels
 {
 	MENU = 0,
+	SETTINGS_SCREEN,
+	CREDITS_SCREEN,
+	HOW_TO_PLAY_SCREEN,
 	FIRST_LEVEL,
 	SECOND_LEVEL
 };
@@ -140,19 +143,20 @@ private:
 public:
 
 	// Modules
-	j1Window*			win				=	nullptr;
-	j1Input*			input			=	nullptr;
-	j1Render*			render			=	nullptr;
-	j1Textures*			tex				=	nullptr;
-	j1Audio*			audio			=	nullptr;
-	j1Scene*			scene			=	nullptr;
-	j1FileSystem*		fs				=	nullptr;
-	j1Map*				map				=	nullptr;
-	j1Player*			player			=	nullptr;
-	j1PathFinding*		pathfinding		=	nullptr;
-	j1Enemies*			enemies			=	nullptr;
-	j1Fonts*			fonts			=	nullptr;
-	UI_Manager*			ui_manager		=	nullptr;
+	j1Window*			win					=	nullptr;
+	j1Input*			input				=	nullptr;
+	j1Render*			render				=	nullptr;
+	j1Textures*			tex					=	nullptr;
+	j1Audio*			audio				=	nullptr;
+	j1Scene*			scene				=	nullptr;
+	j1FileSystem*		fs					=	nullptr;
+	j1Map*				map					=	nullptr;
+	j1Player*			player				=	nullptr;
+	j1PathFinding*		pathfinding			=	nullptr;
+	j1Enemies*			enemies				=	nullptr;
+	j1Fonts*			fonts				=	nullptr;
+	UI_Manager*			ui_manager			=	nullptr;
+	EntityManager*		entities_manager	=	nullptr;
 
 private:
 
@@ -164,11 +168,12 @@ private:
 
 	p2SString			title;
 	p2SString			organization;
+	p2SString			load_game;
+	mutable p2SString	save_game;
 
 	mutable bool		want_to_save;
 	bool				want_to_load;
-	p2SString			load_game;
-	mutable p2SString	save_game;
+	
 
 	j1Timer				last_sec_frame_time;
 	uint32				prev_last_sec_frame_count = 0;

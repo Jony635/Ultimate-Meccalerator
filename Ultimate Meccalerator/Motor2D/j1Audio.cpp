@@ -186,8 +186,10 @@ bool j1Audio::PlayFx(unsigned int id, int repeat)
 
 bool j1Audio::UI_Do(const UI_Elem* elem, Events* event)
 {
-	if (elem->type == UI_ElemType::BUTTON)
+	switch (elem->type)
 	{
+		case UI_ElemType::BUTTON:
+		{
 			if (*event == Events::MOUSE_ENTER)
 			{
 				App->audio->PlayFx(App->audio->mouse_on);
@@ -196,11 +198,26 @@ bool j1Audio::UI_Do(const UI_Elem* elem, Events* event)
 			{
 				App->audio->PlayFx(App->audio->mouse_click);
 			}
+		}
+		break;
+		case UI_ElemType::SLIDEBAR:
+		{
+			SlideBar* slidebar = (SlideBar*)elem;
+
+			if (*slidebar->title->getString() == "Music Volume")
+			{
+				Mix_VolumeMusic(((int)slidebar->percent_value * 128) / 100);
+			}
+			else if (*slidebar->title->getString() == "FX Volume")
+			{
+				Mix_Volume(-1, ((int)slidebar->percent_value * 128) / 100);
+			}
+		}
+		break;
 	}
-	/*if (App->ui_manager->last_elem_pos != (iPoint)elem->position)
-	{
-		App->audio->fx_mouse_on_heared = false;
-	}
-	App->ui_manager->last_elem_pos = (iPoint)elem->position;*/
+	
+
+	
+
 	return true;
 }

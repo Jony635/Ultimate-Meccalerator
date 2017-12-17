@@ -22,10 +22,12 @@
 	UI_Elem::UI_Elem(UI_ElemType type, fPoint position) : type(type), position(position) {}
 	NO_InteractuableElem::NO_InteractuableElem(UI_ElemType type, fPoint position) : UI_Elem(type, position) {}
 	InteractuableElem::InteractuableElem(UI_ElemType type, fPoint position, j1Rect col) : UI_Elem(type, position), collider(col){}
+
 	Label::Label(UI_ElemType type, fPoint position, char* string, TTF_Font* font) : NO_InteractuableElem(type, position),font(font) 
 	{
 		this->string.create(string);
 	}
+
 	Image::Image(UI_ElemType type, fPoint position, j1Rect rec) : NO_InteractuableElem(type, position), rec(rec) {}
 	Button::Button(UI_ElemType type, fPoint position, const j1Rect& col, UI_ButtonType btype, j1Rect* atlasRec, Label* text) : InteractuableElem(type, position, col), btype(btype), text(text)
 	{
@@ -35,6 +37,15 @@
 		this->state = Events::MOUSE_LEAVE;
 	}
 	CheckBox::CheckBox(UI_ElemType type, fPoint position, j1Rect col, Label* text) : InteractuableElem(type, position, col), text(text){}
+	SlideBar::SlideBar(UI_ElemType type, fPoint position, const j1Rect& col, j1Rect atlasRec, Label* title) : InteractuableElem(type, position, col), title(title), atlasRec(atlasRec) 
+	{
+		this->gearPos.y = this->position.y-2;
+		this->gearPos.x = (this->collider.rec.x + this->collider.rec.w) / 2 + 100;
+		
+		p2SString value ("%.f", this->percent_value);
+		this->percent = new Label(LABEL, { (float)collider.rec.x + collider.rec.w + 100, (float)collider.rec.y + 20 }, value, App->fonts->getFontbyName("zorque"));
+		value.Clear();
+	}
 	//--------------------------------
 
 	//-------DESTRUCTORS--------------
@@ -50,10 +61,22 @@
 	{
 		if (this->text)
 		{
-			App->ui_manager->UI_ElemList.del(App->ui_manager->UI_ElemList.At(App->ui_manager->UI_ElemList.find(this->text)));
+			RELEASE(this->text);
 		}
 	}
 	CheckBox::~CheckBox() {}
+	SlideBar::~SlideBar()
+	{
+		if (this->title)
+		{
+			RELEASE(this->title);
+		}
+		if (this->percent)
+		{
+			RELEASE(this->percent);
+		}
+	}
+
 	//--------------------------------
 
 	//-------UPDATES------------------
@@ -134,11 +157,9 @@ bool UI_Manager::PreUpdate()
 
 bool UI_Manager::Update(float dt)
 {
-	MoveElems(dt);
-
 	bool ret = true;
 	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
-	while (elem && elem->data)
+	while (elem!=nullptr && elem->data != nullptr)
 	{
 		if (elem->data->Update(dt) == false)
 		{
@@ -146,10 +167,11 @@ bool UI_Manager::Update(float dt)
 		}
 		elem = elem->next;
 	}
-
 	//------------------------------Updating UI Scene-------
 	if(App->actual_lvl != Levels::MENU)
 		App->scene->Update_UI(App->scene->bar_colour, 3, App->player->tp_counter, 0);
+
+	MoveElems(dt); //Maybe bugged for conflicts
 
 	return true;
 }
@@ -243,8 +265,22 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 			button->listeners.add(App->scene);
 		}
 		break;
+		case UI_ElemType::SLIDEBAR:
+		{
+			if (string)
+			{
+				fPoint label_position = fPoint((col.rec.x + col.rec.w) / 2 + 40, col.rec.y - 50);
+				label = new Label(LABEL, label_position, string, font);
+			}
+			elem = new SlideBar(type, pos, col, *atlasRec, label);
+
+			InteractuableElem* slidebar = (InteractuableElem*)elem;
+			slidebar->listeners.add(App->audio);
+		}
+		break;
 	}
 
+	
 	if (elem)
 	{
 		UI_ElemList.add(elem);
@@ -373,7 +409,7 @@ UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype, j1Rec
 
 //------------UI_ELEM METHODS--------------------------------------------------------
 
-bool InteractuableElem::CheckWithMouse(float dt)
+bool Button::CheckWithMouse(float dt)
 {
 	int mouse_x, mouse_y;
 	App->input->GetMousePosition(mouse_x, mouse_y);
@@ -489,15 +525,26 @@ bool Image::Update(float dt)
 
 bool Label::Update(float dt)
 {
+
 	world_position.y = -App->render->fcamera.y + this->position.y;
 	world_position.x = -App->render->fcamera.x + this->position.x;
-
-	SDL_Texture* string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
+  SDL_Texture* string_texturized;
+	if (this->font == App->fonts->getFontbyName("zorque") || this->font == App->fonts->getFontbyName("zorque_mini"))
+		string_texturized = App->fonts->Print(this->string.GetString(), { 255, 255, 255, 255 }, this->font);
+	else
+		string_texturized = App->fonts->Print(this->string.GetString(), {102, 0, 0, 255}, this->font);
+	
 	if (!App->render->Blit(string_texturized, world_position.x, world_position.y))
-		LOG("Error Printing Label: %s", this->string.GetString());
+
+	LOG("Error Printing Label: %s", this->string.GetString());
 	SDL_DestroyTexture(string_texturized);
 
 	return true;
+}
+
+p2SString* Label::getString()
+{
+	return &string;
 }
 
 bool Button::Update(float dt)
@@ -514,6 +561,49 @@ bool Button::Update(float dt)
 
 	this->collider.rec.x = this->position.x;
 	this->collider.rec.y = this->position.y;
+}
+
+bool SlideBar::Update(float dt)
+{
+	UpdateValue(dt);
+
+	//Blit the Bar
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->atlasRec.rec);
+
+	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->gearPos.x, this->gearPos.y, &(SDL_Rect)j1Rect(639, 460, 66, 73).rec); //Set gear atlas coordinates here
+
+	this->percent->Update(dt);
+	this->title->Update(dt);
+
+	return true;
+}
+
+void SlideBar::UpdateValue(float dt)
+{
+	int mouse_x, mouse_y;
+	App->input->GetMousePosition(mouse_x, mouse_y);
+	if (this->collider.Collides(j1Rect(mouse_x, mouse_y, 0, 0)))
+	{
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN || App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+		{
+			this->percent_value = (mouse_x-this->collider.rec.x) * 100 / (this->collider.rec.w);
+			this->gearPos.x = this->collider.rec.x + (this->percent_value*this->collider.rec.w / 100);
+			this->percent->getString()->create("%.f", percent_value);
+			Do(dt);
+		}
+	}
+}
+
+bool SlideBar::Do(float dt)
+{
+	p2List_item<j1Module*>* listener = this->listeners.start;
+	while (listener)
+	{
+		Events event = NO_EVENT;
+		listener->data->UI_Do(this, &event);
+		listener = listener->next;
+	}
+	return true;
 }
 
 bool CheckBox::Do(float dt)

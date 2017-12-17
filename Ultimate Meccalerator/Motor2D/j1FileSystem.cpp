@@ -5,6 +5,7 @@
 #include "PhysFS/include/physfs.h"
 #include "SDL/include/SDL.h"
 
+
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
 
 j1FileSystem::j1FileSystem() : j1Module()
@@ -54,6 +55,18 @@ bool j1FileSystem::Awake(pugi::xml_node& config)
 	SDL_free(write_path);
 
 	return ret;
+}
+
+bool j1FileSystem::FreeFile(char* path)
+{
+	Save(path, "", 0);
+	return true;
+}
+
+bool j1FileSystem::IsFileEmpty(const char* path) const
+{
+	char* buffer;
+	return Load(path, &buffer) == 0;
 }
 
 // Called before quitting

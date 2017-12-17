@@ -41,6 +41,7 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+
 	//Creates UI in game elems
 	void CreateIngameUI();
 
@@ -52,6 +53,12 @@ public:
 	void Update_timer(int time);
 
 	void Update_UI(int upgrade_lvl, int lifes, int tp_left, int time);
+
+public:
+
+	bool UI_Do(const UI_Elem* elem, Events* event);
+	void LoadCollectibleObjects();
+
 
 public:
 	float Gravity = 9.8 / 60;
