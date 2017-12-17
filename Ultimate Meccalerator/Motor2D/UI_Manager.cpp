@@ -540,7 +540,7 @@ void SlideBar::UpdateValue()
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_DOWN || App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
 		{
 			this->percent_value = (mouse_x-this->collider.rec.x) * 100 / (this->collider.rec.w);
-			this->gearPos.x = mouse_x;
+			this->gearPos.x = this->collider.rec.x + (this->percent_value*this->collider.rec.w / 100);
 			this->percent->getString()->create("%.f", percent_value);
 		}
 	}
