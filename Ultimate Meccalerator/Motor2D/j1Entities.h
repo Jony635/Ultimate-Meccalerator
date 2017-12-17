@@ -47,6 +47,7 @@ public:
 
 class EntityManager : public j1Module
 {
+	friend class Gear;
 public:
 
 	EntityManager();
@@ -61,6 +62,9 @@ public:
 	
 public:
 	Entity* CreateEntity(EntityType type, fPoint pos);
+	void DestroyEntity(p2List_item<Entity*>* entity);
+
+
 	const SDL_Texture* getCollectibleObjectsTex() const;
 	const SDL_Texture* getEnemiesTex() const;
 	const SDL_Texture* getPlayerTex() const;

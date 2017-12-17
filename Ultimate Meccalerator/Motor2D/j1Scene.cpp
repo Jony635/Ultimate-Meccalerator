@@ -11,6 +11,7 @@
 #include "j1Player.h"
 #include "j1Pathfinding.h"
 #include "UI_Manager.h"
+#include "j1Entities.h"
 
 #define SCREEN_MIDDLE_X_FOR_BUTTON 1024/2-190/2//window.w/2-button.w/2
 #define SCREEN_MIDDLE_X_FOR_TITLE 1024/2-870/2//window.w/2-button.w/2
@@ -119,8 +120,10 @@ bool j1Scene::Start()
 			
 			App->player->Activate();
 			App->enemies->Activate();
+			App->entities_manager->Activate();
 
 			App->enemies->FillEnemiesData();
+			LoadCollectibleObjects();
 
 			int w, h;
 			uchar* data = NULL;
@@ -137,6 +140,8 @@ bool j1Scene::Start()
 			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
 
 			App->enemies->Activate();
+			App->entities_manager->Activate();
+
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
 			App->map->Load("Level_2_x2.tmx");
@@ -148,6 +153,8 @@ bool j1Scene::Start()
 			RELEASE_ARRAY(data);
 
 			App->enemies->FillEnemiesData();
+			LoadCollectibleObjects();
+
 			App->player->Activate();
 		}
 		break;
@@ -283,6 +290,28 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 				}
 			}
 			break;
+		}
+	}
+}
+
+void j1Scene::LoadCollectibleObjects()
+{
+	for (p2List_item<MapLayer*>* layer_it = App->map->data.LayerList.start; layer_it != nullptr; layer_it = layer_it->next)
+	{
+		if (strcmp(layer_it->data->name.GetString(), "logical debug") != 0)
+			continue;
+
+		for (int y = 0; y < layer_it->data->height; ++y)
+		{
+			for (int x = 0; x < layer_it->data->width; ++x)
+			{
+				int tile_id = layer_it->data->Get(x, y);
+				TileSet* tileset = (tile_id > 0) ? App->map->GetTilesetFromTileId(tile_id) : NULL;
+				if (tileset && tile_id - tileset->firstgid == 10)
+				{
+					App->entities_manager->CreateEntity(EntityType::GEAR, { (float)x*tileset->tile_width, (float)y*tileset->tile_height });
+				}
+			}
 		}
 	}
 }

@@ -38,11 +38,11 @@ F2:Start at the beggining of the current level
 
 F3:Start at the beggining of the second level
 
-F4:Active debug layer
-
 F5:Save current state (Disabled when you're not grounded)
 
 F6:Load saved state
+
+F9:Active debug layer
 
 ## LICENSE
 
