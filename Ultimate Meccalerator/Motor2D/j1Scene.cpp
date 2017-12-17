@@ -13,8 +13,13 @@
 #include "UI_Manager.h"
 #include "j1Entities.h"
 
-#define SCREEN_MIDDLE_X_FOR_BUTTON 1024/2-190/2//window.w/2-button.w/2
-#define SCREEN_MIDDLE_X_FOR_TITLE 1024/2-870/2//window.w/2-button.w/2
+#define SCREEN_W 1024.0f
+#define SCREEN_H 768.0f
+#define MARGIN 10.0f
+#define LABEL_X_MARGIN 8.0f
+#define LABEL_Y_MARGIN 10.0f
+#define SCREEN_MIDDLE_X_FOR_BUTTON SCREEN_W/2-190.0f/2//window.w/2-button.w/2
+#define SCREEN_MIDDLE_X_FOR_TITLE SCREEN_W/2-870.0f/2//window.w/2-button.w/2
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -198,9 +203,6 @@ bool j1Scene::Start()
 		case Levels::FIRST_LEVEL:
 		{
 			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
-			pugi::xml_document doc;
-			App->map->Load(App->LoadConfig(doc).child("map").child("file").text().as_string());
-			
 			App->player->Activate();
 			App->enemies->Activate();
 			App->entities_manager->Activate();
@@ -216,6 +218,11 @@ bool j1Scene::Start()
 
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
+
+			CreateIngameUI();
+
+			label_time = (Label*)App->ui_manager->SearchElem(UI_ElemType::LABEL, UI_ButtonType::NO_BUTTONTYPE, nullptr, "time:");
+
 		}
 		break;
 		case Levels::SECOND_LEVEL:
@@ -246,8 +253,8 @@ bool j1Scene::Start()
 				App->pathfinding->SetMap(w, h, data);
 			RELEASE_ARRAY(data);
 
-			
-
+			CreateIngameUI();
+			label_time = (Label*)App->ui_manager->SearchElem(UI_ElemType::LABEL, UI_ButtonType::NO_BUTTONTYPE, nullptr, "time:");
 		}
 		break;
 	}
@@ -414,6 +421,104 @@ bool j1Scene::UI_Do(const UI_Elem* elem, Events* event)
 	}
 }
 
+void j1Scene::CreateIngameUI()
+{
+	//------------------------------------Labels square rect------------------------------
+	j1Rect label_square_rect = {0, 4, 190, 49};
+
+	//------------------------------------Images position---------------------------------
+	fPoint lifes_pos = { MARGIN,MARGIN};
+	fPoint timer_pos = { MARGIN,SCREEN_H - label_square_rect.rec.h - MARGIN};
+	fPoint tp_pos = { SCREEN_W - label_square_rect.rec.w - MARGIN,MARGIN};
+	fPoint upgrade_bar_pos = { SCREEN_W - actual_bar_upgrade.rec.w - MARGIN, 150.0f };
+
+	//------------------------------------Labels positions--------------------------------
+	fPoint lifes_label_pos = { lifes_pos.x + LABEL_X_MARGIN,lifes_pos.y + LABEL_Y_MARGIN };
+	fPoint timer_label_pos = { timer_pos.x + LABEL_X_MARGIN,timer_pos.y + LABEL_Y_MARGIN };
+	fPoint tp_label_pos = { tp_pos.x + LABEL_X_MARGIN,tp_pos.y + LABEL_Y_MARGIN };
+	fPoint time_label_pos = { timer_pos.x + LABEL_X_MARGIN + 50.0f,timer_pos.y + LABEL_Y_MARGIN };
+
+	//------------------------------------Images------------------------------------------
+	App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, lifes_pos, &label_square_rect);
+	App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, timer_pos, &label_square_rect);
+	App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, tp_pos, &label_square_rect);
+
+	//------------------------------------labels------------------------------------------
+	App->ui_manager->CreateUIElem(UI_ElemType::LABEL, lifes_label_pos, NULL, label_square_rect,UI_ButtonType::NO_BUTTONTYPE,"lifes", App->fonts->getFontbyName("kenvector_future"));
+	App->ui_manager->CreateUIElem(UI_ElemType::LABEL, timer_label_pos, NULL, label_square_rect, UI_ButtonType::NO_BUTTONTYPE, "time:", App->fonts->getFontbyName("kenvector_future"));
+	App->ui_manager->CreateUIElem(UI_ElemType::LABEL, tp_label_pos, NULL, label_square_rect, UI_ButtonType::NO_BUTTONTYPE, "tp", App->fonts->getFontbyName("kenvector_future"));
+
+	//------------------------------------Images------------------------------------------
+	App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, upgrade_bar_pos, &actual_bar_upgrade);
+}
+
+void j1Scene::Update_upgrade_bar(int upgrade_lvl)
+{
+	switch (upgrade_lvl)
+	{
+	case EMPTY:
+		actual_bar_upgrade = upgrade_lvl_empty_rect;
+		break;
+	case BLUE:
+		actual_bar_upgrade = upgrade_lvl_blue_rect;
+		break;
+	case YELLOW:
+		actual_bar_upgrade = upgrade_lvl_yellow_rect;
+		break;
+	case RED:
+		actual_bar_upgrade = upgrade_lvl_red_rect;
+		break;
+	default:
+		break;
+	}
+	bar_colour = upgrade_lvl;
+}
+void j1Scene::Update_lifes(int lifes)
+{
+	SDL_Rect hard_rect = { 458,164,24,22 };
+	if (lifes >= 1)
+	{
+		App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), 100 - App->render->camera.x, 20 - App->render->camera.y, &hard_rect);
+		if (lifes >= 2)
+		{
+			App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), 130 - App->render->camera.x, 20 - App->render->camera.y, &hard_rect);
+			if (lifes == 3)
+			{
+				App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), 160 - App->render->camera.x, 20- App->render->camera.y, &hard_rect);
+			}
+		}
+	}
+}
+void j1Scene::Update_tp(int tp_left)
+{
+	SDL_Rect tp_rect = { 457,126,26,27 };
+	if (tp_left >= 1)
+	{
+		App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), 900 - App->render->camera.x, 17 - App->render->camera.y, &tp_rect);
+		if (tp_left >= 2)
+		{
+			App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), 930 - App->render->camera.x, 17 - App->render->camera.y, &tp_rect);
+			if (tp_left == 3)
+			{
+				App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), 960 - App->render->camera.x, 17 - App->render->camera.y, &tp_rect);
+			}
+		}
+	}
+}
+void j1Scene::Update_timer(int time)
+{
+	if(App->scene->label_time)
+		App->scene->label_time->string.create("Time: %i", time);
+}
+
+void j1Scene::Update_UI(int upgrade_lvl,int lifes,int tp_left,int time)
+{
+	Update_upgrade_bar(upgrade_lvl);
+	Update_lifes(lifes);
+	Update_tp(tp_left);
+	Update_timer(time);
+}
+
 void j1Scene::LoadCollectibleObjects()
 {
 	for (p2List_item<MapLayer*>* layer_it = App->map->data.LayerList.start; layer_it != nullptr; layer_it = layer_it->next)
@@ -435,3 +540,4 @@ void j1Scene::LoadCollectibleObjects()
 		}
 	}
 }
+

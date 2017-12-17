@@ -112,6 +112,8 @@ class Image : public NO_InteractuableElem
 private:
 	j1Rect rec;
 public:
+	fPoint world_position;
+public:
 	Image(UI_ElemType type, fPoint position, j1Rect rec);
 	virtual ~Image();
 	bool Update(float dt);
@@ -119,10 +121,16 @@ public:
 
 class Label : public NO_InteractuableElem
 {
+
+	friend class j1Scene;
+	friend class UI_Manager;
 	friend class SlideBar;
+
 private:
 	p2SString string;
 	TTF_Font* font = nullptr;
+public:
+	fPoint world_position;
 public:
 	Label(UI_ElemType type, fPoint position, p2SString string, TTF_Font* font);
 	virtual ~Label();
@@ -210,7 +218,7 @@ public:
 	void Move_to(const iPoint& destination, float secs, const UI_Elem* elem = nullptr);	//if nullptr it moves all UI_Elems, else only moves an specific one
 	void MoveElems(float dt);
 
-	UI_Elem* SearchElem(UI_ElemType elemtype, UI_ButtonType btype = NO_BUTTONTYPE, j1Rect* rect = nullptr) const;
+	UI_Elem* SearchElem(UI_ElemType elemtype, UI_ButtonType btype = NO_BUTTONTYPE, j1Rect* rect = nullptr, char* string = nullptr) const;
 
 private:
 	SDL_Texture* atlas = nullptr; //Texture that has everything
