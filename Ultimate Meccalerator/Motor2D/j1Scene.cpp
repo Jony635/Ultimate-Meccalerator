@@ -136,12 +136,13 @@ bool j1Scene::Start()
 		case Levels::SECOND_LEVEL:
 		{
 			App->audio->PlayMusic("Resources/audio/music/BSO.ogg");
+
+			App->map->Activate();
 			App->map->Load("Level_2_x2.tmx");
 
-			App->player->Activate();
+
 			App->enemies->Activate();
 			App->entities_manager->Activate();
-			App->map->Activate();
 			App->ui_manager->Activate();
 			App->pathfinding->Activate();
 
@@ -150,6 +151,8 @@ bool j1Scene::Start()
 
 			App->render->camera.x = 0;
 			App->render->fcamera.x = 0;
+
+			App->player->Activate();
 
 
 			int w, h;
@@ -175,6 +178,7 @@ bool j1Scene::CleanUp()
 	App->ui_manager->DeActivate();
 	App->map->DeActivate();
 	App->pathfinding->DeActivate();
+	App->entities_manager->DeActivate();
 	return true;
 }
 
