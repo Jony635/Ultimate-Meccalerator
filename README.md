@@ -13,14 +13,14 @@ The acceleration sections can also become harmful.
 
 Jonathan Molina and Oriol de Dios, members of FlanStudio, are the authors of this game.
 
--Fonts from: http://www.1001fonts.com/video-game-fonts.html
+- Fonts from: http://www.1001fonts.com/video-game-fonts.html
 	-Zorque font Made by Raymond Larabie
 	-kenvector_future Made by Kenney
 
--Sprites from: https://www.gameart2d.com/free-sci-fi-platformer-tileset.html and https://mobilegamegraphics.com/product/monster-heroes-free-assets/
+- Sprites from: https://www.gameart2d.com/free-sci-fi-platformer-tileset.html and https://mobilegamegraphics.com/product/monster-heroes-free-assets/
 	-Monster Heroes – Free Assets
 	-FREE SCI-FI PLATFORMER TILESET
--Music from: https://www.youtube.com/watch?v=6ukEy6FOxZE&list=PLfP6i5T0-DkIMLNRwmJpRBs4PJvxfgwBg
+- Music from: https://www.youtube.com/watch?v=6ukEy6FOxZE&list=PLfP6i5T0-DkIMLNRwmJpRBs4PJvxfgwBg
 	-[No Copyright Music] Artificial.Music - Herbal Tea [Lo-fi]
 
 ## GAME INSTRUCTIONS
@@ -53,10 +53,6 @@ F5:Save current state (Disabled when you're not grounded)
 F6:Load saved state
 
 F9:Active debug layer
-
-## GITHUB REPOSITORY [LINK](https://github.com/Jony635/Ultimate-Meccalerator)
-
-
 
 ## LICENSE
 
