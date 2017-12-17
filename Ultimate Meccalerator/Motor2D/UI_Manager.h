@@ -180,8 +180,8 @@ public:
 	SlideBar(UI_ElemType type, fPoint position, const j1Rect& col, j1Rect atlasRec, Label* title = nullptr);
 	virtual ~SlideBar();
 	bool Update(float dt);
-	//bool Do(float dt);
-	void UpdateValue();
+	bool Do(float dt);
+	void UpdateValue(float dt);
 
 };
 

@@ -264,6 +264,8 @@ UI_Elem* UI_Manager::CreateUIElem(UI_ElemType type, fPoint pos, j1Rect* atlasRec
 			}
 			elem = new SlideBar(type, pos, col, *atlasRec, label);
 
+			InteractuableElem* slidebar = (InteractuableElem*)elem;
+			slidebar->listeners.add(App->audio);
 		}
 		break;
 	}
@@ -518,7 +520,7 @@ bool Button::Update(float dt)
 
 bool SlideBar::Update(float dt)
 {
-	UpdateValue();
+	UpdateValue(dt);
 
 	//Blit the Bar
 	App->render->Blit((SDL_Texture*)App->ui_manager->GetAtlas(), this->position.x, this->position.y, &this->atlasRec.rec);
@@ -531,7 +533,7 @@ bool SlideBar::Update(float dt)
 	return true;
 }
 
-void SlideBar::UpdateValue()
+void SlideBar::UpdateValue(float dt)
 {
 	int mouse_x, mouse_y;
 	App->input->GetMousePosition(mouse_x, mouse_y);
@@ -542,10 +544,22 @@ void SlideBar::UpdateValue()
 			this->percent_value = (mouse_x-this->collider.rec.x) * 100 / (this->collider.rec.w);
 			this->gearPos.x = this->collider.rec.x + (this->percent_value*this->collider.rec.w / 100);
 			this->percent->getString()->create("%.f", percent_value);
+			Do(dt);
 		}
 	}
 }
 
+bool SlideBar::Do(float dt)
+{
+	p2List_item<j1Module*>* listener = this->listeners.start;
+	while (listener)
+	{
+		Events event = NO_EVENT;
+		listener->data->UI_Do(this, &event);
+		listener = listener->next;
+	}
+	return true;
+}
 
 bool CheckBox::Do(float dt)
 {
