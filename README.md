@@ -30,8 +30,9 @@ Jonathan Molina and Oriol de Dios, members of FlanStudio, are the authors of thi
 - SPACEBAR to jump
 - SPACEBAR (AGAIN) to double jump (it only works if you have jumped once before from the floor)
 
-INNOVATION:
+### INNOVATION:
 - TAB to pause the game and make a teleport (you only have 3)
+
 File System fully implemented in a .FStudio file
 
 WIN: Reach the end of the levels and cross the final door
