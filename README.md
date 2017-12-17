@@ -23,10 +23,6 @@ Jonathan Molina and Oriol de Dios, members of FlanStudio, are the authors of thi
 -Music from: https://www.youtube.com/watch?v=6ukEy6FOxZE&list=PLfP6i5T0-DkIMLNRwmJpRBs4PJvxfgwBg
 	-[No Copyright Music] Artificial.Music - Herbal Tea [Lo-fi]
 
-## GITHUB REPOSITORY LINK
-
-<http://github.com/Jony635/Ultimate-Meccalerator/>
-
 ## GAME INSTRUCTIONS
 
 - A to go left
@@ -58,7 +54,7 @@ F6:Load saved state
 
 F9:Active debug layer
 
-## REPOSITORY [LINK](https://github.com/Jony635/Ultimate-Meccalerator)
+## GITHUB REPOSITORY [LINK](https://github.com/Jony635/Ultimate-Meccalerator)
 
 
 
