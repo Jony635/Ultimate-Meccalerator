@@ -12,8 +12,9 @@
 #include "j1Pathfinding.h"
 #include "UI_Manager.h"
 
-#define SCREEN_MIDDLE_X_FOR_BUTTON 1024/2-190/2//window.w/2-button.w/2
-#define SCREEN_MIDDLE_X_FOR_TITLE 1024/2-870/2//window.w/2-button.w/2
+#define SCREEN_MIDDLE_X_FOR_BUTTON 1024/2-190/2 //window.w/2-button.w/2
+#define SCREEN_MIDDLE_X_FOR_TITLE 1024/2-870/2 //window.w/2-button.w/2
+
 
 j1Scene::j1Scene() : j1Module()
 {
@@ -61,16 +62,16 @@ bool j1Scene::Start()
 			j1Rect title_rect = { 0,266,870,165 };
 			j1Rect logo_rect = { 457,2,91,105 };
 
-			//---------------------------------------------Buttons Positions--------------------------------
-			fPoint play_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,340};
-			fPoint continue_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,399};
-			fPoint htp_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,458 };
-			fPoint credits_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,517 };
-			fPoint exit_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,576 };
+			//---------------------------------------------Buttons init Positions--------------------------------
+			fPoint play_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,365};
+			fPoint continue_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,306};
+			fPoint htp_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,424};
+			fPoint credits_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,483};
+			fPoint exit_pos = { SCREEN_MIDDLE_X_FOR_BUTTON,542};
 			fPoint settings_pos = { 20,694 };
 
-			//--------------------------------------------Image Positions-----------------------------------
-			fPoint title_pos = { SCREEN_MIDDLE_X_FOR_TITLE,60 };
+			//--------------------------------------------Image init Positions-----------------------------------
+			fPoint title_pos = { SCREEN_MIDDLE_X_FOR_TITLE,-(float)title_rect.rec.h };
 			fPoint logo_pos = { 913,598+60 };
 
 			//---------------------------------------------Buttons Colliders--------------------------------
@@ -93,6 +94,11 @@ bool j1Scene::Start()
 			App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, title_pos, &title_rect);
 			App->ui_manager->CreateUIElem(UI_ElemType::IMAGE, logo_pos, &logo_rect);
 
+			//---------------------------------------------distance to move----------------------------------
+			fPoint title_distance{ 0, 60.0f + title_rect.rec.h };
+
+			//---------------------------------------------Animations----------------------------------------
+			//App->ui_manager->Move(title_distance, 20.0f, App->ui_manager->SearchElem(UI_ElemType::IMAGE, UI_ButtonType::NO_BUTTONTYPE, &title_rect));
 
 		}
 		break;

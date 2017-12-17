@@ -130,7 +130,7 @@ bool UI_Manager::PreUpdate()
 
 bool UI_Manager::Update(float dt)
 {
-	MoveElems(dt);
+	//MoveElems(dt);
 
 	bool ret = true;
 	p2List_item<UI_Elem*>* elem = UI_ElemList.start;
@@ -142,13 +142,14 @@ bool UI_Manager::Update(float dt)
 		}
 		elem = elem->next;
 	}
+
 	return true;
 }
 
 void UI_Manager::MoveElems(float dt)
 {
 	p2List_item<Mobile_Elem*>* mobile_elem = UI_MobileElemList.start;
-	while (mobile_elem)
+	while (mobile_elem && mobile_elem->data)
 	{
 		fPoint* distance = &mobile_elem->data->distance;	//Distance left to move
 		UI_Elem* elem = mobile_elem->data->elem;		
@@ -160,10 +161,25 @@ void UI_Manager::MoveElems(float dt)
 		*distance -= dpos;	//Update de amount of pixels left to move
 		*time -= dt;		//Update de amount of time left to move
 
-		mobile_elem = mobile_elem->next;
-		
-		if (*time <= 0)
-			UI_MobileElemList.del(mobile_elem->prev); //Remove Elems from the list when finished the movement
+		if (mobile_elem->next)
+		{
+			mobile_elem = mobile_elem->next;
+
+			if (*time <= 0)
+			{
+				RELEASE(mobile_elem->data);
+				UI_MobileElemList.del(mobile_elem->prev); //Remove Elems from the list when finished the movement
+			}
+		}
+		else
+		{
+			if (*time <= 0)
+			{
+				RELEASE(mobile_elem->data);
+				UI_MobileElemList.clear(); //Remove Elems from the list when finished the movement
+				mobile_elem = nullptr;
+			}
+		}
 	}
 }
 
@@ -271,8 +287,11 @@ void UI_Manager::Move(const fPoint& distance, float secs, const UI_Elem* elem)
 				}
 				break;
 			}
-
-			else continue;
+			else 
+			{ 
+				elem_it = elem_it->next;
+				continue;
+			}
 		}
 
 		Mobile_Elem* mobile_elem = new Mobile_Elem(elem_it->data, secs, distance);
@@ -306,27 +325,33 @@ UI_Elem* UI_Manager::SearchElem(UI_ElemType elemtype, UI_ButtonType btype, j1Rec
 	while (elem_it)
 	{
 		if (elem_it->data->type != elemtype)
+		{
+			elem_it = elem_it->next;
 			continue;
-
+		}
 		switch (elemtype)
 		{
 			case UI_ElemType::BUTTON:
 			{
-				Button* button = (Button*)elem_it;
+				Button* button = (Button*)elem_it->data;
 
 				if (button->btype != btype)
+				{
+					elem_it = elem_it->next;
 					continue;
-
+				}
 				return elem_it->data;
 			}
 				break;
 
 			case UI_ElemType::IMAGE:
-				Image * image = (Image*)elem_it;
+				Image* image = (Image*)elem_it->data;
 
 				if (image->rec != *rect)
+				{
+					elem_it = elem_it->next;
 					continue;
-
+				}
 				return elem_it->data;
 				break;
 		}
