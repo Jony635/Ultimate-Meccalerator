@@ -66,6 +66,7 @@ struct j1Rect
 enum Levels
 {
 	MENU = 0,
+	SETTINGS_SCREEN,
 	FIRST_LEVEL,
 	SECOND_LEVEL
 };
